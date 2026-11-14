@@ -1,1 +1,121 @@
-name,source,status
+crop,parameter,value,unit,source,status
+winter_wheat,L_ini_d,,days,,todo
+winter_wheat,L_dev_d,,days,,todo
+winter_wheat,L_mid_d,,days,,todo
+winter_wheat,L_late_d,,days,,todo
+winter_wheat,kc_ini,,,,todo
+winter_wheat,kc_mid,,,,todo
+winter_wheat,kc_end,,,,todo
+winter_wheat,zr_min_m,,m,,todo
+winter_wheat,zr_max_m,,m,,todo
+winter_wheat,p,,,,todo
+winter_wheat,h_m,,m,,todo
+winter_wheat,gdd_base_c,0,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
+winter_wheat,sowing_rule,,calendar|temperature,,todo
+winter_wheat,sowing_mmdd_vinnytska,,MM-DD,,todo
+winter_wheat,sowing_mmdd_poltavska,,MM-DD,,todo
+winter_wheat,sowing_mmdd_kirovohradska,,MM-DD,,todo
+winter_wheat,sowing_mmdd_odeska,,MM-DD,,todo
+winter_wheat,heat_basis,,gdd|days,,todo
+winter_wheat,heat_start,,GDD or days after sowing,,todo
+winter_wheat,heat_end,,GDD or days after sowing,,todo
+winter_wheat,heat_tmax_1_c,30,degC,CLAUDE.md method_decisions (Ivan); threshold not yet verified,estimate
+winter_wheat,heat_tmax_2_c,,degC,,todo
+winter_wheat,frost_spring_c,,degC,,todo
+winter_wheat,frost_autumn_c,,degC,,todo
+winter_wheat,frost_winter_min_c,,degC,,todo
+maize,L_ini_d,,days,,todo
+maize,L_dev_d,,days,,todo
+maize,L_mid_d,,days,,todo
+maize,L_late_d,,days,,todo
+maize,kc_ini,,,,todo
+maize,kc_mid,,,,todo
+maize,kc_end,,,,todo
+maize,zr_min_m,,m,,todo
+maize,zr_max_m,,m,,todo
+maize,p,,,,todo
+maize,h_m,,m,,todo
+maize,gdd_base_c,10,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
+maize,sowing_rule,,calendar|temperature,,todo
+maize,sowing_mmdd_vinnytska,,MM-DD,,todo
+maize,sowing_mmdd_poltavska,,MM-DD,,todo
+maize,sowing_mmdd_kirovohradska,,MM-DD,,todo
+maize,sowing_mmdd_odeska,,MM-DD,,todo
+maize,heat_basis,,gdd|days,,todo
+maize,heat_start,,GDD or days after sowing,,todo
+maize,heat_end,,GDD or days after sowing,,todo
+maize,heat_tmax_1_c,32,degC,CLAUDE.md method_decisions (Ivan); source pending,todo
+maize,heat_tmax_2_c,35,degC,CLAUDE.md method_decisions (Ivan); source pending,todo
+maize,frost_spring_c,,degC,,todo
+maize,frost_autumn_c,,degC,,todo
+maize,frost_winter_min_c,,degC,,todo
+sunflower,L_ini_d,,days,,todo
+sunflower,L_dev_d,,days,,todo
+sunflower,L_mid_d,,days,,todo
+sunflower,L_late_d,,days,,todo
+sunflower,kc_ini,,,,todo
+sunflower,kc_mid,,,,todo
+sunflower,kc_end,,,,todo
+sunflower,zr_min_m,,m,,todo
+sunflower,zr_max_m,,m,,todo
+sunflower,p,,,,todo
+sunflower,h_m,,m,,todo
+sunflower,gdd_base_c,6.7,degC,"NDSU, per CLAUDE.md; exact citation pending",literature
+sunflower,sowing_rule,,calendar|temperature,,todo
+sunflower,sowing_mmdd_vinnytska,,MM-DD,,todo
+sunflower,sowing_mmdd_poltavska,,MM-DD,,todo
+sunflower,sowing_mmdd_kirovohradska,,MM-DD,,todo
+sunflower,sowing_mmdd_odeska,,MM-DD,,todo
+sunflower,heat_basis,,gdd|days,,todo
+sunflower,heat_start,,GDD or days after sowing,,todo
+sunflower,heat_end,,GDD or days after sowing,,todo
+sunflower,heat_tmax_1_c,,degC,,todo
+sunflower,heat_tmax_2_c,,degC,,todo
+sunflower,frost_spring_c,,degC,,todo
+sunflower,frost_autumn_c,,degC,,todo
+sunflower,frost_winter_min_c,,degC,,todo
+pea,L_ini_d,,days,,todo
+pea,L_dev_d,,days,,todo
+pea,L_mid_d,,days,,todo
+pea,L_late_d,,days,,todo
+pea,kc_ini,,,,todo
+pea,kc_mid,,,,todo
+pea,kc_end,,,,todo
+pea,zr_min_m,,m,,todo
+pea,zr_max_m,,m,,todo
+pea,p,,,,todo
+pea,h_m,,m,,todo
+pea,gdd_base_c,,degC,,todo
+pea,sowing_rule,,calendar|temperature,,todo
+pea,sowing_mmdd_vinnytska,,MM-DD,,todo
+pea,sowing_mmdd_poltavska,,MM-DD,,todo
+pea,sowing_mmdd_kirovohradska,,MM-DD,,todo
+pea,sowing_mmdd_odeska,,MM-DD,,todo
+pea,heat_basis,,gdd|days,,todo
+pea,heat_start,,GDD or days after sowing,,todo
+pea,heat_end,,GDD or days after sowing,,todo
+pea,heat_tmax_1_c,,degC,,todo
+pea,heat_tmax_2_c,,degC,,todo
+pea,frost_spring_c,,degC,,todo
+pea,frost_autumn_c,,degC,,todo
+pea,frost_winter_min_c,,degC,,todo
+green_manure_fallow,L_ini_d,,days,,todo
+green_manure_fallow,L_dev_d,,days,,todo
+green_manure_fallow,L_mid_d,,days,,todo
+green_manure_fallow,L_late_d,,days,,todo
+green_manure_fallow,kc_ini,,,,todo
+green_manure_fallow,kc_mid,,,,todo
+green_manure_fallow,kc_end,,,,todo
+green_manure_fallow,zr_min_m,,m,,todo
+green_manure_fallow,zr_max_m,,m,,todo
+green_manure_fallow,p,,,,todo
+green_manure_fallow,h_m,,m,,todo
+green_manure_fallow,gdd_base_c,,degC,,todo
+green_manure_fallow,sowing_rule,,calendar|temperature,,todo
+green_manure_fallow,sowing_mmdd_vinnytska,,MM-DD,,todo
+green_manure_fallow,sowing_mmdd_poltavska,,MM-DD,,todo
+green_manure_fallow,sowing_mmdd_kirovohradska,,MM-DD,,todo
+green_manure_fallow,sowing_mmdd_odeska,,MM-DD,,todo
+green_manure_fallow,incorporation_mmdd,,MM-DD,,todo
+black_fallow,kc_ini,,,,todo
+black_fallow,zr_max_m,,m,,todo
