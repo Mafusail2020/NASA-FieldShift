@@ -30,3 +30,17 @@ export interface EconomicsResponse {
   best_alternative_with_k: string; best_alternative_without_k: string; note: string
 }
 export interface EconomicsRequest { region: string; rotation: string[]; use_k: boolean; price: Record<string, number>; cost: Record<string, number> }
+
+export interface MetaDataset { name: string; detail_en: string; detail_uk: string; source: string; status: Status }
+export interface MetaFormula { name: string; text_en: string; text_uk: string; source: string }
+export interface ParamRow { crop?: string; soil?: string; parameter: string; value: string; unit: string; source: string; status: Status }
+export interface CropValidation {
+  status: Status; note?: string; n?: number; years?: number[]; coef_ks?: number; se_clustered?: number; p_value?: number
+  r2?: number; loyo_coef_min?: number; loyo_coef_max?: number
+}
+export interface Meta {
+  datasets: MetaDataset[]; formulas: MetaFormula[]; crops: ParamRow[]; soils: ParamRow[]; model: ParamRow[]
+  limitations: string[]; limitations_uk: string[]; not_modelled: { en: string; uk: string }[]
+  ai_disclosure: { en: string; uk: string }
+  validation: { status?: Status; note?: string; predictor?: string; crops?: Record<string, CropValidation> }
+}

@@ -58,3 +58,16 @@ Status: built, checked in a browser; Method page is a placeholder (Phase 8); not
 - Offline: if the API does not answer in 5 s (or answers 5xx) the app reads `public/data/*.json`, disables the price/cost inputs and shows "Offline mode — default prices". Offline rotations are limited to 3 years (precomputed `<oblast>_eval.json`); the Money tab needs the API.
 - Backend additions: `core/climate.py`, per-crop break-even in `/api/economics`, `?soil=` on `/climate`, offline export.
 - Checks: type-check + build; headless Chrome (puppeteer-core) on Start, Rotations (uk), Climate, Money, offline mode; three numbers compared with the JSON. Money chart was only seen with SYNTHETIC yields (not committed).
+
+## Phase 8 — Method page, README, final checks
+Status: done locally. Not deployed.
+- `GET /api/meta` and `/method` (datasets with POWER cell ~55 x 46 km, formulas, crops/soils/model tables with source and status, validation block, not modelled, limitations, AI disclosure). Validation shows "todo, not run" until yields exist; `pipeline/validate.py` now writes `validation.json`, merged into `meta.json` by the export.
+- README rewritten: what it is, run, pipeline order, data sources, pre-registered predictor (unchanged), limitations, AI disclosure.
+- Final checks run: `pytest` 67 passed, 1 xfailed; `npm run build` ok; headless Chrome on /method, /, results (rotations) and money, with the API running and with it stopped: no console errors; no value with status todo is shown without a marker (only explanatory text mentions the word).
+- Not done: deployed URLs (Render/Vercel accounts are Ivan's), `docker build`, mobile layout check, a real validation run.
+
+## Open items for Ivan
+1. Derzhstat enterprise yields, prices, costs (Phase 6) -> then run `yields`, `validate`, `export`.
+2. Sunflower and pea: sowing rule, heat windows, frost thresholds; maize heat window.
+3. Approve or replace the A-E drafts; review `uk.json`; decide the occupied-area map; Annex 7 Fig. 29 xfail.
+4. Deployment: accounts and `VITE_API_URL`.

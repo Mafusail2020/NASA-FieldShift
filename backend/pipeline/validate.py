@@ -3,7 +3,7 @@
 Outcome: ratio of reported enterprise yield to its 2000-2021 trend. Single predictor: mean Ks in the crop's critical
 window (`mean_ks_mid`), same crop, oblast and year; medium soil, mean over predecessors (reported yields mix
 predecessors). Panel OLS with oblast fixed effects, standard errors clustered by year, one regression per crop, plus
-leave-one-year-out. Results are written to data/processed/meta.json under "validation", whatever they are.
+leave-one-year-out. Results are written to data/processed/validation.json (pipeline/export.py merges it into meta.json), whatever they are.
 Run by hand: python -m pipeline.validate
 """
 import json
@@ -61,9 +61,7 @@ def main():
             result["crops"][crop] = {"status": "todo", "note": f"only {len(d)} oblast-years with yield data"}
             continue
         result["crops"][crop] = {**validate_crop(d), "status": "data"}
-    meta = json.loads((OUT_DIR / "meta.json").read_text())
-    meta["validation"] = result
-    (OUT_DIR / "meta.json").write_text(json.dumps(meta))
+    (OUT_DIR / "validation.json").write_text(json.dumps(result))
     print(json.dumps({c: {k: v for k, v in r.items() if k != "loyo"} for c, r in result["crops"].items()}, indent=1))
 
 

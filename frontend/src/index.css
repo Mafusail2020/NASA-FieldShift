@@ -42,3 +42,7 @@ th, td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; }
 sup { color: #a15c00; font-size: 9px; margin-left: 2px; }
 .info { color: #1976d2; cursor: help; margin-left: 3px; font-size: 11px; }
 @media (max-width: 600px) { main { padding: 12px; } .tabs button { padding: 8px 8px; font-size: 14px; } }
+.badge { font-size: 11px; padding: 1px 6px; border-radius: 8px; border: 1px solid var(--line); }
+.badge.st-estimate { background: #fff3cd; } .badge.st-todo { background: #f8d7da; } .badge.st-literature { background: #e3f2fd; } .badge.st-data { background: #e8f5e9; }
+.method details { margin: 6px 0; } .method summary { cursor: pointer; font-weight: 600; }
+.srccell { max-width: 420px; font-size: 12px; }

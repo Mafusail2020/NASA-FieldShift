@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
-import type { Climate, Defaults, EconomicsRequest, EconomicsResponse, EvaluateResponse, Region } from './types'
+import type { Climate, Defaults, Meta as MetaDoc, EconomicsRequest, EconomicsResponse, EvaluateResponse, Region } from './types'
 
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? ''
 const TIMEOUT_MS = 5000
@@ -40,6 +40,7 @@ export interface Backend {
   climate(id: string, soil: string): Promise<Climate>
   evaluate(id: string, rotation: string[], soil: string): Promise<EvaluateResponse>
   defaults(): Promise<Defaults>
+  meta(): Promise<MetaDoc>
   economics(req: EconomicsRequest): Promise<EconomicsResponse>
 }
 
@@ -76,6 +77,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
         if (!farmer) throw new HttpError(422, 'offline-limit')
         return { region: id, soil, farmer, alternatives: meta.rotations.map((r) => ({ id: r.id, name: r.name, source: r.source, status: r.status, evaluation: ev[r.crops.join(',')] })) }
       }),
+    meta: () => call(() => fetchJson<MetaDoc>(`${API}/api/meta`), () => staticJson<MetaDoc>('meta.json')),
     defaults: () => call(() => fetchJson<Defaults>(`${API}/api/defaults`), async () => {
       const m = await staticJson<Meta>('meta.json')
       return { prices_costs: m.prices_costs, k: m.k }
