@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { findCell } from '../../lib/grid'
 import type { CropId, FieldItem } from '../../lib/field'
 import type { GridCell, GridDoc } from '../../types'
@@ -13,6 +13,10 @@ const CROPS: { id: CropId; label: string }[] = [
   { id: 'maize', label: 'Maize' },
   { id: 'sunflower', label: 'Sunflower' },
   { id: 'pea', label: 'Pea' },
+  { id: 'soybean', label: 'Soybean' },
+  { id: 'sugar_beet', label: 'Sugar beet' },
+  { id: 'spring_barley', label: 'Spring barley' },
+  { id: 'millet', label: 'Millet' },
   { id: 'black_fallow', label: 'Black fallow' },
 ]
 const fmt = (v: number | null) => (v == null ? '' : String(v))
@@ -21,10 +25,9 @@ interface Props {
   field: FieldItem
   grid: GridDoc | null
   onUpdate(patch: Partial<Omit<FieldItem, 'id'>>): void
-  afterHead?: ReactNode   // rendered right under the name
 }
 
-export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props) {
+export default function FieldDetail({ field, grid, onUpdate }: Props) {
   const uid = useId()
   const [lat, setLat] = useState(fmt(field.lat))
   const [lon, setLon] = useState(fmt(field.lon))
@@ -71,12 +74,6 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
   }
 
   const cell: GridCell | null = grid && field.lat != null && field.lon != null ? findCell(grid, field.lat, field.lon) : null
-  let chip: { cls: string; text: string }
-  if (field.lat == null || field.lon == null) chip = { cls: 'idle', text: 'Enter coordinates' }
-  else if (!grid) chip = { cls: 'idle', text: 'Looking up cell…' }
-  else if (cell) chip = { cls: 'ok', text: `Cell ${cell.lat.toFixed(1)}N ${cell.lon.toFixed(1)}E` }
-  else chip = { cls: 'out', text: 'Outside the analysed area' }
-
   const missing = [
     field.lat == null || field.lon == null ? 'No coordinates' : null,
     field.areaHa == null ? 'No area' : null,
@@ -92,9 +89,7 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
           <span className="sr-only">Field name</span>
           <input type="text" maxLength={40} value={field.name} onChange={(e) => onUpdate({ name: e.target.value.slice(0, 40) })} />
         </label>
-        <span className={`fr-chip fr-chip-${chip.cls}`} role="status">{chip.text}</span>
       </div>
-      {afterHead}
 
       <div className="fd-top">
         <MiniMap lat={field.lat} lon={field.lon} locked={field.locked} onMove={(la, lo) => setCoords(String(la), String(lo))} />
@@ -135,6 +130,7 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
         </button>
         <span className="fr-geo" role="status" aria-live="polite">{geo}</span>
       </div>
+      {cell && <p className="fr-geo">Elevation {Math.round(cell.elevation_m)} m at the centre of the climate cell.</p>}
       {missing.length > 0 && (
         <ul className="fr-missing" aria-label="Missing information">
           {missing.map((m) => <li key={m}><i aria-hidden="true">!</i>{m}</li>)}

@@ -111,9 +111,10 @@ export default function FieldsPage() {
       <div className="fp-main">
         {notes}
         <FieldDetail
-          key={active.id} field={active} grid={grid} afterHead={<FarmFinanceSummary />}
+          key={active.id} field={active} grid={grid}
           onUpdate={(p) => updateField(active.id, p)}
         />
+        <FarmFinanceSummary />
       </div>
     </section>
   )

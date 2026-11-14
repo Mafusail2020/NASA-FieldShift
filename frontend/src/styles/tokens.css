@@ -18,6 +18,18 @@
   --color-success: #1f7a3d; /* AA on white (5.4:1) */
   --color-success-tint: #dcf3e3;
 
+  --color-neutral-tint: #f5ede4; /* warm grey for highlighted rows and columns: not a click or selected state, so not orange */
+
+  /* Chart colours carry one meaning each and are none of them the brand orange: blue = water and frost, terracotta = heat, ochre = dry / shortage. */
+  --chart-water: #2f6fa8;
+  --chart-water-deep: #1d4e7e;
+  --chart-water-soft: #5f93c0;
+  --chart-water-tint: #dbe8f4;
+  --chart-heat: #b3401c;
+  --chart-heat-strong: #5c1a08;
+  --chart-dry: #b7893a;
+  --chart-dry-strong: #6f4a0f;
+
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;

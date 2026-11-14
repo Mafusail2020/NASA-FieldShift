@@ -7,7 +7,7 @@ export interface LayerMeta {
   disabled: boolean; reason: string | null
   kind?: 'frost'; thresholds?: Record<string, string> // frost layers: one record per threshold key (t0, t2, t4)
 }
-export interface CellLayer { value: number | null; trend: number | null; p_value: number | null; n_years: number; y?: (number | null)[]; line?: [number, number] | null }
+export interface CellLayer { value: number | null; trend: number | null; p_value: number | null; n_years: number; y?: (number | null)[]; line?: [number, number] | null; threshold_mm?: number }
 export interface LayersDoc {
   years: [number, number]; alpha: number; min_years: number; note: string
   layers: Record<string, LayerMeta>
