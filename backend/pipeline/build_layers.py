@@ -154,6 +154,7 @@ def cell_layers(df: pd.DataFrame, lat: float, elev: float) -> dict[str, list[flo
         "temp": per_year(df, tmean, "mean"),
         "precip": annual_p,
         "precip_summer": per_year(df, p, "sum", summer),
+        "precip_growing": per_year(df, p, "sum", season),
         "heavy_share": share,
         "water_balance": wb,
         "hot32": per_year(df, (df["T2M_MAX"] >= 32).where(df["T2M_MAX"].notna()), "sum", summer),
@@ -202,6 +203,8 @@ LAYERS = [
      "How the total rain per calendar year changed over 1991-2025.", "data"),
     ("precip_summer_trend", "precip_summer", "Changing rainfall patterns", "Summer rain (Jun-Aug)", "mm per summer", "mm per decade", 0, "diverging",
      "How the rain falling in June-August changed over 1991-2025.", "data"),
+    ("precip_growing_trend", "precip_growing", "Changing rainfall patterns", "Growing-season rain (Apr-Sep)", "mm per season", "mm per decade", 0, "diverging",
+     "How the rain falling in April-September changed over 1991-2025. Same season as the growing-season water balance.", "data"),
     ("heavy_share", "heavy_share", "Changing rainfall patterns", "Rain in heavy-rain days", "% of yearly rain", "% points per decade", 1, "sequential",
      f"Share of the yearly rain that fell on heavy-rain days. A heavy-rain day is defined relative to the cell itself: a wet day (at least "
      f"{WET_DAY_MM:g} mm) with more rain than this cell's own {HEAVY_PCTL}th percentile of wet-day rain over 1991-2025. This is our own definition, not a standard.", "estimate"),
@@ -227,7 +230,7 @@ FROST_LAYERS = {
     "frost_first": ("First autumn frost", "Typical date of the first autumn frost (50 % date, 1991-2025). " + FROST_NOTE.format(which="FIRST autumn frost", search="searched 1 Aug-31 Dec") + " " + PCT_NOTE, "date"),
     "frost_season": ("Frost-free season", "Days between the 50 % last-spring-frost date and the 50 % first-autumn-frost date. " + FROST_NOTE.format(which="last spring / first autumn frost", search="searched 1 Jan-31 Jul and 1 Aug-31 Dec"), "days"),
 }
-TREND_LAYERS = {"temp_trend", "precip_trend", "precip_summer_trend", "water_balance"}  # coloured by trend; the others by their mean level
+TREND_LAYERS = {"temp_trend", "precip_trend", "precip_summer_trend", "precip_growing_trend", "water_balance"}  # coloured by trend; the others by their mean level
 
 
 def layer_meta() -> dict:
@@ -261,7 +264,9 @@ def cell_record(path: Path) -> tuple[str, dict]:
     elev = float(header.split("elevation_m=")[1].split()[0])
     df = pd.read_csv(path, comment="#", index_col=0, parse_dates=True).replace(-999, np.nan)
     series = cell_layers(df, lat, elev)
-    return f"{lat}_{lon}", {lid: summarise(series[key], dec) for lid, key, _g, _l, _u, _t, dec, *_ in LAYERS} | frost_cell(df)
+    rec = {lid: summarise(series[key], dec) for lid, key, _g, _l, _u, _t, dec, *_ in LAYERS} | frost_cell(df)
+    rec["heavy_days"]["threshold_mm"] = round(heavy_threshold(df["PRECTOTCORR"]), 1)   # rain above this many mm in a day counts as a heavy-rain day
+    return f"{lat}_{lon}", rec
 
 
 def update_cells(raw_paths: list[Path], force: bool = False) -> int:
