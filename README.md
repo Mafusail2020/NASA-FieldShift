@@ -4,7 +4,11 @@ NASA Space Apps Challenge 2026 — "Field Shift: Adapting Farms with NASA Data".
 
 ## Run
 
-Backend:
+Backend (from repo root, after the venv below exists):
+```
+make backend
+```
+Setup:
 ```
 cd backend
 python -m venv .venv && source .venv/bin/activate
