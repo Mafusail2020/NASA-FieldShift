@@ -25,11 +25,11 @@
 /* Two equal slots, so the sliding indicator is pure CSS. The orange block spans the full bar height. */
 .nav {
   position: relative; align-self: stretch;
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: repeat(var(--n, 2), 1fr);
 }
 .nav-indicator {
   position: absolute; top: 0; bottom: 0; left: 0;
-  width: 50%;
+  width: calc(100% / var(--n, 2));
   background: var(--color-primary);
   transform: translateX(calc(var(--idx, 0) * 100%));
   transition: transform 0.45s var(--ease);
@@ -37,12 +37,14 @@
 .nav-link {
   position: relative; z-index: 1;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
-  min-width: 128px; padding: 0 22px;
+  min-width: 112px; padding: 0 20px;
   color: var(--color-muted); text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color 0.2s, background-color 0.2s;
 }
 .nav-link:hover { color: var(--color-text); }
+/* hover on a tab that is not the active one: a light orange wash (the active tab already has the solid orange block) */
+.nav-link:hover:not([aria-current='page']) { background: var(--color-primary-tint); }
 .nav-link[aria-current='page'] { color: var(--color-text); font-weight: 700; }
 .nav-link:focus-visible { outline-offset: -1px; }
 .nav-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }

@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react'
-import CoordPicker from '../components/fields/CoordPicker'
-import FieldRow from '../components/fields/FieldRow'
+import FieldDetail from '../components/fields/FieldDetail'
 import { FarmFinanceSummary } from '../components/finance/FarmFinanceSummary'
-import { useField } from '../lib/field'
+import { CROP_LABEL, useField, type FieldItem } from '../lib/field'
 import { findCell, useGrid } from '../lib/grid'
 import './FieldsPage.css'
 
 const fmtHa = (v: number) => v.toLocaleString('en', { maximumFractionDigits: v < 10 ? 2 : 1 })
 
+function Plus() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+}
+
+function cellState(f: FieldItem, hasGrid: boolean): 'ok' | 'out' | 'idle' {
+  if (f.lat == null || f.lon == null || !hasGrid) return 'idle'
+  return f.cellId ? 'ok' : 'out'
+}
+
 export default function FieldsPage() {
   const { fields, activeId, selectField, addField, removeField, updateField } = useField()
   const g = useGrid()
   const grid = g.state === 'ready' ? g.grid : null
-  const [openId, setOpenId] = useState<string | null>(activeId)
-  const [helpOpen, setHelpOpen] = useState(false)
+  const [listOpen, setListOpen] = useState(false)
+  const [confirmId, setConfirmId] = useState<string | null>(null)
 
   // Keep every field's cell in step with its coordinates (also once the grid has loaded).
   useEffect(() => {
@@ -24,39 +32,88 @@ export default function FieldsPage() {
     }
   }, [grid, fields, updateField])
 
+  const notes = (
+    <>
+      {g.state === 'loading' && <p className="fp-note" role="status">Loading the climate grid…</p>}
+      {g.state === 'error' && <p className="fp-note fp-error" role="alert">Could not load the climate grid, so cells cannot be found yet. You can still enter fields; reload to try again.</p>}
+    </>
+  )
+
+  if (fields.length === 0) {
+    return (
+      <section className="fp fp-empty-wrap" aria-label="Fields">
+        <div className="fp-empty reveal">
+          <svg className="fp-empty-art" viewBox="0 0 200 140" aria-hidden="true">
+            <g fill="none" stroke="currentColor" strokeWidth="1.5">
+              <ellipse cx="100" cy="72" rx="86" ry="56" opacity=".25" />
+              <ellipse cx="100" cy="72" rx="62" ry="40" opacity=".45" />
+              <ellipse cx="100" cy="72" rx="38" ry="24" opacity=".7" />
+            </g>
+            <circle cx="100" cy="72" r="7" fill="var(--color-primary)" />
+            <circle cx="100" cy="72" r="14" fill="none" stroke="var(--color-primary)" strokeWidth="2" opacity=".5" />
+          </svg>
+          <h1>No fields yet</h1>
+          <p>Add a field with its coordinates and area. The site then finds its NASA climate cell and shows climate, soil, rotation options and income.</p>
+          <button type="button" className="fp-add fp-add-lg" onClick={() => addField()}><Plus />Create your first field</button>
+          {notes}
+        </div>
+      </section>
+    )
+  }
+
   const total = fields.reduce((s, f) => s + (f.areaHa ?? 0), 0)
-  const toggle = (id: string) => { if (openId === id) setOpenId(null); else { setOpenId(id); selectField(id) } }
-  const add = () => { const id = addField(); setOpenId(id) }
+  const active = fields.find((f) => f.id === activeId) ?? fields[0]
+  const pick = (id: string) => { selectField(id); setListOpen(false) }
 
   return (
     <section className="fp" aria-label="Fields">
-      <header className="fp-head">
-        <h1>Fields</h1>
-        <p>Enter each field's coordinates and area. The site does the rest: climate, soil, rotation analysis and finance.</p>
-        <details className="fp-help" onToggle={(e) => setHelpOpen(e.currentTarget.open)}>
-          <summary>How do I find the coordinates?</summary>
-          <p>On a phone, use "Use my location" while standing in the field, or open a maps app, long-press the field and copy the numbers it shows. You can paste a pair such as 49.84, 24.03 into either box. Use decimal degrees. Or move the satellite map below so the pin sits on your field.</p>
-          {helpOpen && <CoordPicker fields={fields} activeId={activeId} grid={grid} onUse={(id, lat, lon) => updateField(id, { lat, lon })} />}
-        </details>
-        <div className="fp-sum" aria-live="polite">
-          <b>{fields.length}</b> {fields.length === 1 ? 'field' : 'fields'} · <b>{fmtHa(total)}</b> ha in total
+      <aside className={`fp-side${listOpen ? ' fp-side-open' : ''}`} aria-label="Your fields">
+        <div className="fp-side-top">
+          <h1>Fields</h1>
+          <button type="button" className="fp-add" onClick={() => addField()}><Plus />New field</button>
         </div>
-      </header>
+        <button type="button" className="fp-side-toggle" aria-expanded={listOpen} aria-controls="fp-list" onClick={() => setListOpen((o) => !o)}>
+          <span>{active.name}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg>
+        </button>
+        <ul className="fp-list" id="fp-list">
+          {fields.map((f, i) => {
+            const st = cellState(f, !!grid)
+            const sub = [f.crop ? CROP_LABEL[f.crop] : null, f.areaHa != null ? `${fmtHa(f.areaHa)} ha` : null].filter(Boolean).join(' · ')
+            return (
+              <li key={f.id} className="fp-li reveal" style={{ '--i': i } as React.CSSProperties}>
+                {confirmId === f.id ? (
+                  <div className="fp-confirm" role="alertdialog" aria-label={`Delete ${f.name}?`}>
+                    <span>Delete <b>{f.name || 'this field'}</b>?</span>
+                    <button type="button" className="fr-btn fr-danger" autoFocus onClick={() => { setConfirmId(null); removeField(f.id) }}>Delete</button>
+                    <button type="button" className="fr-btn" onClick={() => setConfirmId(null)}>Keep</button>
+                  </div>
+                ) : (
+                  <>
+                    <button type="button" className={`fp-item${f.id === active.id ? ' fp-item-on' : ''}`} aria-current={f.id === active.id ? 'true' : undefined} onClick={() => pick(f.id)}>
+                      <i className={`fp-dot fp-dot-${st}`} aria-hidden="true" />
+                      <span className="fp-item-name">{f.name || 'Untitled field'}</span>
+                      <span className="fp-item-sub">{sub || 'No crop or area yet'}</span>
+                      <span className="sr-only">{st === 'ok' ? 'Climate cell found' : st === 'out' ? 'Outside the analysed area' : 'Coordinates not set'}</span>
+                    </button>
+                    <button type="button" className="fp-trash" aria-label={`Delete ${f.name || 'field'}`} onClick={() => setConfirmId(f.id)}>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" /></svg>
+                    </button>
+                  </>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+        <p className="fp-sum" aria-live="polite"><b>{fields.length}</b> {fields.length === 1 ? 'field' : 'fields'} · <b>{fmtHa(total)}</b> ha</p>
+      </aside>
 
-      <FarmFinanceSummary />
-
-      {g.state === 'loading' && <p className="fp-note" role="status">Loading the climate grid…</p>}
-      {g.state === 'error' && <p className="fp-note fp-error" role="alert">Could not load the climate grid, so cells cannot be found yet. You can still enter fields; reload to try again.</p>}
-
-      <div className="fp-rows">
-        {fields.map((f) => (
-          <FieldRow
-            key={f.id} field={f} grid={grid} open={openId === f.id && activeId === f.id}
-            onToggle={() => toggle(f.id)} onUpdate={(p) => updateField(f.id, p)} onDelete={() => removeField(f.id)}
-          />
-        ))}
+      <div className="fp-main">
+        {notes}
+        <FieldDetail
+          key={active.id} field={active} grid={grid} afterHead={<FarmFinanceSummary />}
+          onUpdate={(p) => updateField(active.id, p)}
+        />
       </div>
-      <button type="button" className="fp-add" onClick={add}>Add field</button>
     </section>
   )
 }

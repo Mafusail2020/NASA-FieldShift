@@ -7,11 +7,12 @@ export interface LayerMeta {
   disabled: boolean; reason: string | null
   kind?: 'frost'; thresholds?: Record<string, string> // frost layers: one record per threshold key (t0, t2, t4)
 }
-export interface CellLayer { value: number | null; trend: number | null; p_value: number | null; n_years: number }
+export interface CellLayer { value: number | null; trend: number | null; p_value: number | null; n_years: number; y?: (number | null)[]; line?: [number, number] | null }
 export interface LayersDoc {
   years: [number, number]; alpha: number; min_years: number; note: string
   layers: Record<string, LayerMeta>
-  cells: Record<string, Record<string, CellLayer | Record<string, FrostEntry | null>>>
+  series_coding?: string
+  cells: Record<string, Record<string, CellLayer | Record<string, FrostEntry | null> | Record<string, (number | null)[]>>>
 }
 
 // Frost layers: d10/d50/d90 are days of year in a non-leap calendar; the season layer has `days`.
@@ -26,3 +27,6 @@ export function doyLabel(doy: number): string {
   while (m < 11 && d > LEN[m]) { d -= LEN[m]; m++ }
   return `${MONTHS[m]} ${d}`
 }
+
+export const MONTH_START = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+export const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

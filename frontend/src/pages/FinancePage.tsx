@@ -15,6 +15,18 @@ type Str = Record<string, string>
 const parse = (s: string | undefined) => (s == null || s.trim() === '' ? null : Number(s))
 
 export default function FinancePage() {
+  const { fields } = useField()
+  if (fields.length === 0) {
+    return (
+      <section className="fin" aria-label="Finance">
+        <div className="fin-empty" role="status">Finance needs at least one field. Add a field with its area and crop on the <Link to="/fields">Fields page</Link>.</div>
+      </section>
+    )
+  }
+  return <FinanceInner />
+}
+
+function FinanceInner() {
   const { fields, activeId } = useField()
   const [params, setParams] = useSearchParams()
   const fieldParam = params.get('field')

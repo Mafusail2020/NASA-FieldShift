@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 export type CropId = 'winter_wheat' | 'maize' | 'sunflower' | 'pea' | 'black_fallow'
+export const CROP_LABEL: Record<CropId, string> = { winter_wheat: 'Winter wheat', maize: 'Maize', sunflower: 'Sunflower', pea: 'Pea', black_fallow: 'Black fallow' }
 export type Soil = 'light' | 'medium' | 'heavy'
 
 export interface FieldItem {
@@ -21,13 +22,13 @@ export interface FieldItem {
 interface Stored { fields: FieldItem[]; activeId: string }
 
 interface Ctx {
-  field: FieldItem                                    // the active field
+  field: FieldItem | null                             // the active field; null when the farmer has no fields
   setField(patch: Partial<Omit<FieldItem, 'id'>>): void // patches the active field
   fields: FieldItem[]
-  activeId: string
+  activeId: string                                    // '' when there are no fields
   selectField(id: string): void
   addField(): string                                  // creates an empty field, makes it active, returns its id
-  removeField(id: string): void                       // there is always at least one field
+  removeField(id: string): void                       // the list may become empty
   renameField(id: string, name: string): void
   updateField(id: string, patch: Partial<Omit<FieldItem, 'id'>>): void   // patch any field, not only the active one
 }
@@ -49,7 +50,7 @@ function load(): Stored {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const s = JSON.parse(raw) as Stored
-      if (Array.isArray(s.fields) && s.fields.length) return { fields: s.fields.map((f, i) => migrate(f as never, i + 1)), activeId: s.fields.some((f) => f.id === s.activeId) ? s.activeId : s.fields[0].id }
+      if (Array.isArray(s.fields)) return { fields: s.fields.map((f, i) => migrate(f as never, i + 1)), activeId: s.fields.some((f) => f.id === s.activeId) ? s.activeId : s.fields[0]?.id ?? '' }
     }
     for (const k of OLD_KEYS) {
       const old = localStorage.getItem(k)
@@ -57,11 +58,10 @@ function load(): Stored {
       const o = JSON.parse(old)
       const list = Array.isArray(o.fields) ? o.fields : [o]
       const fields = list.map((f: Record<string, unknown>, i: number) => migrate(f, i + 1))
-      return { fields, activeId: fields.some((f: FieldItem) => f.id === o.activeId) ? o.activeId : fields[0].id }
+      return { fields, activeId: fields.some((f: FieldItem) => f.id === o.activeId) ? o.activeId : fields[0]?.id ?? '' }
     }
   } catch { /* storage unavailable or corrupt */ }
-  const f = blank(1)
-  return { fields: [f], activeId: f.id }
+  return { fields: [], activeId: '' }
 }
 
 export function FieldProvider({ children }: { children: ReactNode }) {
@@ -69,7 +69,7 @@ export function FieldProvider({ children }: { children: ReactNode }) {
   useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(s)) } catch { /* storage unavailable */ } }, [s])
 
   const value = useMemo<Ctx>(() => {
-    const active = s.fields.find((f) => f.id === s.activeId) ?? s.fields[0]
+    const active = s.fields.find((f) => f.id === s.activeId) ?? s.fields[0] ?? null
     const patchField = (st: Stored, id: string, patch: Partial<FieldItem>): Stored => {
       const { id: _id, ...rest } = patch as Partial<FieldItem>
       return { ...st, fields: st.fields.map((f) => (f.id === id ? { ...f, ...rest } : f)) }
@@ -79,17 +79,20 @@ export function FieldProvider({ children }: { children: ReactNode }) {
       setField: (patch) => setS((st) => patchField(st, st.activeId, patch)),
       updateField: (id, patch) => setS((st) => patchField(st, id, patch)),
       fields: s.fields,
-      activeId: active.id,
+      activeId: active?.id ?? '',
       selectField: (id) => setS((st) => (st.fields.some((f) => f.id === id) ? { ...st, activeId: id } : st)),
       addField: () => {
-        const f = blank(s.fields.length + 1)
+        let n = s.fields.length + 1 // first free "Field N" so names stay distinct after deletes
+        while (s.fields.some((x) => x.name === `Field ${n}`)) n++
+        const f = blank(n)
         setS((st) => ({ fields: [...st.fields, f], activeId: f.id }))
         return f.id
       },
       removeField: (id) => setS((st) => {
-        if (st.fields.length <= 1) { const f = blank(1); return { fields: [f], activeId: f.id } }
+        const i = st.fields.findIndex((f) => f.id === id)
         const fields = st.fields.filter((f) => f.id !== id)
-        return { fields, activeId: st.activeId === id ? fields[0].id : st.activeId }
+        const next = fields[Math.min(i, fields.length - 1)]?.id ?? ''
+        return { fields, activeId: st.activeId === id ? next : st.activeId }
       }),
       renameField: (id, name) => setS((st) => patchField(st, id, { name: name.slice(0, 40) })),
     }

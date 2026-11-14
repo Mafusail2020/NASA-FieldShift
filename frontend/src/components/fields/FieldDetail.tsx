@@ -1,10 +1,11 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { findCell } from '../../lib/grid'
 import type { CropId, FieldItem } from '../../lib/field'
 import type { GridCell, GridDoc } from '../../types'
 import { FieldFinanceSummary } from '../finance/FieldFinanceSummary'
 import { FieldClimate } from './FieldClimate'
 import { FieldRotation } from './FieldRotation'
+import MiniMap from './MiniMap'
 import { LAT_RANGE, LON_RANGE, num, parsePair } from './coords'
 
 const CROPS: { id: CropId; label: string }[] = [
@@ -19,18 +20,15 @@ const fmt = (v: number | null) => (v == null ? '' : String(v))
 interface Props {
   field: FieldItem
   grid: GridDoc | null
-  open: boolean
-  onToggle(): void
   onUpdate(patch: Partial<Omit<FieldItem, 'id'>>): void
-  onDelete(): void
+  afterHead?: ReactNode   // rendered right under the name
 }
 
-export default function FieldRow({ field, grid, open, onToggle, onUpdate, onDelete }: Props) {
+export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props) {
   const uid = useId()
   const [lat, setLat] = useState(fmt(field.lat))
   const [lon, setLon] = useState(fmt(field.lon))
   const [area, setArea] = useState(fmt(field.areaHa))
-  const [confirm, setConfirm] = useState(false)
   const [geo, setGeo] = useState<string | null>(null)
 
   // Coordinates set from outside (the picker map) replace the typed text; a typed out-of-range value stays as typed.
@@ -39,18 +37,6 @@ export default function FieldRow({ field, grid, open, onToggle, onUpdate, onDele
     if (field.lon != null && field.lon !== num(lon)) setLon(String(field.lon))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.lat, field.lon])
-
-  // Body slides open and closed; its heavy children exist only while open or sliding shut.
-  const [sliding, setSliding] = useState(false)
-  const wrap = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    if (open) { setSliding(true); return }
-    if (!sliding) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setSliding(false); return }
-    const t = setTimeout(() => setSliding(false), 600) // fallback if transitionend never fires
-    return () => clearTimeout(t)
-  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
-  const mounted = open || sliding
 
   const latV = num(lat), lonV = num(lon), areaV = num(area)
   const latErr = lat.trim() && (latV == null ? 'Enter a number, for example 49.84.' : latV < LAT_RANGE[0] || latV > LAT_RANGE[1] ? `Latitude should be between ${LAT_RANGE[0]} and ${LAT_RANGE[1]} (Ukraine).` : null)
@@ -93,27 +79,19 @@ export default function FieldRow({ field, grid, open, onToggle, onUpdate, onDele
 
   const id = (s: string) => `${uid}${s}`
   return (
-    <article className={`fr${open ? ' fr-open' : ''}`} aria-label={field.name}>
-      <div className="fr-head">
-        <button type="button" className="fr-toggle" aria-expanded={open} aria-controls={id('body')} onClick={onToggle}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" /></svg>
-          <span className="sr-only">{open ? 'Collapse' : 'Expand'} {field.name}</span>
-        </button>
-        <label className="fr-name">
+    <article className="fd" aria-label={field.name}>
+      <div className="fd-head">
+        <label className="fd-name">
           <span className="sr-only">Field name</span>
           <input type="text" maxLength={40} value={field.name} onChange={(e) => onUpdate({ name: e.target.value.slice(0, 40) })} />
         </label>
         <span className={`fr-chip fr-chip-${chip.cls}`} role="status">{chip.text}</span>
-        <div className="fr-del">
-          {!confirm
-            ? <button type="button" className="fr-btn" onClick={() => setConfirm(true)}>Delete</button>
-            : <>
-                <button type="button" className="fr-btn fr-danger" onClick={onDelete}>Confirm delete</button>
-                <button type="button" className="fr-btn" onClick={() => setConfirm(false)}>Keep</button>
-              </>}
-        </div>
       </div>
+      {afterHead}
 
+      <div className="fd-top">
+        <MiniMap lat={field.lat} lon={field.lon} onMove={(la, lo) => setCoords(String(la), String(lo))} />
+        <div className="fd-form">
       <div className="fr-inputs">
         <div className="fr-f">
           <label htmlFor={id('lat')}>Latitude (°N)</label>
@@ -142,24 +120,18 @@ export default function FieldRow({ field, grid, open, onToggle, onUpdate, onDele
         </div>
       </div>
 
-      <div className="fr-tools">
+      <div className="fr-meta">
         <button type="button" className="fr-btn" onClick={locate}>Use my location</button>
         <span className="fr-geo" role="status" aria-live="polite">{geo}</span>
       </div>
+      <p className="fr-hint">Move the map or type the numbers: each updates the other. You can paste a pair such as 49.84, 24.03 into either box (decimal degrees).</p>
+        </div>
+      </div>
       <div className="fr-fin"><FieldFinanceSummary field={field} /></div>
 
-      <div
-        ref={wrap} className={`fr-collapse${open ? ' fr-collapse-open' : ''}`} id={id('body')} inert={!open} aria-hidden={!open}
-        onTransitionEnd={(e) => { if (e.target === wrap.current && !open) setSliding(false) }}
-      >
-        <div className="fr-collapse-in">
-          {mounted && (
-            <div className="fr-body">
-              <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
-              <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
-            </div>
-          )}
-        </div>
+      <div className="fr-body">
+        <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
+        <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
       </div>
     </article>
   )

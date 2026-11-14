@@ -1,0 +1,49 @@
+body.home-bg { background: #fff; background-image: none; }
+
+.home {
+  position: relative; overflow: hidden; background: #fff;
+  height: calc(100dvh - var(--toolbar-h) - var(--tabbar-h));
+  min-height: 420px;
+}
+.ascii-bg, .ascii-field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+/* the plasma is one pixel per glyph cell: the browser scales it up and blurs it on the GPU */
+.ascii-bg { filter: blur(8px); transform: scale(1.05); }
+
+.home-text {
+  position: relative; z-index: 1; height: 100%;
+  display: flex; flex-direction: column; justify-content: center; gap: var(--space-3);
+  padding: 0 var(--space-6) 0 clamp(24px, 7vw, 120px); /* block is centred vertically */
+  max-width: 46%;
+}
+.home .typed-title {
+  margin: 0; color: #000; font-weight: 700; letter-spacing: -0.045em; line-height: 0.95;
+  font-size: clamp(48px, 8vw, 128px);
+}
+.home p { margin: 0; }
+.home .home-tag { color: var(--color-primary); font-weight: 500; letter-spacing: -0.015em; font-size: clamp(24px, 3.3vw, 48px); line-height: 1.1; }
+.home .home-desc { color: #5f6368; font-size: clamp(15px, 1.35vw, 19px); line-height: 1.5; max-width: 30em; margin-top: var(--space-2); }
+
+@media (max-width: 900px) {
+  .home-text { max-width: none; height: auto; padding: var(--space-6) var(--space-5) 0; justify-content: flex-start; }
+}
+
+/* typing: untyped letters keep their space but are hidden; a thin caret blinks after the last typed letter */
+.tt-off { visibility: hidden; }
+.tt-on, .tt-off { position: relative; }
+.tt-caret-r::after, .tt-caret-l::after {
+  content: ''; position: absolute; top: 0.24em; width: 0.06em; height: 0.76em; background: currentColor; /* ends on the baseline */
+  visibility: visible; animation: tt-blink 0.8s steps(1) infinite;
+}
+.tt-caret-r::after { right: -0.03em; }
+.tt-caret-l::after { left: -0.03em; }
+@keyframes tt-blink { 50% { opacity: 0; } }
+
+/* after the last black letter: Shift turns orange and gets underlined, both over 1 second */
+.tt-shift { position: relative; display: inline-block; color: #000; transition: color 1s var(--ease); }
+.tt-shift::after {
+  content: ''; position: absolute; left: 0; bottom: -0.02em; height: 0.07em; width: 0; background: var(--color-primary);
+  transition: width 1s var(--ease);
+}
+.tt-shift.tt-done { color: var(--color-primary); }
+.tt-shift.tt-done::after { width: 100%; }
+@media (prefers-reduced-motion: reduce) { .tt-shift, .tt-shift::after { transition: none; } .tt-caret-r::after, .tt-caret-l::after { display: none; } }
