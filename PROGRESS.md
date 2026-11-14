@@ -33,3 +33,11 @@ Status: code and synthetic tests done; real-data run blocked (see open questions
 - Sowing: wheat and maize by FAO-56 Table 11 fn 2 temperature rule; search-window starts (15 Aug, 1 Mar) are my estimates. Sunflower and pea: no verified source, left todo.
 - Not entered (sources unverified or ambiguous, noted in `source`): maize/sunflower heat windows, frost thresholds, sunflower/pea sowing temperature, zr_min, green-manure fallow.
 - Fallow storage share (medium soil, Dr = TAW at window start, 34 windows/oblast, window 1 Jul + 14 months): median Vinnytska 0.19, Poltavska 0.21, Kirovohradska 0.16, Odeska 0.09. Odeska median is below 10%; parameters not tuned. Window start state (Dr = TAW) is my assumption.
+
+## Phase 5 — Vertical slice
+Status: built and tested locally; not deployed (needs Ivan's decision on hosts/accounts).
+- Pairs: `core/pairs.py`, `pipeline/build_pairs.py` (3 crops x 3 soils x 4 oblasts x 33 harvest years 1993-2025), `pipeline/export.py`, `core/rotations.py`, `data/params/rotations.yaml` (A-E are Claude's drafts from wheat/maize/fallow, status estimate, Ivan to approve), API `/api/regions`, `/climate`, `/rotations/evaluate`, rough page in `frontend/src/Results.tsx`.
+- Only winter wheat, maize and black fallow are computed; sunflower and pea have no verified sowing rule or heat window.
+- My calendar choices: harvest year Y; wheat sown autumn Y-1, maize spring Y by FAO-56 temperature rule, sowing delayed until the day after the previous harvest; fallow slot 1 Sep Y-1 .. 31 Aug Y; critical window for mean Ks = FAO-56 mid-season stage; water balance of a pair starts at field capacity on the previous crop's sowing.
+- Wheat uses the 335-day FAO Idaho row, so wheat harvest is mid-Aug to Sep (later than real Ukrainian harvest); wheat after maize is sown late (Oct) and the heat window falls later, so heat days differ by predecessor partly because of the calendar.
+- KMU No. 164 norm only for sunflower (7 years, from CLAUDE.md); other crops show "norm: not set".

@@ -1,1 +1,34 @@
-# name, source, status, ...
+# Alternative rotations A-E. DRAFT by Claude from the three crops that currently have a full parameter set
+# (winter wheat, maize, black fallow). Ivan decides the real alternatives. Each position repeats cyclically.
+# status=estimate means: not from a source.
+kmu_164:
+  - crop: sunflower
+    min_return_years: 7
+    source: "KMU Resolution No. 164, as written in CLAUDE.md (article/table to be confirmed)"
+    status: literature
+rotations:
+  - id: A
+    name: Wheat - maize
+    crops: [winter_wheat, maize]
+    source: "Draft by Claude, Ivan to approve"
+    status: estimate
+  - id: B
+    name: Wheat - black fallow
+    crops: [winter_wheat, black_fallow]
+    source: "Draft by Claude, Ivan to approve"
+    status: estimate
+  - id: C
+    name: Wheat - wheat - maize
+    crops: [winter_wheat, winter_wheat, maize]
+    source: "Draft by Claude, Ivan to approve"
+    status: estimate
+  - id: D
+    name: Wheat - maize - black fallow
+    crops: [winter_wheat, maize, black_fallow]
+    source: "Draft by Claude, Ivan to approve"
+    status: estimate
+  - id: E
+    name: Wheat monoculture
+    crops: [winter_wheat]
+    source: "Draft by Claude, Ivan to approve"
+    status: estimate
