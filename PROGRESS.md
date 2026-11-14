@@ -14,3 +14,8 @@ Status: in review.
 - `crops.csv` is long format: one row per (crop, parameter) with its own source and status.
 - Only values from CLAUDE.md are filled: GDD base (wheat 0, maize 10, sunflower 6.7), maize heat thresholds 32/35, wheat heat threshold 30 (estimate). Everything else is empty with status=todo.
 - GDD = max(Tmean - base, 0), no upper cap. Heat/GDD windows: see open questions.
+
+### Phase 3 follow-up (Ivan's decisions)
+- Sunflower heat: only the window is shared with maize, thresholds not set. GDD formula and `heat_basis` accepted. Winter wheat stages left as FAO.
+- FAO-56 Tables 11, 12, 22 filled from fao.org text (status=literature, row/region named in `source`). Row choices and range choices (lower/upper) are mine, listed in each `source`; Ivan to review.
+- Still todo: maize kc_end, zr_min_m, sowing rules/dates, heat windows, frost thresholds, fallows.

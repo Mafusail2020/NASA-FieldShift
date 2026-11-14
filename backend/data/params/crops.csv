@@ -1,15 +1,15 @@
 crop,parameter,value,unit,source,status
-winter_wheat,L_ini_d,,days,,todo
-winter_wheat,L_dev_d,,days,,todo
-winter_wheat,L_mid_d,,days,,todo
-winter_wheat,L_late_d,,days,,todo
-winter_wheat,kc_ini,,,,todo
-winter_wheat,kc_mid,,,,todo
-winter_wheat,kc_end,,,,todo
-winter_wheat,zr_min_m,,m,,todo
-winter_wheat,zr_max_m,,m,,todo
-winter_wheat,p,,,,todo
-winter_wheat,h_m,,m,,todo
+winter_wheat,L_ini_d,160,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct (160/75/75/25=335)'",literature
+winter_wheat,L_dev_d,75,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct'",literature
+winter_wheat,L_mid_d,75,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct'",literature
+winter_wheat,L_late_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct'",literature
+winter_wheat,kc_ini,0.4,,"FAO-56 Table 12, Winter Wheat, with frozen soils",literature
+winter_wheat,kc_mid,1.15,,"FAO-56 Table 12, Winter Wheat",literature
+winter_wheat,kc_end,0.25,,"FAO-56 Table 12, Winter Wheat, range 0.25-0.4, lower value (higher is for hand-harvested, fn 10)",literature
+winter_wheat,zr_min_m,,m,Table 22 gives max depth only; initial root depth not in FAO tables used so far,todo
+winter_wheat,zr_max_m,1.8,m,"FAO-56 Table 22, Winter Wheat, range 1.5-1.8, upper value (fn 1: larger for rainfed / soil-water-stress modelling)",literature
+winter_wheat,p,0.55,,"FAO-56 Table 22, Winter Wheat (for ETc ~5 mm/day)",literature
+winter_wheat,h_m,1,m,"FAO-56 Table 12, Winter Wheat, max crop height",literature
 winter_wheat,gdd_base_c,0,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
 winter_wheat,sowing_rule,,calendar|temperature,,todo
 winter_wheat,sowing_mmdd_vinnytska,,MM-DD,,todo
@@ -24,17 +24,17 @@ winter_wheat,heat_tmax_2_c,,degC,,todo
 winter_wheat,frost_spring_c,,degC,,todo
 winter_wheat,frost_autumn_c,,degC,,todo
 winter_wheat,frost_winter_min_c,,degC,,todo
-maize,L_ini_d,,days,,todo
-maize,L_dev_d,,days,,todo
-maize,L_mid_d,,days,,todo
-maize,L_late_d,,days,,todo
-maize,kc_ini,,,,todo
-maize,kc_mid,,,,todo
-maize,kc_end,,,,todo
-maize,zr_min_m,,m,,todo
-maize,zr_max_m,,m,,todo
-maize,p,,,,todo
-maize,h_m,,m,,todo
+maize,L_ini_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April (30/40/50/50=170)'",literature
+maize,L_dev_d,40,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April'",literature
+maize,L_mid_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April'",literature
+maize,L_late_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April'",literature
+maize,kc_ini,0.3,,"FAO-56 Table 12, Cereals group value",literature
+maize,kc_mid,1.20,,"FAO-56 Table 12, Maize, Field (grain)",literature
+maize,kc_end,,,FAO-56 Table 12: range 0.60-0.35 depending on grain moisture at harvest (fn 11); Ivan to choose,todo
+maize,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+maize,zr_max_m,1.7,m,"FAO-56 Table 22, Maize, Field, range 1.0-1.7, upper value (fn 1)",literature
+maize,p,0.55,,"FAO-56 Table 22, Maize, Field (for ETc ~5 mm/day)",literature
+maize,h_m,2,m,"FAO-56 Table 12, Maize, Field (grain), max crop height",literature
 maize,gdd_base_c,10,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
 maize,sowing_rule,,calendar|temperature,,todo
 maize,sowing_mmdd_vinnytska,,MM-DD,,todo
@@ -49,17 +49,17 @@ maize,heat_tmax_2_c,35,degC,CLAUDE.md method_decisions (Ivan); source pending,to
 maize,frost_spring_c,,degC,,todo
 maize,frost_autumn_c,,degC,,todo
 maize,frost_winter_min_c,,degC,,todo
-sunflower,L_ini_d,,days,,todo
-sunflower,L_dev_d,,days,,todo
-sunflower,L_mid_d,,days,,todo
-sunflower,L_late_d,,days,,todo
-sunflower,kc_ini,,,,todo
-sunflower,kc_mid,,,,todo
-sunflower,kc_end,,,,todo
-sunflower,zr_min_m,,m,,todo
-sunflower,zr_max_m,,m,,todo
-sunflower,p,,,,todo
-sunflower,h_m,,m,,todo
+sunflower,L_ini_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sunflower, Medit.; California, Apr/May (25/35/45/25=130; only row)'",literature
+sunflower,L_dev_d,35,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sunflower, Medit.; California'",literature
+sunflower,L_mid_d,45,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sunflower, Medit.; California'",literature
+sunflower,L_late_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sunflower, Medit.; California'",literature
+sunflower,kc_ini,0.35,,"FAO-56 Table 12, Oil Crops group value",literature
+sunflower,kc_mid,1.0,,"FAO-56 Table 12, Sunflower, range 1.0-1.15, lower value for rainfed less dense stands (fn 9)",literature
+sunflower,kc_end,0.35,,"FAO-56 Table 12, Sunflower",literature
+sunflower,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+sunflower,zr_max_m,1.5,m,"FAO-56 Table 22, Sunflower, range 0.8-1.5, upper value (fn 1)",literature
+sunflower,p,0.45,,"FAO-56 Table 22, Sunflower (for ETc ~5 mm/day)",literature
+sunflower,h_m,2.0,m,"FAO-56 Table 12, Sunflower, max crop height",literature
 sunflower,gdd_base_c,6.7,degC,"NDSU, per CLAUDE.md; exact citation pending",literature
 sunflower,sowing_rule,,calendar|temperature,,todo
 sunflower,sowing_mmdd_vinnytska,,MM-DD,,todo
@@ -74,17 +74,17 @@ sunflower,heat_tmax_2_c,,degC,,todo
 sunflower,frost_spring_c,,degC,,todo
 sunflower,frost_autumn_c,,degC,,todo
 sunflower,frost_winter_min_c,,degC,,todo
-pea,L_ini_d,,days,,todo
-pea,L_dev_d,,days,,todo
-pea,L_mid_d,,days,,todo
-pea,L_late_d,,days,,todo
-pea,kc_ini,,,,todo
-pea,kc_mid,,,,todo
-pea,kc_end,,,,todo
-pea,zr_min_m,,m,,todo
-pea,zr_max_m,,m,,todo
-pea,p,,,,todo
-pea,h_m,,m,,todo
+pea,L_ini_d,15,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Peas, Europe, May (15/25/35/15=90)'",literature
+pea,L_dev_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Peas, Europe, May'",literature
+pea,L_mid_d,35,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Peas, Europe, May'",literature
+pea,L_late_d,15,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Peas, Europe, May'",literature
+pea,kc_ini,0.4,,"FAO-56 Table 12, Legumes group value (Peas Dry/Seed row has no own value)",literature
+pea,kc_mid,1.15,,"FAO-56 Table 12, Peas, Dry/Seed",literature
+pea,kc_end,0.30,,"FAO-56 Table 12, Peas, Dry/Seed",literature
+pea,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+pea,zr_max_m,1.0,m,"FAO-56 Table 22, Peas Dry/Seed, range 0.6-1.0, upper value (fn 1)",literature
+pea,p,0.40,,"FAO-56 Table 22, Peas Dry/Seed (for ETc ~5 mm/day)",literature
+pea,h_m,0.5,m,"FAO-56 Table 12, Peas, Dry/Seed, max crop height",literature
 pea,gdd_base_c,,degC,,todo
 pea,sowing_rule,,calendar|temperature,,todo
 pea,sowing_mmdd_vinnytska,,MM-DD,,todo
