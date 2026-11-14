@@ -44,3 +44,9 @@ export interface Meta {
   ai_disclosure: { en: string; uk: string }
   validation: { status?: Status; note?: string; predictor?: string; crops?: Record<string, CropValidation> }
 }
+
+export interface GridCell {
+  id: string; lat: number; lon: number; elevation_m: number
+  precip_mm: (number | null)[]; eto_mm: (number | null)[]; tmean_c: (number | null)[]; july_tmax_c: (number | null)[]
+}
+export interface GridDoc { cell_size_deg: [number, number]; years: number[]; cells: GridCell[]; source: string; status: Status }

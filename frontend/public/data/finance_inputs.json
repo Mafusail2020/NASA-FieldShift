@@ -1,0 +1,1393 @@
+{
+ "generated": "2026-11-14",
+ "fx": {
+  "uah_per_usd": 36.57,
+  "year": 2023,
+  "per_year": {
+   "1996": 1.83,
+   "1997": 1.86,
+   "1998": 2.45,
+   "1999": 4.13,
+   "2000": 5.44,
+   "2001": 5.37,
+   "2002": 5.33,
+   "2003": 5.33,
+   "2004": 5.32,
+   "2005": 5.13,
+   "2006": 5.05,
+   "2007": 5.05,
+   "2008": 5.27,
+   "2009": 7.79,
+   "2010": 7.94,
+   "2011": 7.97,
+   "2012": 7.99,
+   "2013": 7.99,
+   "2014": 11.89,
+   "2015": 21.84,
+   "2016": 25.55,
+   "2017": 26.6,
+   "2018": 27.2,
+   "2019": 25.85,
+   "2020": 26.96,
+   "2021": 27.29,
+   "2022": 32.34,
+   "2023": 36.57
+  },
+  "source": "Implied by FAOSTAT Prices (PP): producer price UAH/t divided by USD/t, median over crops, year 2023. FAO annual-average rate, not today's market rate.",
+  "status": "estimate"
+ },
+ "crops": {
+  "maize": {
+   "label": "Maize",
+   "yields": [
+    {
+     "year": 1992,
+     "value": 2.5071999999999997
+    },
+    {
+     "year": 1993,
+     "value": 2.8445
+    },
+    {
+     "year": 1994,
+     "value": 2.3614
+    },
+    {
+     "year": 1995,
+     "value": 2.9206999999999996
+    },
+    {
+     "year": 1996,
+     "value": 2.7365
+    },
+    {
+     "year": 1997,
+     "value": 3.2628000000000004
+    },
+    {
+     "year": 1998,
+     "value": 2.5342
+    },
+    {
+     "year": 1999,
+     "value": 2.522
+    },
+    {
+     "year": 2000,
+     "value": 3.0091
+    },
+    {
+     "year": 2001,
+     "value": 3.2425
+    },
+    {
+     "year": 2002,
+     "value": 3.5166999999999997
+    },
+    {
+     "year": 2003,
+     "value": 3.4569
+    },
+    {
+     "year": 2004,
+     "value": 3.8558
+    },
+    {
+     "year": 2005,
+     "value": 4.3185
+    },
+    {
+     "year": 2006,
+     "value": 3.7352
+    },
+    {
+     "year": 2007,
+     "value": 3.9001
+    },
+    {
+     "year": 2008,
+     "value": 4.6911000000000005
+    },
+    {
+     "year": 2009,
+     "value": 5.0195
+    },
+    {
+     "year": 2010,
+     "value": 4.5146999999999995
+    },
+    {
+     "year": 2011,
+     "value": 6.4446
+    },
+    {
+     "year": 2012,
+     "value": 4.7946
+    },
+    {
+     "year": 2013,
+     "value": 6.411899999999999
+    },
+    {
+     "year": 2014,
+     "value": 6.1589
+    },
+    {
+     "year": 2015,
+     "value": 5.7126
+    },
+    {
+     "year": 2016,
+     "value": 6.602399999999999
+    },
+    {
+     "year": 2017,
+     "value": 5.5056
+    },
+    {
+     "year": 2018,
+     "value": 7.8439
+    },
+    {
+     "year": 2019,
+     "value": 7.1949
+    },
+    {
+     "year": 2020,
+     "value": 5.6175
+    },
+    {
+     "year": 2021,
+     "value": 7.6818
+    },
+    {
+     "year": 2022,
+     "value": 6.3491
+    },
+    {
+     "year": 2023,
+     "value": 7.806
+    },
+    {
+     "year": 2024,
+     "value": 6.599600000000001
+    }
+   ],
+   "yield_source": "FAOSTAT, Crops and livestock products (QCL), Ukraine, national total, all farm categories; Production_Crops_Livestock_E_All_Data_(Normalized).zip",
+   "yield_status": "data",
+   "prices": [
+    {
+     "year": 1996,
+     "value": 248.0,
+     "usd": 135.6
+    },
+    {
+     "year": 1997,
+     "value": 159.0,
+     "usd": 85.4
+    },
+    {
+     "year": 1998,
+     "value": 140.0,
+     "usd": 57.2
+    },
+    {
+     "year": 1999,
+     "value": 251.0,
+     "usd": 60.8
+    },
+    {
+     "year": 2000,
+     "value": 386.0,
+     "usd": 71.0
+    },
+    {
+     "year": 2001,
+     "value": 454.0,
+     "usd": 84.5
+    },
+    {
+     "year": 2002,
+     "value": 377.0,
+     "usd": 70.8
+    },
+    {
+     "year": 2003,
+     "value": 486.0,
+     "usd": 91.1
+    },
+    {
+     "year": 2004,
+     "value": 438.0,
+     "usd": 82.3
+    },
+    {
+     "year": 2005,
+     "value": 343.0,
+     "usd": 66.9
+    },
+    {
+     "year": 2006,
+     "value": 518.0,
+     "usd": 102.6
+    },
+    {
+     "year": 2007,
+     "value": 834.0,
+     "usd": 165.1
+    },
+    {
+     "year": 2008,
+     "value": 723.0,
+     "usd": 137.3
+    },
+    {
+     "year": 2009,
+     "value": 849.0,
+     "usd": 109.0
+    },
+    {
+     "year": 2010,
+     "value": 1246.0,
+     "usd": 157.0
+    },
+    {
+     "year": 2011,
+     "value": 1366.0,
+     "usd": 171.4
+    },
+    {
+     "year": 2012,
+     "value": 1515.0,
+     "usd": 189.6
+    },
+    {
+     "year": 2013,
+     "value": 1210.0,
+     "usd": 151.4
+    },
+    {
+     "year": 2014,
+     "value": 1745.0,
+     "usd": 146.8
+    },
+    {
+     "year": 2015,
+     "value": 2990.0,
+     "usd": 136.9
+    },
+    {
+     "year": 2016,
+     "value": 3530.0,
+     "usd": 138.2
+    },
+    {
+     "year": 2017,
+     "value": 3669.0,
+     "usd": 137.9
+    },
+    {
+     "year": 2018,
+     "value": 4012.0,
+     "usd": 147.5
+    },
+    {
+     "year": 2019,
+     "value": 3685.0,
+     "usd": 142.6
+    },
+    {
+     "year": 2020,
+     "value": 4669.0,
+     "usd": 173.2
+    },
+    {
+     "year": 2021,
+     "value": 6246.0,
+     "usd": 228.9
+    },
+    {
+     "year": 2022,
+     "value": 6556.0,
+     "usd": 202.7
+    },
+    {
+     "year": 2023,
+     "value": 5869.0,
+     "usd": 160.5
+    }
+   ],
+   "price_source": "FAOSTAT, Prices (PP), Ukraine, producer price, current prices of the year; Prices_E_All_Data_(Normalized).zip",
+   "price_status": "data",
+   "psd": [
+    {
+     "year": 2024,
+     "value": 6.54,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2025,
+     "value": 7.02,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2026,
+     "value": 7.15,
+     "status": "estimate",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    }
+   ],
+   "cost_uah_per_ha": null,
+   "cost_status": "todo"
+  },
+  "pea": {
+   "label": "Pea",
+   "yields": [
+    {
+     "year": 1992,
+     "value": 2.4175
+    },
+    {
+     "year": 1993,
+     "value": 2.4083
+    },
+    {
+     "year": 1994,
+     "value": 2.2683
+    },
+    {
+     "year": 1995,
+     "value": 1.4173
+    },
+    {
+     "year": 1996,
+     "value": 1.3465
+    },
+    {
+     "year": 1997,
+     "value": 1.5669000000000002
+    },
+    {
+     "year": 1998,
+     "value": 1.3787
+    },
+    {
+     "year": 1999,
+     "value": 1.2802
+    },
+    {
+     "year": 2000,
+     "value": 1.7511
+    },
+    {
+     "year": 2001,
+     "value": 2.0709
+    },
+    {
+     "year": 2002,
+     "value": 1.8908
+    },
+    {
+     "year": 2003,
+     "value": 1.0995
+    },
+    {
+     "year": 2004,
+     "value": 2.4644
+    },
+    {
+     "year": 2005,
+     "value": 1.9801
+    },
+    {
+     "year": 2006,
+     "value": 1.9979
+    },
+    {
+     "year": 2007,
+     "value": 1.0863
+    },
+    {
+     "year": 2008,
+     "value": 2.2621
+    },
+    {
+     "year": 2009,
+     "value": 1.8081
+    },
+    {
+     "year": 2010,
+     "value": 1.6244
+    },
+    {
+     "year": 2011,
+     "value": 1.4875
+    },
+    {
+     "year": 2012,
+     "value": 1.6583
+    },
+    {
+     "year": 2013,
+     "value": 1.5583
+    },
+    {
+     "year": 2014,
+     "value": 2.339
+    },
+    {
+     "year": 2015,
+     "value": 2.2403000000000004
+    },
+    {
+     "year": 2016,
+     "value": 3.1262
+    },
+    {
+     "year": 2017,
+     "value": 2.6518
+    },
+    {
+     "year": 2018,
+     "value": 1.8202
+    },
+    {
+     "year": 2019,
+     "value": 2.2614
+    },
+    {
+     "year": 2020,
+     "value": 2.0421
+    },
+    {
+     "year": 2021,
+     "value": 2.3575
+    },
+    {
+     "year": 2022,
+     "value": 2.0656999999999996
+    },
+    {
+     "year": 2023,
+     "value": 2.4560999999999997
+    },
+    {
+     "year": 2024,
+     "value": 2.2001
+    }
+   ],
+   "yield_source": "FAOSTAT, Crops and livestock products (QCL), Ukraine, national total, all farm categories; Production_Crops_Livestock_E_All_Data_(Normalized).zip",
+   "yield_status": "data",
+   "prices": [
+    {
+     "year": 1996,
+     "value": 233.0,
+     "usd": 127.4
+    },
+    {
+     "year": 1997,
+     "value": 225.0,
+     "usd": 120.9
+    },
+    {
+     "year": 1998,
+     "value": 193.0,
+     "usd": 78.8
+    },
+    {
+     "year": 1999,
+     "value": 271.0,
+     "usd": 65.6
+    },
+    {
+     "year": 2000,
+     "value": 575.0,
+     "usd": 105.7
+    },
+    {
+     "year": 2001,
+     "value": 530.0,
+     "usd": 98.7
+    },
+    {
+     "year": 2002,
+     "value": 446.0,
+     "usd": 83.7
+    },
+    {
+     "year": 2003,
+     "value": 704.0,
+     "usd": 132.0
+    },
+    {
+     "year": 2004,
+     "value": 676.0,
+     "usd": 127.1
+    },
+    {
+     "year": 2005,
+     "value": 572.0,
+     "usd": 111.6
+    },
+    {
+     "year": 2006,
+     "value": 588.0,
+     "usd": 116.4
+    },
+    {
+     "year": 2007,
+     "value": 1089.0,
+     "usd": 215.6
+    },
+    {
+     "year": 2008,
+     "value": 1429.0,
+     "usd": 271.3
+    },
+    {
+     "year": 2009,
+     "value": 1141.0,
+     "usd": 146.4
+    },
+    {
+     "year": 2010,
+     "value": 1430.0,
+     "usd": 180.2
+    },
+    {
+     "year": 2011,
+     "value": 2037.0,
+     "usd": 255.7
+    },
+    {
+     "year": 2012,
+     "value": 2206.0,
+     "usd": 276.1
+    },
+    {
+     "year": 2013,
+     "value": 2230.0,
+     "usd": 279.0
+    },
+    {
+     "year": 2014,
+     "value": 3048.0,
+     "usd": 256.4
+    },
+    {
+     "year": 2015,
+     "value": 5143.0,
+     "usd": 235.4
+    },
+    {
+     "year": 2016,
+     "value": 6442.0,
+     "usd": 252.1
+    },
+    {
+     "year": 2017,
+     "value": 5476.0,
+     "usd": 205.9
+    },
+    {
+     "year": 2018,
+     "value": 5064.0,
+     "usd": 186.2
+    },
+    {
+     "year": 2019,
+     "value": 4914.0,
+     "usd": 190.1
+    },
+    {
+     "year": 2020,
+     "value": 5590.0,
+     "usd": 207.4
+    },
+    {
+     "year": 2021,
+     "value": 7609.0,
+     "usd": 278.9
+    },
+    {
+     "year": 2022,
+     "value": 7305.0,
+     "usd": 225.9
+    },
+    {
+     "year": 2023,
+     "value": 7141.0,
+     "usd": 195.2
+    }
+   ],
+   "price_source": "FAOSTAT, Prices (PP), Ukraine, producer price, current prices of the year; Prices_E_All_Data_(Normalized).zip",
+   "price_status": "data",
+   "psd": [],
+   "cost_uah_per_ha": null,
+   "cost_status": "todo"
+  },
+  "sunflower": {
+   "label": "Sunflower",
+   "yields": [
+    {
+     "year": 1992,
+     "value": 1.3047
+    },
+    {
+     "year": 1993,
+     "value": 1.2738
+    },
+    {
+     "year": 1994,
+     "value": 0.9096
+    },
+    {
+     "year": 1995,
+     "value": 1.4246
+    },
+    {
+     "year": 1996,
+     "value": 1.048
+    },
+    {
+     "year": 1997,
+     "value": 1.1533
+    },
+    {
+     "year": 1998,
+     "value": 0.9322
+    },
+    {
+     "year": 1999,
+     "value": 0.9979
+    },
+    {
+     "year": 2000,
+     "value": 1.2167
+    },
+    {
+     "year": 2001,
+     "value": 0.9393
+    },
+    {
+     "year": 2002,
+     "value": 1.2026
+    },
+    {
+     "year": 2003,
+     "value": 1.1165999999999998
+    },
+    {
+     "year": 2004,
+     "value": 0.89
+    },
+    {
+     "year": 2005,
+     "value": 1.2757
+    },
+    {
+     "year": 2006,
+     "value": 1.3611
+    },
+    {
+     "year": 2007,
+     "value": 1.2237
+    },
+    {
+     "year": 2008,
+     "value": 1.525
+    },
+    {
+     "year": 2009,
+     "value": 1.5178
+    },
+    {
+     "year": 2010,
+     "value": 1.4961
+    },
+    {
+     "year": 2011,
+     "value": 1.8383
+    },
+    {
+     "year": 2012,
+     "value": 1.6505
+    },
+    {
+     "year": 2013,
+     "value": 2.171
+    },
+    {
+     "year": 2014,
+     "value": 1.9442
+    },
+    {
+     "year": 2015,
+     "value": 2.1643000000000003
+    },
+    {
+     "year": 2016,
+     "value": 2.2388000000000003
+    },
+    {
+     "year": 2017,
+     "value": 2.0188
+    },
+    {
+     "year": 2018,
+     "value": 2.2971
+    },
+    {
+     "year": 2019,
+     "value": 2.5599000000000003
+    },
+    {
+     "year": 2020,
+     "value": 2.0229
+    },
+    {
+     "year": 2021,
+     "value": 2.4594
+    },
+    {
+     "year": 2022,
+     "value": 2.1628000000000003
+    },
+    {
+     "year": 2023,
+     "value": 2.453
+    },
+    {
+     "year": 2024,
+     "value": 2.1789
+    }
+   ],
+   "yield_source": "FAOSTAT, Crops and livestock products (QCL), Ukraine, national total, all farm categories; Production_Crops_Livestock_E_All_Data_(Normalized).zip",
+   "yield_status": "data",
+   "prices": [
+    {
+     "year": 1996,
+     "value": 265.0,
+     "usd": 144.8
+    },
+    {
+     "year": 1997,
+     "value": 246.0,
+     "usd": 132.1
+    },
+    {
+     "year": 1998,
+     "value": 321.0,
+     "usd": 131.0
+    },
+    {
+     "year": 1999,
+     "value": 508.0,
+     "usd": 123.0
+    },
+    {
+     "year": 2000,
+     "value": 523.0,
+     "usd": 96.1
+    },
+    {
+     "year": 2001,
+     "value": 783.0,
+     "usd": 145.8
+    },
+    {
+     "year": 2002,
+     "value": 844.0,
+     "usd": 158.4
+    },
+    {
+     "year": 2003,
+     "value": 857.0,
+     "usd": 160.7
+    },
+    {
+     "year": 2004,
+     "value": 1151.0,
+     "usd": 216.4
+    },
+    {
+     "year": 2005,
+     "value": 978.0,
+     "usd": 190.8
+    },
+    {
+     "year": 2006,
+     "value": 939.0,
+     "usd": 185.9
+    },
+    {
+     "year": 2007,
+     "value": 1899.0,
+     "usd": 376.0
+    },
+    {
+     "year": 2008,
+     "value": 1367.0,
+     "usd": 259.5
+    },
+    {
+     "year": 2009,
+     "value": 1897.0,
+     "usd": 243.5
+    },
+    {
+     "year": 2010,
+     "value": 3019.0,
+     "usd": 380.4
+    },
+    {
+     "year": 2011,
+     "value": 3243.0,
+     "usd": 407.0
+    },
+    {
+     "year": 2012,
+     "value": 3572.0,
+     "usd": 447.0
+    },
+    {
+     "year": 2013,
+     "value": 2989.0,
+     "usd": 374.0
+    },
+    {
+     "year": 2014,
+     "value": 3843.0,
+     "usd": 323.3
+    },
+    {
+     "year": 2015,
+     "value": 7571.0,
+     "usd": 346.6
+    },
+    {
+     "year": 2016,
+     "value": 8516.0,
+     "usd": 333.3
+    },
+    {
+     "year": 2017,
+     "value": 8815.0,
+     "usd": 331.4
+    },
+    {
+     "year": 2018,
+     "value": 8950.0,
+     "usd": 329.0
+    },
+    {
+     "year": 2019,
+     "value": 8021.0,
+     "usd": 310.3
+    },
+    {
+     "year": 2020,
+     "value": 10860.0,
+     "usd": 402.9
+    },
+    {
+     "year": 2021,
+     "value": 16656.0,
+     "usd": 610.4
+    },
+    {
+     "year": 2022,
+     "value": 14671.0,
+     "usd": 453.6
+    },
+    {
+     "year": 2023,
+     "value": 12502.0,
+     "usd": 341.8
+    }
+   ],
+   "price_source": "FAOSTAT, Prices (PP), Ukraine, producer price, current prices of the year; Prices_E_All_Data_(Normalized).zip",
+   "price_status": "data",
+   "psd": [
+    {
+     "year": 2024,
+     "value": 2.17,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2025,
+     "value": 1.95,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2026,
+     "value": 2.24,
+     "status": "estimate",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    }
+   ],
+   "cost_uah_per_ha": null,
+   "cost_status": "todo"
+  },
+  "winter_wheat": {
+   "label": "Winter wheat",
+   "yields": [
+    {
+     "year": 1992,
+     "value": 3.0926
+    },
+    {
+     "year": 1993,
+     "value": 3.798
+    },
+    {
+     "year": 1994,
+     "value": 3.0745
+    },
+    {
+     "year": 1995,
+     "value": 2.9699
+    },
+    {
+     "year": 1996,
+     "value": 2.2993
+    },
+    {
+     "year": 1997,
+     "value": 2.8276999999999997
+    },
+    {
+     "year": 1998,
+     "value": 2.6479
+    },
+    {
+     "year": 1999,
+     "value": 2.2903
+    },
+    {
+     "year": 2000,
+     "value": 1.9756
+    },
+    {
+     "year": 2001,
+     "value": 3.102
+    },
+    {
+     "year": 2002,
+     "value": 3.0455
+    },
+    {
+     "year": 2003,
+     "value": 2.9385
+    },
+    {
+     "year": 2004,
+     "value": 3.1660999999999997
+    },
+    {
+     "year": 2005,
+     "value": 2.8457
+    },
+    {
+     "year": 2006,
+     "value": 2.5308
+    },
+    {
+     "year": 2007,
+     "value": 2.342
+    },
+    {
+     "year": 2008,
+     "value": 3.6698
+    },
+    {
+     "year": 2009,
+     "value": 3.093
+    },
+    {
+     "year": 2010,
+     "value": 2.6816
+    },
+    {
+     "year": 2011,
+     "value": 3.3533000000000004
+    },
+    {
+     "year": 2012,
+     "value": 2.7999
+    },
+    {
+     "year": 2013,
+     "value": 3.3931
+    },
+    {
+     "year": 2014,
+     "value": 4.0119
+    },
+    {
+     "year": 2015,
+     "value": 3.8792
+    },
+    {
+     "year": 2016,
+     "value": 4.2056
+    },
+    {
+     "year": 2017,
+     "value": 4.1097
+    },
+    {
+     "year": 2018,
+     "value": 3.7242
+    },
+    {
+     "year": 2019,
+     "value": 4.1566
+    },
+    {
+     "year": 2020,
+     "value": 3.795
+    },
+    {
+     "year": 2021,
+     "value": 4.5332
+    },
+    {
+     "year": 2022,
+     "value": 3.9249
+    },
+    {
+     "year": 2023,
+     "value": 4.6422
+    },
+    {
+     "year": 2024,
+     "value": 4.595
+    }
+   ],
+   "yield_source": "FAOSTAT, Crops and livestock products (QCL), Ukraine, national total, all farm categories; Production_Crops_Livestock_E_All_Data_(Normalized).zip",
+   "yield_status": "data",
+   "prices": [
+    {
+     "year": 1996,
+     "value": 169.0,
+     "usd": 92.4
+    },
+    {
+     "year": 1997,
+     "value": 178.0,
+     "usd": 95.6
+    },
+    {
+     "year": 1998,
+     "value": 158.0,
+     "usd": 64.5
+    },
+    {
+     "year": 1999,
+     "value": 200.0,
+     "usd": 48.4
+    },
+    {
+     "year": 2000,
+     "value": 487.0,
+     "usd": 89.5
+    },
+    {
+     "year": 2001,
+     "value": 386.0,
+     "usd": 71.9
+    },
+    {
+     "year": 2002,
+     "value": 310.0,
+     "usd": 58.2
+    },
+    {
+     "year": 2003,
+     "value": 635.0,
+     "usd": 119.1
+    },
+    {
+     "year": 2004,
+     "value": 493.0,
+     "usd": 92.7
+    },
+    {
+     "year": 2005,
+     "value": 415.0,
+     "usd": 81.0
+    },
+    {
+     "year": 2006,
+     "value": 527.0,
+     "usd": 104.4
+    },
+    {
+     "year": 2007,
+     "value": 797.0,
+     "usd": 157.8
+    },
+    {
+     "year": 2008,
+     "value": 753.0,
+     "usd": 143.0
+    },
+    {
+     "year": 2009,
+     "value": 792.0,
+     "usd": 101.7
+    },
+    {
+     "year": 2010,
+     "value": 1086.0,
+     "usd": 136.9
+    },
+    {
+     "year": 2011,
+     "value": 1333.0,
+     "usd": 167.3
+    },
+    {
+     "year": 2012,
+     "value": 1550.0,
+     "usd": 194.0
+    },
+    {
+     "year": 2013,
+     "value": 1368.0,
+     "usd": 171.1
+    },
+    {
+     "year": 2014,
+     "value": 1871.0,
+     "usd": 157.4
+    },
+    {
+     "year": 2015,
+     "value": 2796.0,
+     "usd": 128.0
+    },
+    {
+     "year": 2016,
+     "value": 3288.0,
+     "usd": 128.7
+    },
+    {
+     "year": 2017,
+     "value": 3815.0,
+     "usd": 143.4
+    },
+    {
+     "year": 2018,
+     "value": 4586.0,
+     "usd": 168.6
+    },
+    {
+     "year": 2019,
+     "value": 4077.0,
+     "usd": 157.7
+    },
+    {
+     "year": 2020,
+     "value": 5018.0,
+     "usd": 186.1
+    },
+    {
+     "year": 2021,
+     "value": 6434.0,
+     "usd": 235.8
+    },
+    {
+     "year": 2022,
+     "value": 6098.0,
+     "usd": 188.5
+    },
+    {
+     "year": 2023,
+     "value": 5343.0,
+     "usd": 146.1
+    }
+   ],
+   "price_source": "FAOSTAT, Prices (PP), Ukraine, producer price, current prices of the year; Prices_E_All_Data_(Normalized).zip",
+   "price_status": "data",
+   "psd": [
+    {
+     "year": 2024,
+     "value": 4.5,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2025,
+     "value": 4.27,
+     "status": "data",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    },
+    {
+     "year": 2026,
+     "value": 4.82,
+     "status": "estimate",
+     "source": "USDA FAS PSD Online, Ukraine, https://apps.fas.usda.gov/psdonline/downloads/psd_alldata_csv.zip; market year; the current and later years are USDA forecasts"
+    }
+   ],
+   "cost_uah_per_ha": null,
+   "cost_status": "todo"
+  }
+ },
+ "uga": [
+  {
+   "date": "2026-11-13",
+   "item": "Corn",
+   "crop": "maize",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-13",
+   "item": "Wheat 11.5% protein",
+   "crop": "winter_wheat (food, 11.5% protein)",
+   "usd_per_t": 165.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-13",
+   "item": "Feed wheat",
+   "crop": "winter_wheat (feed)",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-12",
+   "item": "Corn",
+   "crop": "maize",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-12",
+   "item": "Wheat 11.5% protein",
+   "crop": "winter_wheat (food, 11.5% protein)",
+   "usd_per_t": 165.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-12",
+   "item": "Feed wheat",
+   "crop": "winter_wheat (feed)",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-11",
+   "item": "Corn",
+   "crop": "maize",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-11",
+   "item": "Wheat 11.5% protein",
+   "crop": "winter_wheat (food, 11.5% protein)",
+   "usd_per_t": 165.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  },
+  {
+   "date": "2026-11-11",
+   "item": "Feed wheat",
+   "crop": "winter_wheat (feed)",
+   "usd_per_t": 155.0,
+   "source": "UGA Index (Ukrainian Grain Association), public page https://index.uga.ua/en/media-hub; CPT UA Black Sea export basis, not a farm-gate price",
+   "status": "data"
+  }
+ ],
+ "k": [
+  {
+   "crop": "winter_wheat",
+   "predecessor": "black_fallow",
+   "value": 1.08,
+   "source": "Solodushko 2024, as given in CLAUDE.md; full citation pending",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_wheat",
+   "predecessor": "pea",
+   "value": 1.13,
+   "source": "Solodushko 2024, as given in CLAUDE.md; full citation pending",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_wheat",
+   "predecessor": "sunflower",
+   "value": 0.79,
+   "source": "Solodushko 2024, as given in CLAUDE.md; full citation pending",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_wheat",
+   "predecessor": "winter_wheat",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "winter_wheat",
+   "predecessor": "maize",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "maize",
+   "predecessor": "winter_wheat",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "maize",
+   "predecessor": "maize",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "maize",
+   "predecessor": "black_fallow",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "maize",
+   "predecessor": "sunflower",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  },
+  {
+   "crop": "maize",
+   "predecessor": "pea",
+   "value": 1.0,
+   "source": "No data: k = 1.0 per CLAUDE.md rule for pairs without data",
+   "status": "estimate"
+  }
+ ],
+ "notes": {
+  "yields": "National FAOSTAT yields, all farm categories (not enterprises), no oblast split.",
+  "prices": "FAOSTAT producer prices, nominal UAH/t, current prices of each year, last year 2023. Years before 1996 dropped (karbovanets).",
+  "missing": "Costs per hectare, prices after 2023, UAH/USD rate and local market prices are not available from open sources; the user enters them."
+ }
+}

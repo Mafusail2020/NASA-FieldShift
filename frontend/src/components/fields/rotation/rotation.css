@@ -1,0 +1,79 @@
+.rot { container-type: inline-size; display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
+.rot h2 { font-size: 20px; }
+.rot h3 { font-size: 15px; margin-bottom: var(--space-2); }
+.rot h4 { font-size: 13px; margin: var(--space-2) 0 2px; color: var(--color-primary-strong); }
+.rot-sec { display: flex; flex-direction: column; gap: var(--space-2); }
+.rot-help { font-size: 12px; color: var(--color-muted); line-height: 1.45; }
+.rot-warn { font-size: 13px; color: var(--color-danger); }
+.rot-err { color: var(--color-danger); font-weight: 500; }
+.rot-na { color: var(--color-muted); font-style: italic; }
+.rot-empty { padding: var(--space-4); border: 1.5px dashed var(--color-border-strong); border-radius: var(--radius-md); color: var(--color-muted); font-size: 13px; }
+.rot-empty b { color: var(--color-text); }
+.rot-skel { height: 90px; border-radius: var(--radius-md); background: linear-gradient(90deg, var(--color-primary-wash), var(--color-primary-tint), var(--color-primary-wash)); background-size: 200% 100%; animation: rot-sh 1.4s linear infinite; }
+@keyframes rot-sh { to { background-position: -200% 0; } }
+
+.rot-years { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.rot-years li { display: grid; grid-template-columns: 54px 1fr 32px; gap: var(--space-2); align-items: center; }
+.rot-years label { font-size: 12px; font-weight: 700; color: var(--color-muted); }
+.rot select { width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-surface); font-size: 13px; }
+.rot-btn { min-height: 32px; padding: 4px 10px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-surface); cursor: pointer; font-weight: 700; }
+.rot-btn:hover:not(:disabled) { background: var(--color-primary-tint); }
+.rot-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.rot-add { align-self: flex-start; }
+
+.rot-soil { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); margin: var(--space-2) 0 0; }
+.rot-soil legend { font-size: 12px; font-weight: 700; padding: 0 4px; }
+.rot-soil label { display: inline-flex; gap: 4px; align-items: center; margin-right: var(--space-3); font-size: 13px; text-transform: capitalize; }
+.rot-soil small { color: var(--color-muted); text-transform: none; }
+
+.rot-seg { display: flex; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); overflow: hidden; }
+.rot-seg button { flex: 1; padding: 6px 4px; border: 0; background: var(--color-surface); cursor: pointer; font-size: 12.5px; font-weight: 600; }
+.rot-seg button + button { border-left: 1px solid var(--color-border-strong); }
+.rot-seg button[aria-pressed='true'] { background: var(--color-primary); color: var(--color-text); }
+.rot-seg button:focus-visible { outline-offset: -3px; }
+
+.rot-rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.rot-rank li { display: grid; grid-template-columns: 22px 1fr; column-gap: 6px; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); }
+.rot-rank li.rot-base { grid-template-columns: auto 1fr; background: var(--color-primary-wash); border-color: var(--color-border-strong); }
+.rot-num { font-weight: 700; color: var(--color-primary-strong); }
+.rot-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--color-primary-strong); }
+.rot-seq { grid-column: 2 / -1; font-size: 12px; color: var(--color-muted); }
+.rot-base .rot-seq { grid-column: 1 / -1; }
+
+.rot-tablewrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.rot-table { border-collapse: collapse; width: 100%; font-size: 12px; }
+.rot-table caption { text-align: left; padding: 6px 8px; color: var(--color-muted); font-size: 11.5px; }
+.rot-table th, .rot-table td { padding: 5px 6px; text-align: left; border-top: 1px solid var(--color-border); vertical-align: top; }
+.rot-table thead th { font-size: 11px; color: var(--color-muted); }
+.rot-table td small { display: block; color: var(--color-muted); }
+.rot-table tr.rot-base { background: var(--color-primary-wash); }
+
+.rot-card { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--color-surface); font-size: 13px; }
+.rot-card summary { cursor: pointer; display: flex; flex-direction: column; }
+.rot-card .rot-seq { font-size: 12px; }
+.rot-card ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.rot-crit { margin: var(--space-2) 0; display: flex; flex-direction: column; gap: 6px; }
+.rot-crit div { display: flex; flex-direction: column; }
+.rot-crit dt { font-size: 11.5px; color: var(--color-muted); }
+.rot-crit dd { margin: 0; font-weight: 600; }
+.rot-nm { margin: 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 2px; }
+
+.rot, .rot-sec, .rot-card, .rot-card * { min-width: 0; overflow-wrap: anywhere; }
+.rot h2 { overflow-wrap: anywhere; }
+.rot-seg button { min-width: 0; }
+.rot-soil label { white-space: normal; }
+.rot-years li { grid-template-columns: 48px minmax(0, 1fr) 32px; }
+.rot-rank li > b { min-width: 0; }
+
+.rot-soilline { font-size: 13px; margin-bottom: var(--space-2); }
+.rot-auto { margin-top: var(--space-2); width: 100%; }
+.rot-soil .rot-seg { margin-top: var(--space-1); }
+.rot-table th:first-child { white-space: nowrap; }
+
+.rot-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+.rot-left, .rot-right { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+@container (min-width: 900px) {
+  .rot-grid { grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); align-items: start; }
+  .rot-full { grid-column: 1 / -1; }
+}
+.rot-msg-error { color: var(--color-danger); }

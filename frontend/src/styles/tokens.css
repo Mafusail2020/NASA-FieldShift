@@ -1,0 +1,43 @@
+:root {
+  /* Orange: one strong fill plus a deep shade (for text/links) and two tints. */
+  --color-primary: #f97316;
+  --color-primary-hover: #ea6a0a;
+  --color-primary-strong: #b93c0a; /* orange text on white, AA (5.9:1) */
+  --color-primary-tint: #ffedd5;
+  --color-primary-wash: #fff7ed;
+
+  --color-ocean: #cfe6f5; /* sea behind the map: blue by request, the one non-orange surface */
+  --color-surface: #ffffff;
+  --color-bg: #fffaf4;
+  --color-text: #2b1d12; /* dark warm neutral */
+  --color-muted: #6b5b4e; /* AA on white and bg */
+  --color-border: #f0e0d0;
+  --color-border-strong: #e3c9ae;
+  --color-danger: #a12a12;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --shadow-sm: 0 1px 2px rgb(120 60 10 / 8%), 0 1px 1px rgb(120 60 10 / 5%);
+  --shadow-md: 0 6px 18px -6px rgb(120 60 10 / 22%), 0 2px 4px rgb(120 60 10 / 6%);
+  --shadow-lg: 0 24px 48px -16px rgb(120 60 10 / 30%), 0 4px 10px rgb(120 60 10 / 8%);
+
+  --font: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --toolbar-h: 60px;
+  --tabbar-h: 0px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 640px) {
+  :root { --tabbar-h: 64px; }
+}
