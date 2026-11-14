@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const TITLE_BEFORE = 'Field '
 const TITLE_SHIFT = 'Shift'
-const TAG = 'Making farming more predictable'
+const TAG = ['Making farming', 'predictable'] // two lines on purpose: "predictable" sits on the second row
 const DESC = 'Enter your fields. Get NASA-based climate, soil, crop rotation and income estimates for each one, in one place.'
 
 // Soil: dark earth tiles with slightly lighter glyphs, a few terracotta ones.
@@ -167,7 +167,7 @@ export default function DigBlock() {
         </span>
         {digging && host && <DigCanvas host={host} onDug={() => setDug(true)} onDone={() => setDigging(false)} />}
       </h1>
-      <p className={`home-tag home-rest${dug ? ' on' : ''}`}>{TAG}</p>
+      <p className={`home-tag home-rest${dug ? ' on' : ''}`}>{TAG[0]}<br />{TAG[1]}</p>
       <p className={`home-desc home-rest${dug ? ' on' : ''}`}>{DESC}</p>
     </>
   )
