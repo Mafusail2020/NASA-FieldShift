@@ -92,3 +92,41 @@ class EvaluateResponse(BaseModel):
     soil: str
     farmer: Evaluation
     alternatives: list[Alternative]
+
+
+class DefaultRow(BaseModel):
+    crop: str
+    parameter: str
+    value: float | None
+    unit: str
+    source: str
+    status: Status
+
+
+class Defaults(BaseModel):
+    prices_costs: list[DefaultRow]
+    k: list[DefaultRow]
+
+
+class EconomicsRequest(BaseModel):
+    region: str
+    rotation: list[Crop] = Field(min_length=1, max_length=6)
+    use_k: bool = True
+    price: dict[str, float] = {}
+    cost: dict[str, float] = {}
+
+
+class Money(BaseModel):
+    rotation: list[str]
+    margins: dict[str, float]
+    summary: dict[str, float]
+
+
+class EconomicsResponse(BaseModel):
+    region: str
+    use_k: bool
+    farmer: Money
+    alternatives: dict[str, Money]
+    best_alternative_with_k: str
+    best_alternative_without_k: str
+    note: str

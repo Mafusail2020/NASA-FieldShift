@@ -41,3 +41,11 @@ Status: built and tested locally; not deployed (needs Ivan's decision on hosts/a
 - My calendar choices: harvest year Y; wheat sown autumn Y-1, maize spring Y by FAO-56 temperature rule, sowing delayed until the day after the previous harvest; fallow slot 1 Sep Y-1 .. 31 Aug Y; critical window for mean Ks = FAO-56 mid-season stage; water balance of a pair starts at field capacity on the previous crop's sowing.
 - Wheat uses the 335-day FAO Idaho row, so wheat harvest is mid-Aug to Sep (later than real Ukrainian harvest); wheat after maize is sown late (Oct) and the heat window falls later, so heat days differ by predecessor partly because of the calendar.
 - KMU No. 164 norm only for sunflower (7 years, from CLAUDE.md); other crops show "norm: not set".
+
+## Phase 6 — Yields, prices, economics, validation
+Status: code and tests done; no real run, the inputs are not provided.
+- README: pre-registered predictor (mean Ks in the crop's critical window), committed before `validate.py` existed.
+- Built: `core/economics.py`, `pipeline/yields.py` (masks, linear 2000-2021 trend, Yhat = ratio x trend(2021)), `pipeline/validate.py` (FE, clustered by year, leave-one-year-out; medium soil, mean over predecessors), `GET /api/defaults`, `POST /api/economics` (k on/off, overrides, best alternative with and without k).
+- Params: `k_predecessor.csv` (wheat after fallow 1.08, pea 1.13, sunflower 0.79 from Solodushko 2024; everything else 1.0 estimate), `prices.csv` (price, price year, cost per ha: all todo), `war_masks.csv` (2014 rule for Crimea/Donetsk/Luhansk; the 2022 list is not entered).
+- Blocked: `data/raw/yields/yields.csv` (Derzhstat enterprise yields), prices, costs. `www.ukrstat.gov.ua` has an expired SSL certificate (2026-11-14); I did not bypass certificate checks.
+- Open: whether the 4 demo oblasts need a 2022+ mask; linear trend and 2021 technology level are my choices.

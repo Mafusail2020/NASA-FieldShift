@@ -1,1 +1,11 @@
-name,source,status
+crop,predecessor,value,unit,source,status
+winter_wheat,black_fallow,1.08,ratio,"Solodushko 2024, as given in CLAUDE.md; full citation pending",literature
+winter_wheat,pea,1.13,ratio,"Solodushko 2024, as given in CLAUDE.md; full citation pending",literature
+winter_wheat,sunflower,0.79,ratio,"Solodushko 2024, as given in CLAUDE.md; full citation pending",literature
+winter_wheat,winter_wheat,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+winter_wheat,maize,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+maize,winter_wheat,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+maize,maize,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+maize,black_fallow,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+maize,sunflower,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate
+maize,pea,1.0,ratio,No data: k = 1.0 per CLAUDE.md rule for pairs without data,estimate

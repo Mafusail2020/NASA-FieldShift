@@ -1,1 +1,14 @@
-name,source,status
+crop,parameter,value,unit,source,status
+winter_wheat,price_uah_per_t,,UAH/t,,todo
+winter_wheat,price_year,,year,,todo
+winter_wheat,cost_uah_per_ha,,UAH/ha,,todo
+maize,price_uah_per_t,,UAH/t,,todo
+maize,price_year,,year,,todo
+maize,cost_uah_per_ha,,UAH/ha,,todo
+sunflower,price_uah_per_t,,UAH/t,,todo
+sunflower,price_year,,year,,todo
+sunflower,cost_uah_per_ha,,UAH/ha,,todo
+pea,price_uah_per_t,,UAH/t,,todo
+pea,price_year,,year,,todo
+pea,cost_uah_per_ha,,UAH/ha,,todo
+black_fallow,cost_uah_per_ha,,UAH/ha,,todo

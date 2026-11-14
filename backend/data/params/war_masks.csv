@@ -1,0 +1,4 @@
+oblast,mask_from_year,unit,source,status
+crimea,2014,year,Rule in CLAUDE.md: mask from 2014 for Crimea,literature
+donetsk,2014,year,Rule in CLAUDE.md: mask from 2014 for occupied parts of Donetsk,literature
+luhansk,2014,year,Rule in CLAUDE.md: mask from 2014 for occupied parts of Luhansk,literature
