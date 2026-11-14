@@ -6,7 +6,7 @@ SoilGrids is a machine-learning prediction at 250 m, read at the cell centre (or
 at the first of 12 other points inside the cell): it is not a field analysis.
 Raw answers are cached in data/raw/soilgrids/ (not committed), so the script is re-runnable.
 Writes frontend/public/data/grid_soil.json (+ copy in data/processed/).
-Run by hand from backend/: python -m pipeline.fetch_soil
+Run by hand from backend/: python -m pipeline.fetch_soil   (adds only cells missing from grid_soil.json)
 """
 import json
 import time
@@ -117,24 +117,34 @@ def summarize(cell, found) -> dict:
     return out
 
 
-def main():
-    cells = ukraine_cells()
+SOURCE = ("ISRIC SoilGrids 2.0 (Poggio et al. 2021, SOIL 7:217-240), 250 m machine-learning prediction read at the cell centre, or at the first of "
+          "12 other points inside the cell when the centre is built-up or water (marked sampled_at); "
+          "USDA texture triangle; preset mapping is our rule (sand, loamy sand, sandy loam -> light; clay, silty clay, sandy clay -> heavy; "
+          "other classes -> medium)")
+
+
+def update(cells: list[tuple[float, float]]) -> int:
+    """Add soil for cells that are not in grid_soil.json yet (no change for cells already there). Returns how many were added."""
     RAW_DIR.mkdir(parents=True, exist_ok=True)
+    doc = json.loads(OUT_FILES[0].read_text()) if OUT_FILES[0].exists() else {
+        "depth": "0-30 cm, thickness-weighted mean of 0-5, 5-15, 15-30 cm", "source": SOURCE, "status": "estimate", "cells": []}
+    have = {c["id"] for c in doc["cells"]}
+    new = [c for c in cells if f"{c[0]}_{c[1]}" not in have]
     with ThreadPoolExecutor(WORKERS) as ex:
-        docs = list(ex.map(fetch, cells))
-    out = {
-        "depth": "0-30 cm, thickness-weighted mean of 0-5, 5-15, 15-30 cm",
-        "source": "ISRIC SoilGrids 2.0 (Poggio et al. 2021, SOIL 7:217-240), 250 m machine-learning prediction read at the cell centre, or at the first of 12 other points inside the cell when the centre is built-up or water (marked sampled_at); "
-                  "USDA texture triangle; preset mapping is our rule (sand, loamy sand, sandy loam -> light; clay, silty clay, sandy clay -> heavy; "
-                  "other classes -> medium)",
-        "status": "estimate",
-        "cells": [summarize(c, d) for c, d in zip(cells, docs)],
-    }
+        found = list(ex.map(fetch, new))
+    doc["cells"] += [summarize(c, f) for c, f in zip(new, found)]
+    doc["cells"].sort(key=lambda c: c["id"])
     for f in OUT_FILES:
         f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_text(json.dumps(out, separators=(",", ":")))
-    from collections import Counter
-    print(len(out["cells"]), "cells;", dict(Counter(c["preset"] for c in out["cells"])), dict(Counter(c["texture"] for c in out["cells"])))
+        f.write_text(json.dumps(doc, separators=(",", ":")))
+    return len(new)
+
+
+def main():
+    """Default: only cells that are in the grid but missing from grid_soil.json. Never enumerates new cells."""
+    grid = json.loads((ROOT / "frontend" / "public" / "data" / "grid.json").read_text())
+    n = update([(c["lat"], c["lon"]) for c in grid["cells"]])
+    print(f"{n} cells added to grid_soil.json")
 
 
 if __name__ == "__main__":

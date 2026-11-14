@@ -7,7 +7,7 @@ Only crops whose parameters are complete in data/params/crops.csv are computed; 
 parameters. Nothing is invented.
 
 Output: <out>/rotations_grid.json (index) and <out>/rotations/<cell id>.json, in frontend/public/data and
-backend/data/processed. Re-runnable: a cell is skipped when its output is newer than its raw file, the params and core/.
+backend/data/processed. Incremental: a cell that already has an output file is skipped (no cell is recomputed unless --force).
 Run from backend/: python -m pipeline.build_grid_rotations [--force] [--workers N] [--limit N]
 """
 import argparse
@@ -135,15 +135,22 @@ def index_doc(cells: list[str], P: Params) -> dict:
     }
 
 
+def write_index() -> int:
+    done = sorted(p.stem for p in (OUT_DIRS[0] / "rotations").glob("*.json")) if (OUT_DIRS[0] / "rotations").exists() else []
+    doc = index_doc(done, Params(load_crops()))
+    for d in OUT_DIRS:
+        (d / "rotations_grid.json").write_text(json.dumps(doc, indent=1))
+    return len(done)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args()
-    deps = [*PARAMS.glob("*.csv"), PARAMS / "rotations.yaml", *Path(__file__).resolve().parents[1].glob("core/*.py")]
     raws = sorted(RAW_DIR.glob("*.csv"))
-    todo = [r for r in raws if a.force or _stale(OUT_DIRS[0] / "rotations" / f"{r.stem}.json", r, deps)]
+    todo = [r for r in raws if a.force or not (OUT_DIRS[0] / "rotations" / f"{r.stem}.json").exists()]
     if a.limit:
         todo = todo[: a.limit]
     print(f"{len(raws)} raw files, {len(todo)} to compute")
@@ -151,11 +158,7 @@ def main():
     with ProcessPoolExecutor(a.workers) as ex:
         for cid, sec, err in ex.map(_job, [(r,) for r in todo]):
             print(f"{cid}: " + (f"skipped, {err}" if err else f"{sec:.1f} s"), flush=True)
-    done = sorted(p.stem for p in (OUT_DIRS[0] / "rotations").glob("*.json")) if (OUT_DIRS[0] / "rotations").exists() else []
-    doc = index_doc(done, Params(load_crops()))
-    for d in OUT_DIRS:
-        (d / "rotations_grid.json").write_text(json.dumps(doc, indent=1))
-    print(f"index: {len(done)} cells; total {time.time() - t0:.0f} s")
+    print(f"index: {write_index()} cells; total {time.time() - t0:.0f} s")
 
 
 if __name__ == "__main__":

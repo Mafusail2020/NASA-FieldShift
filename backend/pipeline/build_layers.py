@@ -1,8 +1,14 @@
 """Per-cell map layers (trends and extremes) from the raw daily NASA POWER series of the Ukraine grid.
 
-Reads every file that exists in data/raw/power_grid/ (safe to re-run while the download is still going), writes
+Incremental: reads the raw daily files in data/raw/power_grid/ (never downloads anything) and merges the cell records into
 frontend/public/data/grid_layers.json and data/processed/grid_layers.json.
-Run by hand from backend/:  .venv/bin/python -m pipeline.build_layers
+Run by hand from backend/:
+  .venv/bin/python -m pipeline.build_layers           # only cells missing from the existing JSON (nothing to do if all exist)
+  .venv/bin/python -m pipeline.build_layers --force   # recompute every cell from the raw files on disk (schema change)
+From code: update_cells(raw_paths, force=False) computes just those raw files and merges them (existing cells are kept unless force).
+Each layer record has value, trend (per decade), p_value, n_years, plus per-year series `y` (aligned with years[0]..years[1], null =
+skipped year) and `line` = Theil-Sen trend line values [at first year, at last year]. Frost records have `y` coded as described in
+the top-level `series_coding`.
 
 All layers are HISTORICAL statistics of MERRA-2 reanalysis (via NASA POWER), 1991-2025. Not a forecast.
 Trend = Theil-Sen slope; p-value = Mann-Kendall test (normal approximation, tie-corrected), two-sided.
@@ -10,6 +16,7 @@ A year with any missing day in the window it needs is skipped (never filled). A 
 """
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -104,8 +111,12 @@ def frost_percentiles(doys, kind: str = "last") -> dict | None:
 def frost_cell(df: pd.DataFrame) -> dict:
     out = {}
     for key, thr in FROST_THRESHOLDS.items():
-        last = frost_percentiles([frost_doy(df["T2M_MIN"], y, thr, "last") for y in YEARS], "last")
-        first = frost_percentiles([frost_doy(df["T2M_MIN"], y, thr, "first") for y in YEARS], "first")
+        ly = [frost_doy(df["T2M_MIN"], y, thr, "last") for y in YEARS]
+        fy = [frost_doy(df["T2M_MIN"], y, thr, "first") for y in YEARS]
+        last = frost_percentiles(ly, "last")
+        first = frost_percentiles(fy, "first")
+        out.setdefault("frost_last_y", {})[key] = series_list(ly, 0)
+        out.setdefault("frost_first_y", {})[key] = series_list(fy, 0)
         out.setdefault("frost_last", {})[key] = last
         out.setdefault("frost_first", {})[key] = first
         out.setdefault("frost_season", {})[key] = frost_season(last, first)
@@ -151,13 +162,32 @@ def cell_layers(df: pd.DataFrame, lat: float, elev: float) -> dict[str, list[flo
     }
 
 
+def series_list(values, decimals: int) -> list:
+    """Per-year values rounded for compact JSON; null = skipped year."""
+    return [None if x is None or math.isnan(x) else round(float(x), decimals) for x in values]
+
+
+def trend_line(years, values) -> list[float] | None:
+    """Theil-Sen line (slope, intercept = median of y - slope * x) evaluated at the first and last year; None if < MIN_YEARS valid points."""
+    slope, _ = mann_kendall_theil_sen(years, values)
+    if slope is None:
+        return None
+    x = np.asarray(years, float)
+    y = np.asarray(values, float)
+    ok = ~np.isnan(y)
+    icpt = float(np.median(y[ok] - slope * x[ok]))
+    return [icpt + slope * years[0], icpt + slope * years[-1]]
+
+
 def summarise(values: list[float], decimals: int) -> dict:
     v = np.asarray(values, float)
     valid = ~np.isnan(v)
+    y = series_list(v, decimals + 1)
     if valid.sum() < MIN_YEARS:
-        return {"value": None, "trend": None, "p_value": None, "n_years": int(valid.sum())}
+        return {"value": None, "trend": None, "p_value": None, "n_years": int(valid.sum()), "y": y, "line": None}
     slope, p = mann_kendall_theil_sen(YEARS, v)
-    return {"value": round(float(np.nanmean(v)), decimals), "trend": round(slope * 10, decimals + 1), "p_value": round(p, 4), "n_years": int(valid.sum())}
+    return {"value": round(float(np.nanmean(v)), decimals), "trend": round(slope * 10, decimals + 1), "p_value": round(p, 4), "n_years": int(valid.sum()),
+            "y": y, "line": [round(x, decimals + 1) for x in trend_line(YEARS, v)]}
 
 
 DISABLED_REASON = ("NASA POWER cannot measure this. It needs SRTM terrain slope and MODIS NDVI from NASA Earthdata (AppEEARS), "
@@ -218,26 +248,56 @@ def layer_meta() -> dict:
     return meta
 
 
-def main():
-    cells = {}
-    for path in sorted(RAW_DIR.glob("*.csv")):
-        header = path.read_text().split("\n", 1)[0]
-        lat = float(header.split("lat=")[1].split()[0])
-        lon = float(header.split("lon=")[1].split()[0])
-        elev = float(header.split("elevation_m=")[1].split()[0])
-        df = pd.read_csv(path, comment="#", index_col=0, parse_dates=True).replace(-999, np.nan)
-        series = cell_layers(df, lat, elev)
-        cells[f"{lat}_{lon}"] = {lid: summarise(series[key], dec) for lid, key, _g, _l, _u, _t, dec, *_ in LAYERS} | frost_cell(df)
+SERIES_CODING = ("Per-year arrays are aligned with years[0]..years[1]; null = year skipped (missing days), never filled. Layer records: y = value per year, "
+                 "line = Theil-Sen trend line [value at first year, value at last year]. frost_last_y / frost_first_y (per threshold t0/t2/t4): day of year "
+                 "(non-leap calendar) of the last spring / first autumn frost; 0 = no frost in 1 Jan-31 Jul (last frost before the window); "
+                 "367 = no frost in 1 Aug-31 Dec (first frost after the window).")
+
+
+def cell_record(path: Path) -> tuple[str, dict]:
+    header = path.read_text().split("\n", 1)[0]
+    lat = float(header.split("lat=")[1].split()[0])
+    lon = float(header.split("lon=")[1].split()[0])
+    elev = float(header.split("elevation_m=")[1].split()[0])
+    df = pd.read_csv(path, comment="#", index_col=0, parse_dates=True).replace(-999, np.nan)
+    series = cell_layers(df, lat, elev)
+    return f"{lat}_{lon}", {lid: summarise(series[key], dec) for lid, key, _g, _l, _u, _t, dec, *_ in LAYERS} | frost_cell(df)
+
+
+def update_cells(raw_paths: list[Path], force: bool = False) -> int:
+    """Compute records for the given raw files and merge them into grid_layers.json (both copies; created if missing).
+    Cells already present are kept unless force=True. Returns the number of cells computed. Never downloads anything."""
+    existing = {}
+    for out in OUT_FILES:
+        if out.exists():
+            existing = json.loads(out.read_text()).get("cells", {})
+            break
+    cells = dict(existing)
+    done = 0
+    for path in raw_paths:
+        lat, lon = (path.stem.split("_") + [None])[:2]
+        if not force and lat is not None and f"{float(lat)}_{float(lon)}" in cells:
+            continue
+        cid, rec = cell_record(path)
+        cells[cid] = rec
+        done += 1
     meta = layer_meta()
     for m in meta.values():
         m.pop("key", None), m.pop("decimals", None)
-    doc = {"years": [YEARS[0], YEARS[-1]], "alpha": ALPHA, "min_years": MIN_YEARS, "layers": meta, "cells": cells,
+    doc = {"years": [YEARS[0], YEARS[-1]], "alpha": ALPHA, "min_years": MIN_YEARS, "layers": meta, "series_coding": SERIES_CODING,
+           "cells": dict(sorted(cells.items())),
            "note": NASA_NOTE + " Trend = Theil-Sen slope, p-value = Mann-Kendall test; trends with p >= 0.05 are called not significant. "
                    "Years with missing days are skipped, never filled."}
-    for out in OUT_FILES:
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(doc, separators=(",", ":")))
-    print(f"wrote grid_layers.json with {len(cells)} cells")
+    if done or force or not all(o.exists() for o in OUT_FILES):
+        for out in OUT_FILES:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(doc, separators=(",", ":")))
+    return done
+
+
+def main():
+    done = update_cells(sorted(RAW_DIR.glob("*.csv")), force="--force" in sys.argv)
+    print(f"computed {done} cells")
 
 
 if __name__ == "__main__":

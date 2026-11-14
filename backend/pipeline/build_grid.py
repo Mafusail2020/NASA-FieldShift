@@ -2,8 +2,10 @@
 
 No oblast split: cells are the native POWER (MERRA-2) grid. Raw daily files go to data/raw/power_grid/ (not committed,
 resumable). The summary goes to data/processed/grid.json and frontend/public/data/grid.json.
-Run by hand from backend/: python -m pipeline.build_grid [--limit N] [--reverse]
---reverse walks the cells backwards, so a second process can share the work (existing files are skipped).
+POLICY: cells are NOT bulk-generated any more. A cell is generated only when a location is not covered by the existing
+grid: use `python -m pipeline.add_cell LAT LON`, which calls add_to_grid() below for that one cell.
+The old bulk run over every Ukraine cell needs the explicit flag: python -m pipeline.build_grid --all [--limit N] [--reverse]
+(existing raw files are skipped, so it only fetches missing cells).
 """
 import json
 import sys
@@ -100,7 +102,49 @@ def annual(cell) -> dict:
     }
 
 
+def cell_center(lat: float, lon: float) -> tuple[float, float]:
+    """Centre of the POWER cell that contains (lat, lon): cells are centred on multiples of 0.5 and 0.625 degrees."""
+    return round(round(lat / LAT_STEP) * LAT_STEP, 3), round(round(lon / LON_STEP) * LON_STEP, 3)
+
+
+def load_grid_doc() -> dict | None:
+    return json.loads(OUT_FILES[0].read_text()) if OUT_FILES[0].exists() else None
+
+
+def is_covered(doc: dict | None, lat: float, lon: float) -> bool:
+    """True when an existing grid cell contains the point."""
+    if not doc:
+        return False
+    la, lo = cell_center(lat, lon)
+    return any(c["id"] == f"{la}_{lo}" for c in doc["cells"])
+
+
+def add_to_grid(cells: list[tuple[float, float]]) -> None:
+    """Fetch the raw POWER series of the given cells (skipped when already on disk) and merge them into grid.json."""
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    doc = load_grid_doc() or {
+        "cell_size_deg": [LAT_STEP, LON_STEP], "years": list(range(1991, 2026)), "cells": [],
+        "source": "NASA POWER daily, community AG, 1991-2025 (MERRA-2 grid, 0.5 x 0.625 deg); ETo = FAO-56 Penman-Monteith (core/eto.py); "
+                  "tmean = (Tmax+Tmin)/2; a year with any missing day is null",
+        "status": "data",
+    }
+    have = {c["id"] for c in doc["cells"]}
+    for cell in cells:
+        if f"{cell[0]}_{cell[1]}" in have:
+            continue
+        fetch_cell(cell)
+        doc["cells"].append(annual(cell))
+    doc["cells"].sort(key=lambda c: (c["lat"], c["lon"]))
+    for out in OUT_FILES:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(doc, separators=(",", ":")))
+
+
 def main():
+    if "--all" not in sys.argv:
+        print("Bulk generation is switched off: cells are only generated for locations the grid does not cover.\n"
+              "Add one with: python -m pipeline.add_cell LAT LON   (or pass --all to fetch every missing Ukraine cell)")
+        return
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else None
     cells = ukraine_cells()
     print(f"{len(cells)} cells touch Ukraine")

@@ -100,3 +100,50 @@ def test_frost_season_with_and_without_censored_dates():
     assert frost_season(last, first) == {"days": 200, "capped": False, "n_years": 25}
     assert frost_season({"d50": None, "n_years": 30}, {"d50": None, "n_years": 30}) == {"days": 365, "capped": True, "n_years": 30}
     assert frost_season(last, None) is None
+
+
+def test_summarise_gives_series_and_exact_trend_line():
+    from pipeline.build_layers import summarise
+    vals = [10 + 0.05 * (y - 1991) for y in YEARS]
+    vals[3] = float("nan")
+    r = summarise(vals, 1)
+    assert r["y"][3] is None and r["y"][0] == 10.0 and len(r["y"]) == 35
+    assert abs(r["line"][0] - 10.0) < 0.01 and abs(r["line"][1] - (10 + 0.05 * 34)) < 0.01
+    assert r["trend"] == 0.5 and r["n_years"] == 34
+
+
+def test_summarise_too_few_years_has_series_but_no_line():
+    from pipeline.build_layers import summarise
+    r = summarise([float("nan")] * 20 + [1.0] * 15, 1)
+    assert r["line"] is None and r["trend"] is None and len(r["y"]) == 35
+
+
+def test_frost_cell_series_codes_censored_years():
+    from pipeline.build_layers import frost_cell
+    idx = pd.date_range("1991-01-01", "2025-12-31")
+    df = pd.DataFrame({"T2M_MIN": 5.0}, index=idx)
+    df.loc["2000-04-10", "T2M_MIN"] = -1.0
+    df.loc["2000-10-05", "T2M_MIN"] = -1.0
+    out = frost_cell(df)
+    i = YEARS.index(2000)
+    assert out["frost_last_y"]["t0"][i] == 100 and out["frost_first_y"]["t0"][i] == 278
+    assert out["frost_last_y"]["t0"][0] == 0 and out["frost_first_y"]["t0"][0] == 367
+
+
+def test_update_cells_is_incremental_and_force_recomputes(tmp_path, monkeypatch):
+    import pipeline.build_layers as bl
+    idx = pd.date_range("1991-01-01", "2025-12-31")
+    rng = np.random.default_rng(0)
+    df = pd.DataFrame({"T2M_MAX": 15.0, "T2M_MIN": 5.0, "T2MDEW": 4.0, "WS2M": 2.0, "ALLSKY_SFC_SW_DWN": 12.0,
+                       "PRECTOTCORR": rng.random(len(idx)) * 3}, index=idx)
+    raw = tmp_path / "50.0_30.0.csv"
+    raw.write_text("# lat=50.0 lon=30.0 elevation_m=100.0 units={}\n" + df.to_csv())
+    outs = [tmp_path / "a" / "g.json", tmp_path / "b" / "g.json"]
+    monkeypatch.setattr(bl, "OUT_FILES", outs)
+    assert bl.update_cells([raw]) == 1
+    assert bl.update_cells([raw]) == 0
+    assert bl.update_cells([raw], force=True) == 1
+    import json
+    doc = json.loads(outs[1].read_text())
+    assert list(doc["cells"]) == ["50.0_30.0"] and len(doc["cells"]["50.0_30.0"]["temp_trend"]["y"]) == 35
+    assert "series_coding" in doc
