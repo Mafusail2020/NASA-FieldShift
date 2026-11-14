@@ -138,12 +138,6 @@ body:has(.fp) { background: var(--color-surface); }
 /* Trash + inline delete confirmation in the list */
 .fp-li { position: relative; }
 .fp-item { padding-right: 46px; }
-.fp-trash { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; display: grid; place-items: center; background: transparent; border: 0; border-radius: var(--radius-md); color: var(--color-muted); cursor: pointer; }
-.fp-trash:hover, .fp-trash:focus-visible { background: var(--color-primary-tint); color: var(--color-danger); }
-.fp-trash svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.fp-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); min-height: 52px; border: 1px solid var(--color-danger); border-radius: var(--radius-md); font-size: 14px; }
-.fp-confirm > span { flex: 1 1 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fp-confirm .fr-btn { min-height: 32px; padding: 4px 12px; }
 
 /* Name, then map (left half) beside the inputs (right half) */
 .fd-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-4); align-items: stretch; }
@@ -167,3 +161,32 @@ body:has(.fp) { background: var(--color-surface); }
 .fp .rot h3 { margin-bottom: var(--space-1); }
 .fp .rot h4 { margin-top: var(--space-1); }
 @media (max-width: 860px) { .fp { grid-template-columns: 1fr; } .fp-main { padding-left: 0; } }
+
+/* Trash splits into a green check and a red cross */
+.fp-acts { position: absolute; right: 6px; top: 50%; width: 32px; height: 32px; transform: translateY(-50%); }
+.fp-act { position: absolute; right: 0; top: 0; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; background: transparent; border: 1px solid transparent; border-radius: var(--radius-pill); cursor: pointer; transition: transform 0.28s var(--ease), opacity 0.2s, background 0.15s, color 0.15s, border-color 0.15s; }
+.fp-act svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fp-trash { color: var(--color-muted); }
+.fp-trash:hover { background: var(--color-primary-tint); color: var(--color-danger); }
+.fp-yes, .fp-no { opacity: 0; transform: scale(0.4); pointer-events: none; }
+.fp-yes { color: var(--color-success); }
+.fp-no { color: var(--color-danger); }
+.fp-yes:hover { background: var(--color-success-tint); border-color: var(--color-success); }
+.fp-no:hover { background: var(--color-danger-tint); border-color: var(--color-danger); }
+.fp-li-ask .fp-trash { opacity: 0; transform: scale(0.4); pointer-events: none; }
+.fp-li-ask .fp-yes { opacity: 1; transform: translateX(-36px); pointer-events: auto; background: var(--color-success-tint); border-color: var(--color-success); }
+.fp-li-ask .fp-no { opacity: 1; transform: none; pointer-events: auto; background: var(--color-danger-tint); border-color: var(--color-danger); }
+.fp-li-ask .fp-item { padding-right: 84px; border-color: var(--color-danger); }
+.fp-item { transition: background 0.15s, border-color 0.15s, padding 0.28s var(--ease); }
+
+/* Lock location + missing-info warnings */
+.fr-lock { display: inline-flex; align-items: center; gap: var(--space-2); }
+.fr-lock svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.fr-lock-on { background: var(--color-primary-tint); border-color: var(--color-primary); }
+.fr-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.fd input[readonly] { background: var(--color-bg); color: var(--color-muted); cursor: not-allowed; }
+.cp-locked .leaflet-control-zoom { display: none; }
+.cp-locked .cp-canvas { cursor: not-allowed; }
+.fr-missing { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); font-size: 13.5px; font-weight: 500; }
+.fr-missing li { display: inline-flex; align-items: center; gap: 6px; }
+.fr-missing i { width: 16px; height: 16px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--color-danger); color: #fff; font-style: normal; font-weight: 700; font-size: 11px; line-height: 1; }

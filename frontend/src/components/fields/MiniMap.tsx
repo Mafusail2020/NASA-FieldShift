@@ -8,11 +8,11 @@ const UKRAINE: [number, number] = [49.0, 31.5]
 const round = (v: number) => +v.toFixed(5)
 const EPS = 1e-5 // about 1 m: smaller differences are rounding, not a move
 
-interface Props { lat: number | null; lon: number | null; onMove(lat: number, lon: number): void }
+interface Props { lat: number | null; lon: number | null; locked?: boolean; onMove(lat: number, lon: number): void }
 
 // Keeps the map and the coordinate boxes in step. Typing moves the map; moving the map (drag, zoom, keys) writes the new centre back.
 // A map move that lands on the current coordinates is ignored, so a programmatic setView never overwrites what the user typed.
-function Sync({ lat, lon, onMove }: Props) {
+function Sync({ lat, lon, onMove }: Omit<Props, 'locked'>) {
   const map = useMap()
   const cur = useRef({ lat, lon })
   const dragged = useRef(false)
@@ -38,13 +38,24 @@ function Sync({ lat, lon, onMove }: Props) {
   return null
 }
 
-export default function MiniMap({ lat, lon, onMove }: Props) {
+// Locked: the map cannot be dragged, zoomed or moved from the keyboard.
+function Lock({ locked }: { locked: boolean }) {
+  const map = useMap()
+  useEffect(() => {
+    const parts = [map.dragging, map.touchZoom, map.scrollWheelZoom, map.doubleClickZoom, map.boxZoom, map.keyboard]
+    for (const h of parts) locked ? h.disable() : h.enable()
+  }, [locked, map])
+  return null
+}
+
+export default function MiniMap({ lat, lon, locked = false, onMove }: Props) {
   const [tileError, setTileError] = useState(false)
   const [initial] = useState(() => (lat != null && lon != null ? { c: [lat, lon] as [number, number], z: 14 } : { c: UKRAINE, z: 6 }))
   return (
-    <div className="cp-map cp-mini" role="region" aria-label="Satellite map. Drag it so the pin sits on your field; the coordinates follow. Arrow keys move the map, plus and minus zoom.">
+    <div className={`cp-map cp-mini${locked ? ' cp-locked' : ''}`} role="region" aria-label={locked ? 'Satellite map, locked' : 'Satellite map. Drag it so the pin sits on your field; the coordinates follow. Arrow keys move the map, plus and minus zoom.'}>
       <MapContainer center={initial.c} zoom={initial.z} minZoom={4} maxZoom={18} zoomControl attributionControl={false} className="cp-canvas">
         <Sync lat={lat} lon={lon} onMove={onMove} />
+        <Lock locked={locked} />
         <TileLayer url={ESRI} maxZoom={18} eventHandlers={{ tileerror: () => setTileError(true), tileload: () => setTileError(false) }} />
       </MapContainer>
       <div className="cp-pin" aria-hidden="true"><i /><i /><b /></div>

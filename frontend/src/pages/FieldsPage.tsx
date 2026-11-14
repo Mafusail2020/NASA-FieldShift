@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FieldDetail from '../components/fields/FieldDetail'
 import { FarmFinanceSummary } from '../components/finance/FarmFinanceSummary'
 import { CROP_LABEL, useField, type FieldItem } from '../lib/field'
@@ -22,6 +22,8 @@ export default function FieldsPage() {
   const grid = g.state === 'ready' ? g.grid : null
   const [listOpen, setListOpen] = useState(false)
   const [confirmId, setConfirmId] = useState<string | null>(null)
+  const noRefs = useRef<Record<string, HTMLButtonElement>>({})
+  useEffect(() => { if (confirmId) noRefs.current[confirmId]?.focus() }, [confirmId]) // the trash is gone: focus the safe choice
 
   // Keep every field's cell in step with its coordinates (also once the grid has loaded).
   useEffect(() => {
@@ -80,26 +82,25 @@ export default function FieldsPage() {
             const st = cellState(f, !!grid)
             const sub = [f.crop ? CROP_LABEL[f.crop] : null, f.areaHa != null ? `${fmtHa(f.areaHa)} ha` : null].filter(Boolean).join(' · ')
             return (
-              <li key={f.id} className="fp-li reveal" style={{ '--i': i } as React.CSSProperties}>
-                {confirmId === f.id ? (
-                  <div className="fp-confirm" role="alertdialog" aria-label={`Delete ${f.name}?`}>
-                    <span>Delete <b>{f.name || 'this field'}</b>?</span>
-                    <button type="button" className="fr-btn fr-danger" autoFocus onClick={() => { setConfirmId(null); removeField(f.id) }}>Delete</button>
-                    <button type="button" className="fr-btn" onClick={() => setConfirmId(null)}>Keep</button>
-                  </div>
-                ) : (
-                  <>
-                    <button type="button" className={`fp-item${f.id === active.id ? ' fp-item-on' : ''}`} aria-current={f.id === active.id ? 'true' : undefined} onClick={() => pick(f.id)}>
-                      <i className={`fp-dot fp-dot-${st}`} aria-hidden="true" />
-                      <span className="fp-item-name">{f.name || 'Untitled field'}</span>
-                      <span className="fp-item-sub">{sub || 'No crop or area yet'}</span>
-                      <span className="sr-only">{st === 'ok' ? 'Climate cell found' : st === 'out' ? 'Outside the analysed area' : 'Coordinates not set'}</span>
-                    </button>
-                    <button type="button" className="fp-trash" aria-label={`Delete ${f.name || 'field'}`} onClick={() => setConfirmId(f.id)}>
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" /></svg>
-                    </button>
-                  </>
-                )}
+              <li key={f.id} className={`fp-li reveal${confirmId === f.id ? ' fp-li-ask' : ''}`} style={{ '--i': i } as React.CSSProperties}
+                onKeyDown={(e) => { if (e.key === 'Escape' && confirmId === f.id) setConfirmId(null) }}>
+                <button type="button" className={`fp-item${f.id === active.id ? ' fp-item-on' : ''}`} aria-current={f.id === active.id ? 'true' : undefined} onClick={() => pick(f.id)}>
+                  <i className={`fp-dot fp-dot-${st}`} aria-hidden="true" />
+                  <span className="fp-item-name">{f.name || 'Untitled field'}</span>
+                  <span className="fp-item-sub">{sub || 'No crop or area yet'}</span>
+                  <span className="sr-only">{st === 'ok' ? 'Climate cell found' : st === 'out' ? 'Outside the analysed area' : 'Coordinates not set'}</span>
+                </button>
+                <div className="fp-acts">
+                  <button type="button" className="fp-act fp-trash" aria-label={`Delete ${f.name || 'field'}`} inert={confirmId === f.id} onClick={() => setConfirmId(f.id)}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" /></svg>
+                  </button>
+                  <button type="button" className="fp-act fp-yes" aria-label={`Confirm: delete ${f.name || 'field'}`} inert={confirmId !== f.id} onClick={() => { setConfirmId(null); removeField(f.id) }}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+                  </button>
+                  <button type="button" className="fp-act fp-no" ref={(el) => { if (el) noRefs.current[f.id] = el; else delete noRefs.current[f.id] }} aria-label={`Keep ${f.name || 'field'}`} inert={confirmId !== f.id} onClick={() => setConfirmId(null)}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                  </button>
+                </div>
               </li>
             )
           })}

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import AsciiField from '../components/home/AsciiField'
-import TypedBlock from '../components/home/TypedBlock'
+import DigBlock from '../components/home/DigBlock'
 import './HomePage.css'
 
 export default function HomePage() {
@@ -13,7 +13,7 @@ export default function HomePage() {
     <section className="home" aria-label="Home">
       <AsciiField />
       <div className="home-text">
-        <TypedBlock />
+        <DigBlock />
       </div>
     </section>
   )

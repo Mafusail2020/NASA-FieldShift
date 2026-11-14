@@ -15,7 +15,8 @@ body.home-bg { background: #fff; background-image: none; }
   padding: 0 var(--space-6) 0 clamp(24px, 7vw, 120px); /* block is centred vertically */
   max-width: 46%;
 }
-.home .typed-title {
+.home .dig-title {
+  position: relative; width: fit-content;
   margin: 0; color: #000; font-weight: 700; letter-spacing: -0.045em; line-height: 0.95;
   font-size: clamp(48px, 8vw, 128px);
 }
@@ -27,16 +28,12 @@ body.home-bg { background: #fff; background-image: none; }
   .home-text { max-width: none; height: auto; padding: var(--space-6) var(--space-5) 0; justify-content: flex-start; }
 }
 
-/* typing: untyped letters keep their space but are hidden; a thin caret blinks after the last typed letter */
-.tt-off { visibility: hidden; }
-.tt-on, .tt-off { position: relative; }
-.tt-caret-r::after, .tt-caret-l::after {
-  content: ''; position: absolute; top: 0.24em; width: 0.06em; height: 0.76em; background: currentColor; /* ends on the baseline */
-  visibility: visible; animation: tt-blink 0.8s steps(1) infinite;
-}
-.tt-caret-r::after { right: -0.03em; }
-.tt-caret-l::after { left: -0.03em; }
-@keyframes tt-blink { 50% { opacity: 0; } }
+/* the soil patch that hides the title until the trowel has dug it out (drawn by DigBlock) */
+.dig-canvas { position: absolute; pointer-events: none; z-index: 2; }
+
+/* tagline and description appear once the title is dug out */
+.home-rest { opacity: 0; transform: translateY(12px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.home-rest.on { opacity: 1; transform: none; }
 
 /* after the last black letter: Shift turns orange and gets underlined, both over 1 second */
 .tt-shift { position: relative; display: inline-block; color: #000; transition: color 1s var(--ease); }
@@ -46,4 +43,4 @@ body.home-bg { background: #fff; background-image: none; }
 }
 .tt-shift.tt-done { color: var(--color-primary); }
 .tt-shift.tt-done::after { width: 100%; }
-@media (prefers-reduced-motion: reduce) { .tt-shift, .tt-shift::after { transition: none; } .tt-caret-r::after, .tt-caret-l::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { .tt-shift, .tt-shift::after, .home-rest { transition: none; } }

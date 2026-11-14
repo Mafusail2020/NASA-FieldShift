@@ -77,6 +77,13 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
   else if (cell) chip = { cls: 'ok', text: `Cell ${cell.lat.toFixed(1)}N ${cell.lon.toFixed(1)}E` }
   else chip = { cls: 'out', text: 'Outside the analysed area' }
 
+  const missing = [
+    field.lat == null || field.lon == null ? 'No coordinates' : null,
+    field.areaHa == null ? 'No area' : null,
+    field.crop == null ? 'No crop' : null,
+    field.rotation.length === 0 ? 'No rotation' : null,
+  ].filter((m): m is string => m != null)
+
   const id = (s: string) => `${uid}${s}`
   return (
     <article className="fd" aria-label={field.name}>
@@ -90,18 +97,18 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
       {afterHead}
 
       <div className="fd-top">
-        <MiniMap lat={field.lat} lon={field.lon} onMove={(la, lo) => setCoords(String(la), String(lo))} />
+        <MiniMap lat={field.lat} lon={field.lon} locked={field.locked} onMove={(la, lo) => setCoords(String(la), String(lo))} />
         <div className="fd-form">
       <div className="fr-inputs">
         <div className="fr-f">
           <label htmlFor={id('lat')}>Latitude (°N)</label>
-          <input id={id('lat')} inputMode="decimal" autoComplete="off" placeholder="49.84" value={lat} onChange={(e) => onCoord('lat', e.target.value)}
+          <input id={id('lat')} inputMode="decimal" autoComplete="off" placeholder="49.84" value={lat} onChange={(e) => onCoord('lat', e.target.value)} readOnly={field.locked}
             aria-invalid={!!latErr} aria-describedby={latErr ? id('lat-e') : undefined} />
           {latErr && <p className="fr-err" id={id('lat-e')}>{latErr}</p>}
         </div>
         <div className="fr-f">
           <label htmlFor={id('lon')}>Longitude (°E)</label>
-          <input id={id('lon')} inputMode="decimal" autoComplete="off" placeholder="24.03" value={lon} onChange={(e) => onCoord('lon', e.target.value)}
+          <input id={id('lon')} inputMode="decimal" autoComplete="off" placeholder="24.03" value={lon} onChange={(e) => onCoord('lon', e.target.value)} readOnly={field.locked}
             aria-invalid={!!lonErr} aria-describedby={lonErr ? id('lon-e') : undefined} />
           {lonErr && <p className="fr-err" id={id('lon-e')}>{lonErr}</p>}
         </div>
@@ -121,10 +128,18 @@ export default function FieldDetail({ field, grid, onUpdate, afterHead }: Props)
       </div>
 
       <div className="fr-meta">
-        <button type="button" className="fr-btn" onClick={locate}>Use my location</button>
+        <button type="button" className="fr-btn" onClick={locate} disabled={field.locked}>Use my location</button>
+        <button type="button" className={`fr-btn fr-lock${field.locked ? ' fr-lock-on' : ''}`} aria-pressed={field.locked} onClick={() => onUpdate({ locked: !field.locked })}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">{field.locked ? <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z" /> : <path d="M7 11V8a5 5 0 0 1 9.6-2M5 11h14v10H5z" />}</svg>
+          {field.locked ? 'Location locked' : 'Lock location'}
+        </button>
         <span className="fr-geo" role="status" aria-live="polite">{geo}</span>
       </div>
-      <p className="fr-hint">Move the map or type the numbers: each updates the other. You can paste a pair such as 49.84, 24.03 into either box (decimal degrees).</p>
+      {missing.length > 0 && (
+        <ul className="fr-missing" aria-label="Missing information">
+          {missing.map((m) => <li key={m}><i aria-hidden="true">!</i>{m}</li>)}
+        </ul>
+      )}
         </div>
       </div>
       <div className="fr-fin"><FieldFinanceSummary field={field} /></div>
