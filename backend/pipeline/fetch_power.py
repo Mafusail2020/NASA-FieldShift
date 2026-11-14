@@ -40,8 +40,8 @@ def parse_power(payload: dict) -> tuple[pd.DataFrame, dict]:
     return df, units
 
 
-def fetch_point(lat: float, lon: float, retries: int = 4) -> dict:
-    q = dict(parameters=",".join(PARAMS), community="ag", latitude=lat, longitude=lon,
+def fetch_point(lat: float, lon: float, retries: int = 4, params: list = PARAMS) -> dict:
+    q = dict(parameters=",".join(params), community="ag", latitude=lat, longitude=lon,
              start=START, end=END, format="json")
     for attempt in range(retries):
         try:

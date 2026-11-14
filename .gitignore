@@ -6,3 +6,6 @@ node_modules/
 dist/
 .DS_Store
 .env
+backend/data/raw/crops/_cache/
+backend/data/raw/power_grid/
+backend/data/raw/soilgrids/
