@@ -1,23 +1,17 @@
 // Per-field climate summary and historical climate-risk charts of the field's NASA POWER grid cell.
 // Data: public/data/grid.json cell (passed in) and public/data/grid_layers.json (built by pipeline/build_layers.py).
-// Order: plain findings first, then the numbers, then the charts as evidence (water, then heat and frost).
-import { useEffect, useState, type ReactNode } from 'react'
+// Order: the numbers, then the charts as evidence (water, then heat and frost). The plain findings are in FieldGlance, above this panel.
+import { useState, type ReactNode } from 'react'
 import type { GridCell } from '../../types'
 import StatusChip from '../StatusChip'
 import { Decades, DRY, DRY_STRONG, FrostChart, HEAT, HEAT_STRONG, RAIN, RAIN_DEEP, RAIN_SOFT, TimeChart, fmt, worstIdx, type Series } from './climate/charts'
 import { THRESHOLD_ORDER, doyLabel as doy, type CellLayer, type FrostEntry, type LayerMeta, type LayersDoc } from './climate/types'
+import { clear, mean, ok, round10, useLayersDoc, yearsOf } from './climate/util'
 import './climate/climate.css'
-
-type Load = { state: 'loading' } | { state: 'error' } | { state: 'ready'; doc: LayersDoc }
-let cache: Promise<LayersDoc> | null = null
-const loadDoc = () => (cache ??= fetch('/data/grid_layers.json').then((r) => { if (!r.ok) throw new Error('missing'); return r.json() }).catch((e) => { cache = null; throw e }))
 
 const GRID_SOURCE = 'NASA POWER daily, community AG, 1991-2025 (MERRA-2 grid, 0.5 x 0.625 deg); ETo = FAO-56 Penman-Monteith (core/eto.py); tmean = (Tmax+Tmin)/2; a year with any missing day is skipped'
 const FROST_NAMES: Record<string, string> = { t0: 'Light frost', t2: 'Moderate frost', t4: 'Hard frost' }
-const mean = (xs: (number | null | undefined)[]) => { const v = xs.filter((x): x is number => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : NaN }
-const clear = (c?: CellLayer) => !!c && c.p_value != null && c.p_value < 0.05
 const sign = (v: number, d: number) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmt(Math.abs(v), d)}`
-const round10 = (v: number) => Math.round(v / 10) * 10
 
 // Fixed sentence templates, filled from computed numbers only. `subject` goes after the direction word ("More days above 32 °C by ...").
 function takeaway(c: CellLayer, words: [string, string], unit: string, d = 2, subject?: string): string {
@@ -37,12 +31,7 @@ function rainTake(y: CellLayer, g: CellLayer | null): string {
 }
 
 export function FieldClimate({ cell }: { cell: GridCell | null }) {
-  const [load, setLoad] = useState<Load>({ state: 'loading' })
-  useEffect(() => {
-    let live = true
-    loadDoc().then((doc) => live && setLoad({ state: 'ready', doc })).catch(() => live && setLoad({ state: 'error' }))
-    return () => { live = false }
-  }, [])
+  const load = useLayersDoc()
 
   const head = (
     <div className="fc-head">
@@ -126,40 +115,15 @@ function Charts({ doc, cell }: { doc: LayersDoc; cell: GridCell }) {
   const rec = doc.cells[cell.id]
   const [thr, setThr] = useState('t0')
   if (!rec) return <><Summary cell={cell} /><p className="fc-msg">No risk statistics for this cell yet (its NASA POWER series has not been processed).</p></>
-  const years = Array.from({ length: doc.years[1] - doc.years[0] + 1 }, (_, i) => doc.years[0] + i)
+  const years = yearsOf(doc)
   const L = (id: string) => rec[id] as CellLayer | undefined
   const M = (id: string) => doc.layers[id]
-  const ok = (c?: CellLayer): c is CellLayer => !!c && c.value != null && !!c.y
   const disabled = Object.values(doc.layers).filter((m) => m.disabled)
   const trendLine = (c: CellLayer) => (clear(c) ? c.line : null)   // a trend line is drawn only where there is a trend
 
   const temp = L('temp_trend'), hot32 = L('hot32'), hot35 = L('hot35'), heavyShare = L('heavy_share'), heavyDays = L('heavy_days')
   const wb = L('water_balance'), rainY = L('precip_trend'), rainG = L('precip_growing_trend')
   const dryYears = ok(wb) ? worstIdx(wb.y!, 'low').map((i) => years[i]) : []   // the driest growing seasons, flagged on both water charts
-
-  // ---- plain findings ----
-  const dec = (c: CellLayer | undefined, a: number, b: number) => mean(c?.y ? c.y.filter((_, i) => years[i] >= a && years[i] <= b) : [])
-  const findings: { cls: string; text: ReactNode }[] = []
-  if (ok(temp)) {
-    findings.push(clear(temp) && temp.trend != null && temp.line
-      ? { cls: 'heat', text: <><b>Warming:</b> {sign(temp.trend, 2)} °C per decade, about {fmt(temp.line[1] - temp.line[0], 1)} °C warmer than the early 1990s.</> }
-      : { cls: 'heat', text: <><b>Temperature:</b> no clear change in the yearly mean.</> })
-  }
-  if (ok(hot32)) {
-    const a = dec(hot32, 1991, 1999), b = dec(hot32, 2020, 2029)
-    findings.push({ cls: 'heat', text: <><b>{clear(hot32) ? (hot32.trend! > 0 ? 'More hot days:' : 'Fewer hot days:') : 'Hot days:'}</b> {Number.isNaN(a) || Number.isNaN(b) ? `${fmt(hot32.value!, 1)} days above 32 °C per summer on average.` : `${fmt(a, 0)} days above 32 °C per summer in the 1990s, ${fmt(b, 0)} in the 2020s.`}</> })
-  }
-  if (ok(rainY)) {
-    findings.push({ cls: 'water', text: clear(rainY) && rainY.trend != null
-      ? <><b>{rainY.trend > 0 ? 'Wetter:' : 'Drier:'}</b> yearly rain {rainY.trend > 0 ? 'rising' : 'falling'} by {fmt(Math.abs(rainY.trend), 1)} mm per decade, now about {fmt(rainY.value!, 0)} mm a year.</>
-      : <><b>Rain is steady:</b> about {fmt(rainY.value!, 0)} mm a year, no clear trend.</> })
-  }
-  if (ok(wb) && wb.value != null) {
-    const short = wb.y!.filter((v) => v != null && v < 0).length, tot = wb.y!.filter((v) => v != null).length
-    findings.push({ cls: 'dry', text: wb.value < 0
-      ? <><b>Growing-season shortfall:</b> in a typical Apr–Sep season a well-watered crop would use about {round10(-wb.value)} mm more water than rain supplies; rain fell short in {short} of {tot} seasons.</>
-      : <><b>Growing-season water:</b> rain exceeds what a well-watered crop would use by about {round10(wb.value)} mm in a typical Apr–Sep season.</> })
-  }
 
   // ---- charts ----
   type CardOpts = {
@@ -246,12 +210,6 @@ function Charts({ doc, cell }: { doc: LayersDoc; cell: GridCell }) {
 
   return (
     <>
-      {findings.length > 0 && (
-        <div className="fc-card">
-          <div className="fc-top"><p className="fc-title">What the weather record says</p><StatusChip status="data" source={GRID_SOURCE} /></div>
-          <ul className="fc-find">{findings.map((f, i) => <li key={i} className={`fc-find-${f.cls}`}><span>{f.text}</span></li>)}</ul>
-        </div>
-      )}
       <Summary cell={cell} tempTrend={temp} />
       <Group title="Water">
         {waterCard}

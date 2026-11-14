@@ -4,6 +4,7 @@ import type { CropId, FieldItem } from '../../lib/field'
 import type { GridCell, GridDoc } from '../../types'
 import { FieldFinanceSummary } from '../finance/FieldFinanceSummary'
 import { FieldClimate } from './FieldClimate'
+import { FieldGlance } from './FieldGlance'
 import { FieldRotation } from './FieldRotation'
 import MiniMap from './MiniMap'
 import { LAT_RANGE, LON_RANGE, num, parsePair } from './coords'
@@ -139,6 +140,8 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
         </div>
       </div>
       <div className="fr-fin"><FieldFinanceSummary field={field} /></div>
+
+      <section className="fr-glance" aria-label="At a glance"><FieldGlance field={field} cell={cell} /></section>
 
       <div className="fr-body">
         <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
