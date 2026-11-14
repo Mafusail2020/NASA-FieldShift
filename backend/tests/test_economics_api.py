@@ -46,3 +46,13 @@ def test_economics_by_hand_and_k_switch(monkeypatch):
     off = client.post("/api/economics", json={**body, "use_k": False}).json()
     assert off["alternatives"]["B"]["summary"]["median"] == pytest.approx(1000)
     assert d["best_alternative_with_k"] == "A" and d["best_alternative_without_k"] == "A"
+
+
+def test_break_even_by_hand(monkeypatch):
+    monkeypatch.setattr(store, "yields", yields())
+    body = {"region": "odeska", "rotation": ["winter_wheat", "black_fallow"], "price": PRICES, "cost": COSTS, "use_k": True}
+    be = client.post("/api/economics", json=body).json()["farmer"]["break_even"]
+    # wheat after fallow: k 1.08. yield: 15000 / (1.08 * 5000) = 2.7778; price at median yield 4: 15000 / (1.08 * 4) = 3472.2
+    assert len(be) == 1 and be[0]["crop"] == "winter_wheat"
+    assert be[0]["yield_t_ha"] == pytest.approx(15000 / (1.08 * 5000))
+    assert be[0]["price_uah_t"] == pytest.approx(15000 / (1.08 * 4.0))

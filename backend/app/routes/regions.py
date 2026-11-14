@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.schemas import Alternative, Climate, EvaluateResponse, Region, RotationRequest
 from app.store import store
+from core.climate import climate_doc
 from core.rotations import evaluate
 
 router = APIRouter(prefix="/api/regions")
@@ -21,9 +22,11 @@ def regions():
 
 
 @router.get("/{rid}/climate", response_model=Climate)
-def climate(rid: str):
-    c = _region(rid)["climate"]
-    return Climate(region=rid, **c)
+def climate(rid: str, soil: str = "medium"):
+    reg = _region(rid)
+    if soil not in reg["pairs"]:
+        raise HTTPException(422, f"unknown soil {soil}")
+    return Climate(**climate_doc(reg, soil, store.meta["crops"]))
 
 
 @router.post("/{rid}/rotations/evaluate", response_model=EvaluateResponse)

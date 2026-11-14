@@ -6,16 +6,21 @@ import json
 import shutil
 from pathlib import Path
 
+from itertools import product
+
 import pandas as pd
 import yaml
 
+from core.climate import climate_doc
 from core.crops import load_crops
 from core.params import load_params
+from core.rotations import evaluate
 from pipeline.add_eto import OUT_DIR
 from pipeline.fetch_power import OBLASTS
 
 NAMES = {"vinnytska": ("Vinnytsia oblast", "Вінницька область"), "poltavska": ("Poltava oblast", "Полтавська область"),
          "kirovohradska": ("Kirovohrad oblast", "Кіровоградська область"), "odeska": ("Odesa oblast", "Одеська область")}
+OFFLINE_CROPS = ("winter_wheat", "maize", "black_fallow")
 FRONT = Path(__file__).resolve().parents[2] / "frontend" / "public" / "data"
 PARAMS = OUT_DIR.parent / "params"
 
@@ -46,10 +51,19 @@ def main():
                "climate": climate, "pairs": json.loads((OUT_DIR / "pairs" / f"{name}.json").read_text())}
         (OUT_DIR / f"{name}.json").write_text(json.dumps(doc))
         shutil.copy(OUT_DIR / f"{name}.json", FRONT / f"{name}.json")
+        # offline fallback: every rotation of up to 3 crops, so the frontend needs no model code
+        rot0 = yaml.safe_load((PARAMS / "rotations.yaml").read_text())
+        kmu = {k["crop"]: k for k in rot0["kmu_164"]}
+        evals = {soil: {",".join(r): evaluate(list(r), doc["pairs"][soil], kmu)
+                        for n in (1, 2, 3) for r in product(OFFLINE_CROPS, repeat=n)} for soil in doc["pairs"]}
+        clim = {soil: climate_doc(doc, soil, load_crops().to_dict("records")) for soil in doc["pairs"]}
+        (FRONT / f"{name}_eval.json").write_text(json.dumps({"evaluations": evals, "climate": clim}, separators=(",", ":")))
     crops = load_crops()
     rot = yaml.safe_load((PARAMS / "rotations.yaml").read_text())
     meta = {"crops": crops.to_dict("records"), "soils": load_params(PARAMS / "soils.csv", ["soil", "parameter"]).to_dict("records"),
             "model": load_params(PARAMS / "model.csv", ["parameter"]).to_dict("records"),
+            "prices_costs": pd.read_csv(PARAMS / "prices.csv", dtype=str, keep_default_na=False).to_dict("records"),
+            "k": pd.read_csv(PARAMS / "k_predecessor.csv", dtype=str, keep_default_na=False).to_dict("records"),
             "rotations": rot["rotations"], "kmu_164": rot["kmu_164"], "limitations": LIMITATIONS,
             "regions": [{"id": k, "name_en": v[0], "name_uk": v[1]} for k, v in NAMES.items()]}
     (OUT_DIR / "meta.json").write_text(json.dumps(meta))

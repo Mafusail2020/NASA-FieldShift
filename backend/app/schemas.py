@@ -15,6 +15,19 @@ class Region(BaseModel):
     status: Status
 
 
+class CropStress(BaseModel):
+    years: list[int]
+    mean_ks_mid: list[float | None]
+    water_stress_days: list[float | None]
+    heat_days_1: list[float | None]
+    heat_days_2: list[float | None]
+    heat_threshold_1_c: float | None
+    heat_threshold_2_c: float | None
+    heat_status: Status
+    source: str
+    status: Status
+
+
 class Climate(BaseModel):
     region: str
     years: list[int]
@@ -23,6 +36,9 @@ class Climate(BaseModel):
     july_tmax_c: list[float]
     source: str
     status: Status
+    stress: dict[str, CropStress]
+    frost_status: Status
+    frost_note: str
 
 
 class RotationRequest(BaseModel):
@@ -42,6 +58,7 @@ class Criterion(BaseModel):
     norm: int | None = None
     p10: float | None = None
     by_crop: dict[str, float] | None = None
+    crops: list[str] | None = None
 
 
 class StripMonth(BaseModel):
@@ -116,10 +133,18 @@ class EconomicsRequest(BaseModel):
     cost: dict[str, float] = {}
 
 
+class BreakEven(BaseModel):
+    crop: str
+    k: float
+    yield_t_ha: float
+    price_uah_t: float
+
+
 class Money(BaseModel):
     rotation: list[str]
     margins: dict[str, float]
     summary: dict[str, float]
+    break_even: list[BreakEven] = []
 
 
 class EconomicsResponse(BaseModel):

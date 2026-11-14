@@ -48,3 +48,13 @@ def test_unsupported_crop_is_rejected():
 
 def test_empty_rotation_is_rejected():
     assert client.post("/api/regions/poltavska/rotations/evaluate", json={"rotation": []}).status_code == 422
+
+
+def test_climate_has_stress_series_and_frost_todo():
+    c = client.get("/api/regions/poltavska/climate?soil=medium").json()
+    w = c["stress"]["winter_wheat"]
+    assert len(w["years"]) == len(w["mean_ks_mid"]) == 33
+    assert w["heat_threshold_1_c"] == 30.0 and w["heat_status"] == "estimate"
+    assert c["stress"]["maize"]["heat_threshold_1_c"] == 32.0 and all(v is None for v in c["stress"]["maize"]["heat_days_1"])
+    assert c["frost_status"] == "todo"
+    assert client.get("/api/regions/poltavska/climate?soil=mud").status_code == 422

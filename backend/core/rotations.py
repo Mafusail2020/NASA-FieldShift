@@ -91,7 +91,7 @@ def evaluate(rotation: list[str], pairs: dict, kmu: dict[str, dict]) -> dict:
     missing = sorted({s["crop"] for s in per_crop if s["crop"] != FALLOW and s["heat_days_1"] is None})
     if missing:
         crit.append(_crit("heat_days_1", None, f"Heat-stress window is not set for: {', '.join(missing)}.", status="todo",
-                          source="crops.csv heat_start/heat_end are todo for these crops"))
+                          source="crops.csv heat_start/heat_end are todo for these crops", extra={"crops": missing}))
     cold = [s["min_winter_tmin_no_snow"] for s in per_crop if s["min_winter_tmin_no_snow"] is not None]
     if cold:
         crit.append(_crit("min_winter_tmin_no_snow", float(min(cold)),
@@ -128,4 +128,21 @@ def strip(rotation: list[str], pairs: dict) -> list[dict]:
             t = ta.get(12 + m) if m <= hm else tb.get(m)
             months.append({"month": m + 1, "label": t["label"] if t else None, "frac": t["frac"] if t else None})
         out.append({"slot": j, "crop": cur, "months": months})
+    return out
+
+
+def crop_series(pairs: dict, crops: list[str]) -> dict[str, dict]:
+    """Per crop and harvest year, mean over predecessors of the stress metrics (for the climate tab)."""
+    out = {}
+    for crop in crops:
+        by_year: dict[int, list[dict]] = {}
+        for key, p in pairs.items():
+            if key.split(">")[1] == crop:
+                for r in p["records"]:
+                    by_year.setdefault(r["year"], []).append(r)
+        years = sorted(by_year)
+        def mean(k):
+            vals = [np.mean([r[k] for r in by_year[y] if r[k] is not None]) if any(r[k] is not None for r in by_year[y]) else None for y in years]
+            return [None if v is None else round(float(v), 3) for v in vals]
+        out[crop] = {"years": years, **{k: mean(k) for k in ("mean_ks_mid", "water_stress_days", "heat_days_1", "heat_days_2")}}
     return out

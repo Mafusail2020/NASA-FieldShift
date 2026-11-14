@@ -1,6 +1,7 @@
+import numpy as np
 from fastapi import APIRouter, HTTPException
 
-from app.schemas import Defaults, DefaultRow, EconomicsRequest, EconomicsResponse, Money
+from app.schemas import BreakEven, Defaults, DefaultRow, EconomicsRequest, EconomicsResponse, Money
 from app.store import store
 from core.economics import rotation_margins, summary
 
@@ -42,7 +43,13 @@ def _inputs(req: EconomicsRequest):
 
 def _money(rotation, yhat, kt, price, cost, use_k) -> Money:
     m = rotation_margins(rotation, yhat, kt, price, cost, use_k)
-    return Money(rotation=rotation, margins={str(y): v for y, v in m.items()}, summary=summary(m))
+    be = []
+    for j, c in enumerate(rotation):
+        if c != FALLOW and yhat[c]:
+            k = kt.get((c, rotation[j - 1]), 1.0) if use_k else 1.0
+            med = float(np.median(list(yhat[c].values())))
+            be.append(BreakEven(crop=c, k=k, yield_t_ha=cost[c] / (k * price[c]), price_uah_t=cost[c] / (k * med)))
+    return Money(rotation=rotation, margins={str(y): v for y, v in m.items()}, summary=summary(m), break_even=be)
 
 
 @router.post("/economics", response_model=EconomicsResponse)

@@ -49,3 +49,12 @@ Status: code and tests done; no real run, the inputs are not provided.
 - Params: `k_predecessor.csv` (wheat after fallow 1.08, pea 1.13, sunflower 0.79 from Solodushko 2024; everything else 1.0 estimate), `prices.csv` (price, price year, cost per ha: all todo), `war_masks.csv` (2014 rule for Crimea/Donetsk/Luhansk; the 2022 list is not entered).
 - Blocked: `data/raw/yields/yields.csv` (Derzhstat enterprise yields), prices, costs. `www.ukrstat.gov.ua` has an expired SSL certificate (2026-11-14); I did not bypass certificate checks.
 - Open: whether the 4 demo oblasts need a 2022+ mask; linear trend and 2021 technology level are my choices.
+
+## Phase 7 — Full frontend
+Status: built, checked in a browser; Method page is a placeholder (Phase 8); not deployed.
+- Routes `/`, `/results/:region`, `/method`. Start: Leaflet map (geoBoundaries ADM1 2017, ODbL; demo oblasts green; Crimea, Sevastopol, Donetsk, Luhansk, Zaporizhzhia, Kherson hatched as WHOLE oblasts: a simplification, real occupied areas are not drawn), form (rotation, soil, area), label "Analysis for the oblast, not your specific field".
+- Results tabs: Climate (trends, Ks, water-stress days, heat days, frost = todo), Rotations (strip + criteria table), Money (inputs with source/status, 300 ms debounce, dot chart, median, break-even, loss years, k switch, best alternative with/without k).
+- Every number has an ℹ source tooltip; `estimate` and `todo` values are marked. Texts are templates in `src/locales/{en,uk}.json` filled from computed values. The Ukrainian wording is mine: Ivan to review.
+- Offline: if the API does not answer in 5 s (or answers 5xx) the app reads `public/data/*.json`, disables the price/cost inputs and shows "Offline mode — default prices". Offline rotations are limited to 3 years (precomputed `<oblast>_eval.json`); the Money tab needs the API.
+- Backend additions: `core/climate.py`, per-crop break-even in `/api/economics`, `?soil=` on `/climate`, offline export.
+- Checks: type-check + build; headless Chrome (puppeteer-core) on Start, Rotations (uk), Climate, Money, offline mode; three numbers compared with the JSON. Money chart was only seen with SYNTHETIC yields (not committed).
