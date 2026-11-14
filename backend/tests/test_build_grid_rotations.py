@@ -20,7 +20,8 @@ def test_build_cell_structure_and_gap_fill():
     assert out["filled_gap_days"] == 1
     assert set(out["soils"]) == set(SOILS)
     pairs = out["soils"]["medium"]
-    assert len(pairs) == 9 and "winter_wheat>maize" in pairs and "black_fallow>black_fallow" in pairs
+    assert len(pairs) == 81  # 8 demo crops + black fallow, every ordered pair
+    assert "winter_wheat>maize" in pairs and "black_fallow>black_fallow" in pairs and "soybean>millet" in pairs
     p = pairs["black_fallow>winter_wheat"]
     assert p["year"] == [1996, 1997]
     assert all(0 <= k <= 1 for k in p["mean_ks_mid"])
@@ -29,7 +30,15 @@ def test_build_cell_structure_and_gap_fill():
 
 
 def test_uncomputable_crops_list_missing_parameters():
-    st = crop_status(Params(load_crops()))
+    df = load_crops()
+    sow = df.crop.isin(["sunflower", "pea"]) & df.parameter.str.startswith("sowing_") & ~df.parameter.str.startswith("sowing_mmdd")
+    df.loc[sow, ["value", "status"]] = ["", "todo"]  # as before the sowing rules were entered
+    st = crop_status(Params(df))
     assert st["winter_wheat"]["computable"] and st["black_fallow"]["computable"]
     assert not st["sunflower"]["computable"] and "sowing_temp_c" in st["sunflower"]["missing"]
     assert not st["pea"]["computable"]
+
+
+def test_crops_with_sowing_rules_are_computable():
+    st = crop_status(Params(load_crops()))
+    assert st["sunflower"]["computable"] and st["pea"]["computable"]

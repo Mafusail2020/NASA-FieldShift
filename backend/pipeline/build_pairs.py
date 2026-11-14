@@ -29,7 +29,7 @@ def build(name: str):
     ze, ddf = get_value(model, {"parameter": "ze_m"}), get_value(model, {"parameter": "snow_ddf"})
     crops = [c for c in ("winter_wheat", "maize", FALLOW) if P.supported(c)]
     df = pd.read_csv(OUT_DIR / f"{name}_climate.csv", index_col=0, parse_dates=True)
-    clim = Climate(df, snow_store(df["PRECTOTCORR"], (df["T2M_MAX"] + df["T2M_MIN"]) / 2, ddf))
+    clim = Climate(df, snow_store(df["PRECTOTCORR"], (df["T2M_MAX"] + df["T2M_MIN"]) / 2, ddf), oblast=name)
     result = {}
     for soil in SOILS:
         g = lambda n: get_value(soils, {"soil": soil, "parameter": n})

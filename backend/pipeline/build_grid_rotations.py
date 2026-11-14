@@ -34,8 +34,10 @@ PARAMS = ROOT / "backend" / "data" / "params"
 OUT_DIRS = [ROOT / "frontend" / "public" / "data", ROOT / "backend" / "data" / "processed"]
 YEARS = range(1993, 2026)
 SOILS = ("light", "medium", "heavy")
-ALL_CROPS = ("winter_wheat", "maize", "sunflower", "pea", "black_fallow")
-NEED = list(STAGES) + ["kc_ini", "kc_mid", "kc_end", "zr_max_m", "p", "h_m", "sowing_temp_c"]
+# Demo crops (agreed scope). A crop is computed only if its parameters are complete (Params.supported); the rest are listed
+# with the missing parameters. Winter barley, winter rapeseed, oats and buckwheat are left out: no grid sowing date or stages.
+ALL_CROPS = ("winter_wheat", "maize", "sunflower", "pea", "soybean", "sugar_beet", "spring_barley", "millet", "black_fallow")
+NEED = list(STAGES) + ["kc_ini", "kc_mid", "kc_end", "zr_max_m", "p", "h_m"]
 METRICS = ("mean_ks_mid", "water_stress_days", "heat_days_1", "heat_days_2", "bare_months",
            "soil_water_at_sowing_frac", "min_winter_tmin_no_snow")
 FULL_DAYS = 12784  # 1991-01-01 .. 2025-12-31
@@ -48,7 +50,7 @@ def crop_status(P: Params) -> dict:
         need = ["zr_max_m"] if c == FALLOW else NEED
         miss = [n for n in need if P.get(c, n) is None]
         if c != FALLOW:
-            miss += [n for n in ("sowing_temp_dir", "sowing_window_start_mmdd", "sowing_latest_mmdd") if P.get(c, n, str) is None]
+            miss += P.sowing_missing(c)
         heat = [n for n in ("heat_tmax_1_c", "heat_basis", "heat_start", "heat_end") if P.get(c, n, str) is None]
         out[c] = {"computable": P.supported(c), "missing": miss, "heat_missing": [] if c == FALLOW else heat}
     return out
@@ -72,7 +74,7 @@ def build_cell(df: pd.DataFrame, lat: float, elev: float, years=YEARS) -> dict:
     model = load_params(PARAMS / "model.csv", ["parameter"])
     soils = load_params(PARAMS / "soils.csv", ["soil", "parameter"])
     ze, ddf = get_value(model, {"parameter": "ze_m"}), get_value(model, {"parameter": "snow_ddf"})
-    crops = [c for c in ("winter_wheat", "maize", FALLOW) if P.supported(c)]
+    crops = [c for c in ALL_CROPS if P.supported(c)]
     df = df.join(point_eto(df, lat, elev))
     clim = Climate(df, snow_store(df["PRECTOTCORR"], (df["T2M_MAX"] + df["T2M_MIN"]) / 2, ddf))
     res = {}

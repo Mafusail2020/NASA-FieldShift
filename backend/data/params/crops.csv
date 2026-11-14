@@ -53,7 +53,7 @@ sunflower,zr_max_m,1.5,m,"FAO-56 Table 22, Sunflower, range 0.8-1.5, upper value
 sunflower,p,0.45,,"FAO-56 Table 22, Sunflower (for ETc ~5 mm/day)",literature
 sunflower,h_m,2.0,m,"FAO-56 Table 12, Sunflower, max crop height",literature
 sunflower,gdd_base_c,6.7,degC,"NDSU, per CLAUDE.md; exact citation pending",literature
-sunflower,sowing_rule,,calendar|temperature,"Candidate (not entered): NDSU via Manitoba fact sheet min soil temperature ~6 C for sunflower; page not retrievable, unverified",todo
+sunflower,sowing_rule,temperature,calendar|temperature,"My choice between spring cereals (5 C) and maize (13 C). Candidate soil minimum ~6 C for sunflower (NDSU via Manitoba fact sheet, unverified). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
 sunflower,sowing_mmdd_vinnytska,,MM-DD,,todo
 sunflower,sowing_mmdd_poltavska,,MM-DD,,todo
 sunflower,sowing_mmdd_kirovohradska,,MM-DD,,todo
@@ -78,7 +78,7 @@ pea,zr_max_m,1.0,m,"FAO-56 Table 22, Peas Dry/Seed, range 0.6-1.0, upper value (
 pea,p,0.40,,"FAO-56 Table 22, Peas Dry/Seed (for ETc ~5 mm/day)",literature
 pea,h_m,0.5,m,"FAO-56 Table 12, Peas, Dry/Seed, max crop height",literature
 pea,gdd_base_c,,degC,,todo
-pea,sowing_rule,,calendar|temperature,"Candidate (not entered): NDSU via Manitoba fact sheet min soil temperature ~4 C for peas; page not retrievable, unverified",todo
+pea,sowing_rule,temperature,calendar|temperature,"Sown with the earliest spring cereals: FAO-56 Table 11 fn 2 gives 5 C for spring wheat, used by analogy. Candidate soil minimum ~4 C for peas (NDSU via Manitoba fact sheet, unverified). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
 pea,sowing_mmdd_vinnytska,,MM-DD,,todo
 pea,sowing_mmdd_poltavska,,MM-DD,,todo
 pea,sowing_mmdd_kirovohradska,,MM-DD,,todo
@@ -118,3 +118,460 @@ winter_wheat,sowing_latest_mmdd,12-01,MM-DD,FAO-56 Table 11 footnote 2 (10-day r
 maize,sowing_temp_c,13,degC,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean): spring planting of maize-grain when it increases to 13 C,literature
 maize,sowing_temp_dir,rising,,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
 maize,sowing_window_start_mmdd,03-01,MM-DD,"Start of the search for the 13 C crossing; FAO gives none. My choice, Ivan to confirm",estimate
+soybean,L_ini_d,20,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Soybeans, Japan, June (20/25/75/30=150)'. Central USA May row has L_dev '30/35' (ambiguous), so the Japan row is used; my choice, Ivan to confirm",literature
+soybean,L_dev_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Soybeans, Japan, June (20/25/75/30=150)'. Central USA May row has L_dev '30/35' (ambiguous), so the Japan row is used; my choice, Ivan to confirm",literature
+soybean,L_mid_d,75,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Soybeans, Japan, June (20/25/75/30=150)'. Central USA May row has L_dev '30/35' (ambiguous), so the Japan row is used; my choice, Ivan to confirm",literature
+soybean,L_late_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Soybeans, Japan, June (20/25/75/30=150)'. Central USA May row has L_dev '30/35' (ambiguous), so the Japan row is used; my choice, Ivan to confirm",literature
+soybean,kc_ini,0.4,,"FAO-56 Table 12, Legumes group value (Soybeans row has no own Kc ini)",literature
+soybean,kc_mid,1.15,,"FAO-56 Table 12, Soybeans",literature
+soybean,kc_end,0.5,,"FAO-56 Table 12, Soybeans",literature
+soybean,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+soybean,zr_max_m,1.3,m,"FAO-56 Table 22, Soybeans, range 0.6-1.3, upper value (fn 1)",literature
+soybean,p,0.5,,"FAO-56 Table 22, Soybeans (for ETc ~5 mm/day)",literature
+soybean,h_m,1.0,m,"FAO-56 Table 12, Soybeans, max crop height range 0.5-1.0, upper value",literature
+soybean,gdd_base_c,,degC,,todo
+soybean,sowing_rule,temperature,calendar|temperature,"Ukrainian sources via search summaries: soil 11-12 C at seed depth (popular article); 10-11 C at 10 cm best for early varieties (Forest-Steppe trials, Poltava State Agrarian University); 12-14 C at 4-5 cm (Kharkiv). 11 C = middle of the range. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+soybean,sowing_mmdd_vinnytska,,MM-DD,,todo
+soybean,sowing_mmdd_poltavska,,MM-DD,,todo
+soybean,sowing_mmdd_kirovohradska,,MM-DD,,todo
+soybean,sowing_mmdd_odeska,,MM-DD,,todo
+soybean,heat_basis,,gdd|days,,todo
+soybean,heat_start,,GDD or days after sowing,,todo
+soybean,heat_end,,GDD or days after sowing,,todo
+soybean,heat_tmax_1_c,,degC,,todo
+soybean,heat_tmax_2_c,,degC,,todo
+soybean,frost_spring_c,,degC,,todo
+soybean,frost_autumn_c,,degC,,todo
+soybean,frost_winter_min_c,,degC,,todo
+winter_rapeseed,L_ini_d,,days,FAO-56 Table 11 has no rapeseed row; stage lengths todo,todo
+winter_rapeseed,L_dev_d,,days,FAO-56 Table 11 has no rapeseed row; stage lengths todo,todo
+winter_rapeseed,L_mid_d,,days,FAO-56 Table 11 has no rapeseed row; stage lengths todo,todo
+winter_rapeseed,L_late_d,,days,FAO-56 Table 11 has no rapeseed row; stage lengths todo,todo
+winter_rapeseed,kc_ini,0.35,,"FAO-56 Table 12, Oil Crops group value (Rapeseed, Canola row has no own Kc ini)",literature
+winter_rapeseed,kc_mid,1.0,,"FAO-56 Table 12, Rapeseed, Canola, range 1.0-1.15, lower value for rainfed less dense stands (fn 9)",literature
+winter_rapeseed,kc_end,0.35,,"FAO-56 Table 12, Rapeseed, Canola",literature
+winter_rapeseed,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+winter_rapeseed,zr_max_m,1.5,m,"FAO-56 Table 22, Rapeseed, Canola, range 1.0-1.5, upper value (fn 1)",literature
+winter_rapeseed,p,0.6,,"FAO-56 Table 22, Rapeseed, Canola (for ETc ~5 mm/day)",literature
+winter_rapeseed,h_m,0.6,m,"FAO-56 Table 12, Rapeseed, Canola, max crop height",literature
+winter_rapeseed,gdd_base_c,,degC,,todo
+winter_rapeseed,sowing_rule,,calendar|temperature,,todo
+winter_rapeseed,sowing_mmdd_vinnytska,,MM-DD,,todo
+winter_rapeseed,sowing_mmdd_poltavska,,MM-DD,"Candidate (not entered): Korotkova & Drobitko 2024, Scientific Progress & Innovations 27(1), Myrhorod district, Poltava oblast: sown 9 Aug 2023; 'early sowing (5-15 Aug) is permissible in the Forest-Steppe'. This is the early edge, not an optimum. A search summary also cited 21 Aug for the Right Bank Forest-Steppe (paper not read)",todo
+winter_rapeseed,sowing_mmdd_kirovohradska,,MM-DD,,todo
+winter_rapeseed,sowing_mmdd_odeska,,MM-DD,,todo
+winter_rapeseed,heat_basis,,gdd|days,,todo
+winter_rapeseed,heat_start,,GDD or days after sowing,,todo
+winter_rapeseed,heat_end,,GDD or days after sowing,,todo
+winter_rapeseed,heat_tmax_1_c,,degC,,todo
+winter_rapeseed,heat_tmax_2_c,,degC,,todo
+winter_rapeseed,frost_spring_c,,degC,,todo
+winter_rapeseed,frost_autumn_c,,degC,,todo
+winter_rapeseed,frost_winter_min_c,,degC,,todo
+winter_barley,L_ini_d,160,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct (160/75/75/25=335)' used as proxy: FAO-56 Table 11 has no winter barley row; my choice, Ivan to confirm",estimate
+winter_barley,L_dev_d,75,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct (160/75/75/25=335)' used as proxy: FAO-56 Table 11 has no winter barley row; my choice, Ivan to confirm",estimate
+winter_barley,L_mid_d,75,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct (160/75/75/25=335)' used as proxy: FAO-56 Table 11 has no winter barley row; my choice, Ivan to confirm",estimate
+winter_barley,L_late_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Winter Wheat, Idaho USA, Oct (160/75/75/25=335)' used as proxy: FAO-56 Table 11 has no winter barley row; my choice, Ivan to confirm",estimate
+winter_barley,kc_ini,0.4,,"FAO-56 Table 12, Winter Wheat with frozen soils, used as proxy: Table 12 has no winter barley row",estimate
+winter_barley,kc_mid,1.15,,"FAO-56 Table 12, Barley",literature
+winter_barley,kc_end,0.25,,"FAO-56 Table 12, Barley",literature
+winter_barley,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+winter_barley,zr_max_m,1.5,m,"FAO-56 Table 22, Barley, range 1.0-1.5, upper value (fn 1: larger for rainfed / soil-water-stress modelling)",literature
+winter_barley,p,0.55,,"FAO-56 Table 22, Barley (for ETc ~5 mm/day)",literature
+winter_barley,h_m,1.0,m,"FAO-56 Table 12, Barley, max crop height",literature
+winter_barley,gdd_base_c,,degC,,todo
+winter_barley,sowing_rule,calendar,calendar|temperature,"Winter crop sown on a calendar date, not a temperature crossing; my reading of Yarchuk & Bozhko 2012, Visnyk of Dnipro State Agrarian and E... Not supported by core/pairs.py yet (temperature rule only)",estimate
+winter_barley,sowing_mmdd_vinnytska,,MM-DD,,todo
+winter_barley,sowing_mmdd_poltavska,,MM-DD,,todo
+winter_barley,sowing_mmdd_kirovohradska,09-20,MM-DD,"Yarchuk & Bozhko 2012, Visnyk of Dnipro State Agrarian and Economic University, 'Effect of sowing dates on overwintering and yield of winter barley varieties in the northern Steppe of Ukraine' (abstract read, full text not): best sowing period is the end of the 2nd to the start of the 3rd decade of September (20 Sep). Experiment was in the northern Steppe (Dnipropetrovsk), not in Kirovohrad oblast; mapping to Kirovohrad is my choice, Ivan to confirm",estimate
+winter_barley,sowing_mmdd_odeska,,MM-DD,,todo
+winter_barley,heat_basis,,gdd|days,,todo
+winter_barley,heat_start,,GDD or days after sowing,,todo
+winter_barley,heat_end,,GDD or days after sowing,,todo
+winter_barley,heat_tmax_1_c,,degC,,todo
+winter_barley,heat_tmax_2_c,,degC,,todo
+winter_barley,frost_spring_c,,degC,,todo
+winter_barley,frost_autumn_c,,degC,,todo
+winter_barley,frost_winter_min_c,,degC,,todo
+spring_barley,L_ini_d,20,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)'",literature
+spring_barley,L_dev_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)'",literature
+spring_barley,L_mid_d,60,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)'",literature
+spring_barley,L_late_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)'",literature
+spring_barley,kc_ini,0.3,,"FAO-56 Table 12, Cereals group value",literature
+spring_barley,kc_mid,1.15,,"FAO-56 Table 12, Barley",literature
+spring_barley,kc_end,0.25,,"FAO-56 Table 12, Barley",literature
+spring_barley,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+spring_barley,zr_max_m,1.5,m,"FAO-56 Table 22, Barley, range 1.0-1.5, upper value (fn 1: larger for rainfed / soil-water-stress modelling)",literature
+spring_barley,p,0.55,,"FAO-56 Table 22, Barley (for ETc ~5 mm/day)",literature
+spring_barley,h_m,1.0,m,"FAO-56 Table 12, Barley, max crop height",literature
+spring_barley,gdd_base_c,,degC,,todo
+spring_barley,sowing_rule,temperature,calendar|temperature,"FAO-56 Table 11 fn 2: spring planting of spring wheat at 5 C, used for spring barley by analogy (same season). Ukrainian guidance: soil 4-6 C at seed depth for the earliest crops (NUBiP methods text, via search summary). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+spring_barley,sowing_mmdd_vinnytska,,MM-DD,,todo
+spring_barley,sowing_mmdd_poltavska,,MM-DD,,todo
+spring_barley,sowing_mmdd_kirovohradska,,MM-DD,,todo
+spring_barley,sowing_mmdd_odeska,,MM-DD,,todo
+spring_barley,heat_basis,,gdd|days,,todo
+spring_barley,heat_start,,GDD or days after sowing,,todo
+spring_barley,heat_end,,GDD or days after sowing,,todo
+spring_barley,heat_tmax_1_c,,degC,,todo
+spring_barley,heat_tmax_2_c,,degC,,todo
+spring_barley,frost_spring_c,,degC,,todo
+spring_barley,frost_autumn_c,,degC,,todo
+spring_barley,frost_winter_min_c,,degC,,todo
+sugar_beet,L_ini_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sugarbeet, Idaho USA, April (50/40/50/40=180)'",literature
+sugar_beet,L_dev_d,40,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sugarbeet, Idaho USA, April (50/40/50/40=180)'",literature
+sugar_beet,L_mid_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sugarbeet, Idaho USA, April (50/40/50/40=180)'",literature
+sugar_beet,L_late_d,40,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Sugarbeet, Idaho USA, April (50/40/50/40=180)'",literature
+sugar_beet,kc_ini,0.35,,"FAO-56 Table 12, Sugar Beet",literature
+sugar_beet,kc_mid,1.2,,"FAO-56 Table 12, Sugar Beet",literature
+sugar_beet,kc_end,0.7,,"FAO-56 Table 12, Sugar Beet, fn 5: no irrigation during the last month of the season (up to 1.0 with irrigation or significant rain)",literature
+sugar_beet,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+sugar_beet,zr_max_m,1.2,m,"FAO-56 Table 22, Sugar Beet, range 0.7-1.2, upper value (fn 1)",literature
+sugar_beet,p,0.55,,"FAO-56 Table 22, Sugar Beet, fn 3 (for ETc ~5 mm/day)",literature
+sugar_beet,h_m,0.5,m,"FAO-56 Table 12, Sugar Beet, max crop height",literature
+sugar_beet,gdd_base_c,,degC,,todo
+sugar_beet,sowing_rule,temperature,calendar|temperature,"No sugar beet source found. Fodder beet: soil 6-8 C at 5-10 cm (popular article, via search summary); table beet germination 6-8 C. Lower bound 6 C; weak evidence. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+sugar_beet,sowing_mmdd_vinnytska,,MM-DD,,todo
+sugar_beet,sowing_mmdd_poltavska,,MM-DD,,todo
+sugar_beet,sowing_mmdd_kirovohradska,,MM-DD,,todo
+sugar_beet,sowing_mmdd_odeska,,MM-DD,,todo
+sugar_beet,heat_basis,,gdd|days,,todo
+sugar_beet,heat_start,,GDD or days after sowing,,todo
+sugar_beet,heat_end,,GDD or days after sowing,,todo
+sugar_beet,heat_tmax_1_c,,degC,,todo
+sugar_beet,heat_tmax_2_c,,degC,,todo
+sugar_beet,frost_spring_c,,degC,,todo
+sugar_beet,frost_autumn_c,,degC,,todo
+sugar_beet,frost_winter_min_c,,degC,,todo
+buckwheat,L_ini_d,,days,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,L_dev_d,,days,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,L_mid_d,,days,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,L_late_d,,days,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,kc_ini,,,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,kc_mid,,,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,kc_end,,,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+buckwheat,zr_max_m,,m,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,p,,,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,h_m,,m,"Buckwheat is not in FAO-56 Tables 11, 12 or 22",todo
+buckwheat,gdd_base_c,,degC,,todo
+buckwheat,sowing_rule,,calendar|temperature,,todo
+buckwheat,sowing_mmdd_vinnytska,,MM-DD,,todo
+buckwheat,sowing_mmdd_poltavska,,MM-DD,,todo
+buckwheat,sowing_mmdd_kirovohradska,,MM-DD,,todo
+buckwheat,sowing_mmdd_odeska,,MM-DD,,todo
+buckwheat,heat_basis,,gdd|days,,todo
+buckwheat,heat_start,,GDD or days after sowing,,todo
+buckwheat,heat_end,,GDD or days after sowing,,todo
+buckwheat,heat_tmax_1_c,,degC,,todo
+buckwheat,heat_tmax_2_c,,degC,,todo
+buckwheat,frost_spring_c,,degC,,todo
+buckwheat,frost_autumn_c,,degC,,todo
+buckwheat,frost_winter_min_c,,degC,,todo
+millet,L_ini_d,20,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Millet, Central USA, April (20/30/55/35=140)'; Pakistan June row (105 days) not used",literature
+millet,L_dev_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Millet, Central USA, April (20/30/55/35=140)'; Pakistan June row (105 days) not used",literature
+millet,L_mid_d,55,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Millet, Central USA, April (20/30/55/35=140)'; Pakistan June row (105 days) not used",literature
+millet,L_late_d,35,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Millet, Central USA, April (20/30/55/35=140)'; Pakistan June row (105 days) not used",literature
+millet,kc_ini,0.3,,"FAO-56 Table 12, Cereals group value (Millet row has no own Kc ini)",literature
+millet,kc_mid,1.0,,"FAO-56 Table 12, Millet",literature
+millet,kc_end,0.3,,"FAO-56 Table 12, Millet",literature
+millet,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+millet,zr_max_m,2.0,m,"FAO-56 Table 22, Millet, range 1.0-2.0, upper value (fn 1)",literature
+millet,p,0.55,,"FAO-56 Table 22, Millet (for ETc ~5 mm/day)",literature
+millet,h_m,1.5,m,"FAO-56 Table 12, Millet, max crop height",literature
+millet,gdd_base_c,,degC,,todo
+millet,sowing_rule,temperature,calendar|temperature,"UkrAgroConsult (via search summary): germination minimum soil 8-10 C. Sown once soil is clearly above it; 12 C is my choice. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+millet,sowing_mmdd_vinnytska,,MM-DD,,todo
+millet,sowing_mmdd_poltavska,,MM-DD,,todo
+millet,sowing_mmdd_kirovohradska,,MM-DD,,todo
+millet,sowing_mmdd_odeska,,MM-DD,,todo
+millet,heat_basis,,gdd|days,,todo
+millet,heat_start,,GDD or days after sowing,,todo
+millet,heat_end,,GDD or days after sowing,,todo
+millet,heat_tmax_1_c,,degC,,todo
+millet,heat_tmax_2_c,,degC,,todo
+millet,frost_spring_c,,degC,,todo
+millet,frost_autumn_c,,degC,,todo
+millet,frost_winter_min_c,,degC,,todo
+oats,L_ini_d,20,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)' (FAO-56 gives one row for all three)",literature
+oats,L_dev_d,25,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)' (FAO-56 gives one row for all three)",literature
+oats,L_mid_d,60,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)' (FAO-56 gives one row for all three)",literature
+oats,L_late_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Barley/Oats/Wheat, 35-45 deg L, March/Apr (20/25/60/30=135)' (FAO-56 gives one row for all three)",literature
+oats,kc_ini,0.3,,"FAO-56 Table 12, Cereals group value",literature
+oats,kc_mid,1.15,,"FAO-56 Table 12, Oats",literature
+oats,kc_end,0.25,,"FAO-56 Table 12, Oats",literature
+oats,zr_min_m,,m,see winter_wheat.zr_min_m,todo
+oats,zr_max_m,1.5,m,"FAO-56 Table 22, Oats, range 1.0-1.5, upper value (fn 1)",literature
+oats,p,0.55,,"FAO-56 Table 22, Oats (for ETc ~5 mm/day)",literature
+oats,h_m,1.0,m,"FAO-56 Table 12, Oats, max crop height",literature
+oats,gdd_base_c,,degC,,todo
+oats,sowing_rule,,calendar|temperature,,todo
+oats,sowing_mmdd_vinnytska,,MM-DD,,todo
+oats,sowing_mmdd_poltavska,,MM-DD,,todo
+oats,sowing_mmdd_kirovohradska,,MM-DD,,todo
+oats,sowing_mmdd_odeska,,MM-DD,,todo
+oats,heat_basis,,gdd|days,,todo
+oats,heat_start,,GDD or days after sowing,,todo
+oats,heat_end,,GDD or days after sowing,,todo
+oats,heat_tmax_1_c,,degC,,todo
+oats,heat_tmax_2_c,,degC,,todo
+oats,frost_spring_c,,degC,,todo
+oats,frost_autumn_c,,degC,,todo
+oats,frost_winter_min_c,,degC,,todo
+pea,sowing_temp_c,5,degC,"Sown with the earliest spring cereals: FAO-56 Table 11 fn 2 gives 5 C for spring wheat, used by analogy. Candidate soil minimum ~4 C for peas (NDSU via Manitoba fact sheet, unverified). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+pea,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+pea,sowing_window_start_mmdd,03-01,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+spring_barley,sowing_temp_c,5,degC,"FAO-56 Table 11 fn 2: spring planting of spring wheat at 5 C, used for spring barley by analogy (same season). Ukrainian guidance: soil 4-6 C at seed depth for the earliest crops (NUBiP methods text, via search summary). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+spring_barley,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+spring_barley,sowing_window_start_mmdd,03-01,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+sugar_beet,sowing_temp_c,6,degC,"No sugar beet source found. Fodder beet: soil 6-8 C at 5-10 cm (popular article, via search summary); table beet germination 6-8 C. Lower bound 6 C; weak evidence. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+sugar_beet,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+sugar_beet,sowing_window_start_mmdd,03-01,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+sunflower,sowing_temp_c,8,degC,"My choice between spring cereals (5 C) and maize (13 C). Candidate soil minimum ~6 C for sunflower (NDSU via Manitoba fact sheet, unverified). Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+sunflower,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+sunflower,sowing_window_start_mmdd,03-15,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+soybean,sowing_temp_c,11,degC,"Ukrainian sources via search summaries: soil 11-12 C at seed depth (popular article); 10-11 C at 10 cm best for early varieties (Forest-Steppe trials, Poltava State Agrarian University); 12-14 C at 4-5 cm (Kharkiv). 11 C = middle of the range. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+soybean,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+soybean,sowing_window_start_mmdd,03-15,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+millet,sowing_temp_c,12,degC,"UkrAgroConsult (via search summary): germination minimum soil 8-10 C. Sown once soil is clearly above it; 12 C is my choice. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+millet,sowing_temp_dir,rising,,"Spring sowing: the running mean rises to the threshold. Used as the 10-day running mean of daily mean AIR temperature (FAO-56 Table 11 fn 2 style, rising). Ukrainian sources give SOIL temperature at seed depth; soil/air offset is not modelled. Estimate, Ivan to confirm",estimate
+millet,sowing_window_start_mmdd,03-15,MM-DD,"Start of the search for the threshold crossing; no source gives one. My choice, Ivan to confirm",estimate
+winter_wheat,family,Gramineae,text,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+winter_wheat,t_opt_min_c,15,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,t_opt_max_c,23,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,t_abs_min_c,5,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,t_abs_max_c,27,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,t_kill_early_growth_c,0,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,t_kill_rest_c,-20,C,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,rain_opt_min_mm,750,mm/cycle,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,rain_opt_max_mm,900,mm/cycle,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,rain_abs_min_mm,300,mm/cycle,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,rain_abs_max_mm,1600,mm/cycle,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,cycle_min_d,90,days,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,cycle_max_d,250,days,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,ph_opt_min,6,,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,ph_opt_max,7,,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,ph_abs_min,5.5,,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,ph_abs_max,8.5,,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,soil_texture,"medium, organic",text,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,drainage,well (dry spells),text,"FAO EcoCrop database, record Triticum aestivum (EcoPort 2114), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,family,Gramineae,text,"FAO EcoCrop database, record Zea mays (EcoPort 2175), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+maize,t_opt_min_c,18,C,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,t_opt_max_c,33,C,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,t_abs_min_c,10,C,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,t_abs_max_c,47,C,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,rain_opt_min_mm,600,mm/cycle,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,rain_opt_max_mm,1200,mm/cycle,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,rain_abs_min_mm,400,mm/cycle,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,rain_abs_max_mm,1800,mm/cycle,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,cycle_min_d,65,days,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,cycle_max_d,365,days,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,ph_opt_min,5,,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,ph_opt_max,7,,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,ph_abs_min,4.5,,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,ph_abs_max,8.5,,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+maize,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Zea mays (EcoPort 2175), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,family,Compositae,text,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Asteridae:Asterales:Compositae",literature
+sunflower,t_opt_min_c,17,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,t_opt_max_c,34,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,t_abs_min_c,5,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,t_abs_max_c,45,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,t_kill_early_growth_c,0,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,t_kill_rest_c,-10,C,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,rain_opt_min_mm,600,mm/cycle,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,rain_abs_min_mm,300,mm/cycle,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,rain_abs_max_mm,1600,mm/cycle,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,cycle_min_d,70,days,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,cycle_max_d,200,days,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,ph_opt_min,6,,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,ph_opt_max,7.5,,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,ph_abs_min,5.5,,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,ph_abs_max,8,,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,soil_texture,"medium, light",text,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sunflower,drainage,well (dry spells),text,"FAO EcoCrop database, record Helianthus annuus (EcoPort 1191), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,family,Leguminosae,text,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Rosidae:Fabales:Leguminosae",literature
+pea,t_opt_min_c,10,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,t_opt_max_c,24,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,t_abs_min_c,4,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,t_abs_max_c,30,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,t_kill_early_growth_c,0,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,t_kill_rest_c,-2,C,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,rain_opt_min_mm,800,mm/cycle,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,rain_opt_max_mm,1200,mm/cycle,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,rain_abs_min_mm,350,mm/cycle,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,rain_abs_max_mm,2500,mm/cycle,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,cycle_min_d,60,days,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,cycle_max_d,140,days,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,ph_opt_min,5.5,,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,ph_opt_max,7,,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,ph_abs_min,4.5,,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,ph_abs_max,8.3,,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,soil_texture,"heavy, medium, light",text,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+pea,drainage,well (dry spells),text,"FAO EcoCrop database, record Pisum sativum (EcoPort 1721), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,family,Leguminosae,text,"FAO EcoCrop database, record Glycine max (EcoPort 1150), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Rosidae:Fabales:Leguminosae",literature
+soybean,t_opt_min_c,20,C,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,t_opt_max_c,33,C,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,t_abs_min_c,10,C,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,t_abs_max_c,38,C,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,rain_opt_min_mm,600,mm/cycle,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,rain_opt_max_mm,1500,mm/cycle,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,rain_abs_min_mm,450,mm/cycle,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,rain_abs_max_mm,1800,mm/cycle,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,cycle_min_d,75,days,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,cycle_max_d,180,days,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,ph_opt_min,5.5,,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,ph_opt_max,6.5,,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,ph_abs_min,4.5,,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,ph_abs_max,8.4,,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,soil_texture,"medium, organic",text,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+soybean,drainage,well (dry spells),text,"FAO EcoCrop database, record Glycine max (EcoPort 1150), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,family,Cruciferae,text,"FAO EcoCrop database, record Brassica napus (EcoPort 549), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Dilleniidae:Capparales:Cruciferae",literature
+winter_rapeseed,t_opt_min_c,15,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,t_opt_max_c,25,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,t_abs_min_c,5,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,t_abs_max_c,41,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,t_kill_early_growth_c,-6,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,t_kill_rest_c,-15,C,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,rain_opt_min_mm,500,mm/cycle,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,rain_abs_min_mm,400,mm/cycle,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,rain_abs_max_mm,2800,mm/cycle,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,cycle_min_d,85,days,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,cycle_max_d,340,days,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,ph_opt_min,6.5,,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,ph_opt_max,7.6,,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,ph_abs_min,5.5,,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,ph_abs_max,8,,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,soil_texture,"medium, light",text,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_rapeseed,drainage,well (dry spells),text,"FAO EcoCrop database, record Brassica napus (EcoPort 549), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,family,Gramineae,text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+winter_barley,t_opt_min_c,15,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,t_opt_max_c,20,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,t_abs_min_c,2,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,t_abs_max_c,40,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,t_kill_early_growth_c,0,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,t_kill_rest_c,-4,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,rain_opt_min_mm,500,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,rain_abs_min_mm,200,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,rain_abs_max_mm,2000,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,cycle_min_d,90,days,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,cycle_max_d,240,days,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,ph_opt_min,6.5,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,ph_opt_max,7.5,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,ph_abs_min,6,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,ph_abs_max,8,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,soil_texture,medium,text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_barley,drainage,well (dry spells),text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,family,Gramineae,text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+spring_barley,t_opt_min_c,15,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,t_opt_max_c,20,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,t_abs_min_c,2,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,t_abs_max_c,40,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,t_kill_early_growth_c,0,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,t_kill_rest_c,-4,C,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,rain_opt_min_mm,500,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,rain_abs_min_mm,200,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,rain_abs_max_mm,2000,mm/cycle,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,cycle_min_d,90,days,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,cycle_max_d,240,days,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,ph_opt_min,6.5,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,ph_opt_max,7.5,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,ph_abs_min,6,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,ph_abs_max,8,,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,soil_texture,medium,text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+spring_barley,drainage,well (dry spells),text,"FAO EcoCrop database, record Hordeum vulgare (EcoPort 1232), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,family,Chenopodiaceae,text,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Caryophyllidae:Caryophyllales:Chenopodiaceae",literature
+sugar_beet,t_opt_min_c,15,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,t_opt_max_c,25,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,t_abs_min_c,7,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,t_abs_max_c,30,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,t_kill_early_growth_c,-1,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,t_kill_rest_c,-3,C,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,rain_opt_min_mm,400,mm/cycle,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,rain_opt_max_mm,700,mm/cycle,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,rain_abs_min_mm,250,mm/cycle,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,rain_abs_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,cycle_min_d,60,days,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,cycle_max_d,140,days,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,ph_opt_min,6,,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,ph_opt_max,6.8,,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,ph_abs_min,5.5,,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,ph_abs_max,8.5,,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,soil_texture,"medium, organic",text,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,salinity_tolerance,medium (4-10 dS/m),text,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+sugar_beet,drainage,well (dry spells),text,"FAO EcoCrop database, record Beta vulgaris var. saccharifera (EcoPort 48742), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,family,Polygonaceae,text,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), column FAMNAME; botanical family; full EcoCrop lineage Magnoliopsida:Caryophyllidae:Polygonales:Polygonaceae",literature
+buckwheat,t_opt_min_c,17,C,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,t_opt_max_c,27,C,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,t_abs_min_c,7,C,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,t_abs_max_c,40,C,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,rain_opt_min_mm,700,mm/cycle,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,rain_abs_min_mm,400,mm/cycle,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,rain_abs_max_mm,1300,mm/cycle,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,cycle_min_d,55,days,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,cycle_max_d,85,days,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,ph_opt_min,5,,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,ph_opt_max,6.5,,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,ph_abs_min,4.4,,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,ph_abs_max,7.5,,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,soil_texture,"medium, light",text,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+buckwheat,drainage,well (dry spells),text,"FAO EcoCrop database, record Fagopyrum esculentum (EcoPort 2285), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,family,Gramineae,text,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+millet,t_opt_min_c,20,C,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,t_opt_max_c,32,C,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,t_abs_min_c,15,C,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,t_abs_max_c,45,C,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,rain_opt_min_mm,500,mm/cycle,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,rain_opt_max_mm,750,mm/cycle,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,rain_abs_min_mm,200,mm/cycle,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,rain_abs_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,cycle_min_d,55,days,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,cycle_max_d,280,days,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,ph_opt_min,6,,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,ph_opt_max,6.5,,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,ph_abs_min,5.2,,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,ph_abs_max,8.2,,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,soil_texture,medium,text,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+millet,drainage,well (dry spells),text,"FAO EcoCrop database, record Panicum miliaceum (EcoPort 8280), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,family,Gramineae,text,"FAO EcoCrop database, record Avena sativa (EcoPort 481), column FAMNAME; botanical family; full EcoCrop lineage Liliopsida:Commelinidae:Cyperales:Gramineae",literature
+oats,t_opt_min_c,16,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,t_opt_max_c,20,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,t_abs_min_c,5,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,t_abs_max_c,30,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,t_kill_early_growth_c,-1,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,t_kill_rest_c,-15,C,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,rain_opt_min_mm,600,mm/cycle,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,rain_opt_max_mm,1000,mm/cycle,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,rain_abs_min_mm,250,mm/cycle,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,rain_abs_max_mm,1500,mm/cycle,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,cycle_min_d,110,days,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,cycle_max_d,270,days,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,ph_opt_min,5,,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,ph_opt_max,6,,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,ph_abs_min,4.5,,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,ph_abs_max,7.5,,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,soil_texture,"heavy, medium, light",text,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,salinity_tolerance,low (<4 dS/m),text,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+oats,drainage,well (dry spells),text,"FAO EcoCrop database, record Avena sativa (EcoPort 481), via https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv; global species range, not a Ukraine-specific or crop-type-specific value",literature
+winter_wheat,ky_seasonal,1.05,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Winter wheat'",literature
+maize,ky_seasonal,1.25,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Maize'",literature
+sunflower,ky_seasonal,0.95,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Sunflower'",literature
+pea,ky_seasonal,1.15,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Peas'",literature
+soybean,ky_seasonal,0.85,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Soybean'",literature
+sugar_beet,ky_seasonal,1,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Sugarbeet'",literature
+spring_barley,ky_seasonal,1.15,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Spring wheat'; no barley row, spring wheat used by analogy (FAO-56 groups barley, oats and spring wheat), my choice",estimate
+oats,ky_seasonal,1.15,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Spring wheat'; no oats row, spring wheat used by analogy (FAO-56 groups barley, oats and spring wheat), my choice",estimate
+winter_barley,ky_seasonal,1.05,,"FAO Irrigation and Drainage Paper No. 33 (Doorenbos & Kassam 1979), seasonal Ky, Table 1 as reproduced in 'Crop yield response to water' (FAO 2012), https://fao.org/4/i2800e/i2800e02.pdf, Table 1, row 'Winter wheat'; no winter barley row, winter wheat used by analogy, my choice",estimate

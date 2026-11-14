@@ -8,7 +8,8 @@ from core.params import todo_cells as _todo
 
 CROPS_CSV = Path(__file__).resolve().parents[1] / "data" / "params" / "crops.csv"
 COLUMNS = ["crop", "parameter", "value", "unit", "source", "status"]
-CROPS = {"winter_wheat", "maize", "sunflower", "pea", "black_fallow", "green_manure_fallow"}
+CROPS = {"winter_wheat", "maize", "sunflower", "pea", "soybean", "winter_rapeseed", "winter_barley", "spring_barley",
+         "sugar_beet", "buckwheat", "millet", "oats", "black_fallow", "green_manure_fallow"}
 
 
 def load_crops(path: Path = CROPS_CSV) -> pd.DataFrame:

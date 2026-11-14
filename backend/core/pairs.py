@@ -1,8 +1,9 @@
 """One (previous crop -> crop, harvest year, oblast, soil) pair: run the bucket from the previous crop's sowing
 date to the current crop's harvest and compute the stress metrics for the current crop.
 
-Calendar rules (mine, see PROGRESS.md): year Y is the harvest year. Winter wheat is sown in autumn of Y-1, maize in
-spring of Y, both by the FAO-56 temperature rule; the sowing is delayed until the day after the previous harvest.
+Calendar rules (mine, see PROGRESS.md): year Y is the harvest year. Winter crops are sown in autumn of Y-1, spring crops
+in spring of Y. Sowing follows the crop's `sowing_rule`: the FAO-56 temperature rule (default) or a fixed calendar date
+per oblast (`sowing_mmdd_<oblast>`, needs `Climate.oblast`). Sowing is delayed until the day after the previous harvest.
 Black fallow occupies 1 Sep Y-1 .. 31 Aug Y (shifted likewise). Bare days: fallow and the gap between crops.
 Not modelled: effects of crops two or more years back, frost (thresholds are todo).
 """
@@ -18,6 +19,7 @@ from core.kc import adjust_kc, adjust_kc_end, kc_curve, rh_min
 from core.phenology import daily_gdd, gdd_window, sowing_date_temperature, stage_dates
 
 FALLOW = "black_fallow"
+WINTER_CROPS = {"winter_wheat", "winter_barley", "winter_rapeseed"}  # sown in autumn of the year before the harvest year
 STAGES = ("L_ini_d", "L_dev_d", "L_mid_d", "L_late_d")
 
 
@@ -31,18 +33,30 @@ class Params:
         v = self.t.get((crop, name), "")
         return cast(v) if v != "" else None
 
+    def sowing_missing(self, crop) -> list[str]:
+        """Sowing parameters still empty. Rule 'calendar' needs at least one oblast date; anything else uses temperature."""
+        if self.get(crop, "sowing_rule", str) == "calendar":
+            dates = [k[1] for k in self.t if k[0] == crop and k[1].startswith("sowing_mmdd_") and self.t[k] != ""]
+            return [] if dates else ["sowing_mmdd_<oblast>"]
+        need = ("sowing_temp_c", "sowing_temp_dir", "sowing_window_start_mmdd", "sowing_latest_mmdd")
+        return [n for n in need if self.get(crop, n, str) is None]
+
     def supported(self, crop) -> bool:
         if crop == FALLOW:
             return self.get(crop, "zr_max_m") is not None
-        need = list(STAGES) + ["kc_ini", "kc_mid", "kc_end", "zr_max_m", "p", "h_m", "sowing_temp_c"]
-        return all(self.get(crop, n) is not None for n in need)
+        need = list(STAGES) + ["kc_ini", "kc_mid", "kc_end", "zr_max_m", "p", "h_m"]
+        miss = self.sowing_missing(crop)
+        # calendar: needs a date; temperature: needs the threshold (the latest date is optional, as before)
+        sowing_ok = not miss if self.get(crop, "sowing_rule", str) == "calendar" else "sowing_temp_c" not in miss
+        return all(self.get(crop, n) is not None for n in need) and sowing_ok
 
 
 @dataclass
 class Climate:
-    """Daily series of one oblast and the soil-independent snow store."""
+    """Daily series of one oblast and the soil-independent snow store. `oblast` is needed for calendar sowing dates."""
     df: pd.DataFrame
     snow: pd.DataFrame
+    oblast: str | None = None
 
     @property
     def tmean(self):
@@ -54,10 +68,15 @@ def season(crop, year, clim: Climate, P: Params, prev_harvest: date | None = Non
     if crop == FALLOW:
         sow, harv = date(year - 1, 9, 1), date(year, 8, 31)
     else:
-        sow = sowing_date_temperature(
-            clim.tmean, year - 1 if crop == "winter_wheat" else year, P.get(crop, "sowing_temp_c"),
-            P.get(crop, "sowing_temp_dir", str), P.get(crop, "sowing_window_start_mmdd", str),
-            P.get(crop, "sowing_latest_mmdd", str))
+        sow_year = year - 1 if crop in WINTER_CROPS else year
+        if P.get(crop, "sowing_rule", str) == "calendar":
+            mmdd = P.get(crop, f"sowing_mmdd_{clim.oblast}", str) if clim.oblast else None
+            sow = date.fromisoformat(f"{sow_year}-{mmdd}") if mmdd else None
+        else:
+            sow = sowing_date_temperature(
+                clim.tmean, sow_year, P.get(crop, "sowing_temp_c"),
+                P.get(crop, "sowing_temp_dir", str), P.get(crop, "sowing_window_start_mmdd", str),
+                P.get(crop, "sowing_latest_mmdd", str))
         if sow is None:
             return None
         harv = None
@@ -143,7 +162,7 @@ def compute_pair(prev, cur, year, clim: Climate, bare_kc: pd.Series, soil: dict,
         h = _heat(cur, sow_c, harv_c, clim, P)
         if h is not None:
             rec["heat_days_1"], rec["heat_days_2"] = h
-        if cur == "winter_wheat":
+        if cur in WINTER_CROPS:
             w = stress.min_winter_tmin_no_snow(df["T2M_MIN"], clim.snow["snow"].loc[idx], date(year - 1, 12, 1), date(year, 2, 28))
             rec["min_winter_tmin_no_snow"] = None if np.isnan(w) else w
     # monthly storage fraction and cover label for the 24 months Jan (year-1) .. Dec (year)

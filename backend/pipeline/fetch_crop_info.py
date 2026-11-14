@@ -44,8 +44,15 @@ UGA_ITEMS = {"Corn": "maize", "Wheat 11.5% protein": "winter_wheat (food, 11.5% 
 
 AREA = "Ukraine"
 # FAOSTAT does not separate winter and spring wheat; "Wheat" is all wheat.
-FAOSTAT_ITEM = {"winter_wheat": "Wheat", "maize": "Maize (corn)", "sunflower": "Sunflower seed", "pea": "Peas, dry"}
-ECOCROP_NAME = {"winter_wheat": "Triticum aestivum", "maize": "Zea mays", "sunflower": "Helianthus annuus", "pea": "Pisum sativum"}
+# Likewise "Barley" is all barley: winter_barley and spring_barley share one FAOSTAT item and one EcoCrop record.
+FAOSTAT_ITEM = {"winter_wheat": "Wheat", "maize": "Maize (corn)", "sunflower": "Sunflower seed", "pea": "Peas, dry",
+                "soybean": "Soya beans", "winter_rapeseed": "Rape or colza seed", "winter_barley": "Barley",
+                "spring_barley": "Barley", "sugar_beet": "Sugar beet", "buckwheat": "Buckwheat", "millet": "Millet", "oats": "Oats"}
+# Shared records: the crop name in the output is ours, the data is for the whole species or item.
+ECOCROP_NAME = {"winter_wheat": "Triticum aestivum", "maize": "Zea mays", "sunflower": "Helianthus annuus", "pea": "Pisum sativum",
+                "soybean": "Glycine max", "winter_rapeseed": "Brassica napus", "winter_barley": "Hordeum vulgare",
+                "spring_barley": "Hordeum vulgare", "sugar_beet": "Beta vulgaris var. saccharifera",
+                "buckwheat": "Fagopyrum esculentum", "millet": "Panicum miliaceum", "oats": "Avena sativa"}  # millet = proso millet
 ECOCROP_PARAMS = {  # column -> (parameter name, unit)
     "TOPMN": ("t_opt_min_c", "C"), "TOPMX": ("t_opt_max_c", "C"),
     "TMIN": ("t_abs_min_c", "C"), "TMAX": ("t_abs_max_c", "C"),
@@ -53,7 +60,9 @@ ECOCROP_PARAMS = {  # column -> (parameter name, unit)
     "ROPMN": ("rain_opt_min_mm", "mm/cycle"), "ROPMX": ("rain_opt_max_mm", "mm/cycle"),
     "RMIN": ("rain_abs_min_mm", "mm/cycle"), "RMAX": ("rain_abs_max_mm", "mm/cycle"),
     "GMIN": ("cycle_min_d", "days"), "GMAX": ("cycle_max_d", "days"),
+    "PHOPMN": ("ph_opt_min", ""), "PHOPMX": ("ph_opt_max", ""), "PHMIN": ("ph_abs_min", ""), "PHMAX": ("ph_abs_max", ""),
 }
+ECOCROP_TEXT = {"TEXT": "soil_texture", "SAL": "salinity_tolerance", "DRA": "drainage"}  # text values, not numbers
 
 
 def download(url: str, refresh: bool) -> Path:
@@ -124,15 +133,16 @@ def parse_ecocrop(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for crop, sci in ECOCROP_NAME.items():
         rec = df[df["ScientificName"] == sci].iloc[0]
+        src = (f"FAO EcoCrop database, record {sci} (EcoPort {rec['EcoPortCode']}), via {ECOCROP_URL}; "
+               "global species range, not a Ukraine-specific or crop-type-specific value")
         for col, (param, unit) in ECOCROP_PARAMS.items():
             if pd.isna(rec[col]):
                 continue
-            rows.append({
-                "crop": crop, "parameter": param, "value": float(rec[col]), "unit": unit,
-                "source": f"FAO EcoCrop database, record {sci} (EcoPort {rec['EcoPortCode']}), via {ECOCROP_URL}; "
-                          "global species range, not a Ukraine-specific or winter-wheat-specific value",
-                "status": "literature",
-            })
+            rows.append({"crop": crop, "parameter": param, "value": float(rec[col]), "unit": unit, "source": src, "status": "literature"})
+        for col, param in ECOCROP_TEXT.items():
+            if pd.isna(rec[col]) or not str(rec[col]).strip():
+                continue
+            rows.append({"crop": crop, "parameter": param, "value": str(rec[col]).strip(), "unit": "text", "source": src, "status": "literature"})
     return pd.DataFrame(rows)
 
 
@@ -248,7 +258,8 @@ def report(prod: pd.DataFrame, price: pd.DataFrame, eco: pd.DataFrame, psd: pd.D
         "- Costs per hectare: no open machine-readable source found.",
         "- Pea: FAOSTAT only (PSD has no dry pea). UGA Index has no sunflower or pea; it is an export price, not a farm-gate price.",
         "- Prices after 2023: only the UGA Index, last 3 days. FAOSTAT prices end in 2023.",
-        "- Winter and spring wheat are not separated (FAOSTAT 'Wheat', EcoCrop 'Triticum aestivum').",
+        "- Winter and spring wheat are not separated (FAOSTAT 'Wheat', EcoCrop 'Triticum aestivum'). Same for winter_barley and spring_barley: identical values, one shared 'Barley' source.",
+        "- millet is proso millet (Panicum miliaceum); sugar_beet uses the EcoCrop record Beta vulgaris var. saccharifera. USDA PSD and SAGE calendars still cover only wheat, maize, sunflower (SAGE also pulses, empty for Ukraine).",
         "- Yields are all farm categories, not enterprises, and national, not by oblast.",
         "- The `flag` column is FAOSTAT's own flag, kept as received (A = official figure).",
         "",
