@@ -1,0 +1,3 @@
+parameter,value,unit,source,status
+snow_ddf,,mm/degC/day,,todo
+ze_m,0.15,m,FAO-56 Annex 7 (recommended Ze when unknown),literature

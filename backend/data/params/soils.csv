@@ -1,0 +1,16 @@
+soil,parameter,value,unit,source,status
+light,texture,sandy loam,,FAO-56 Table 19 row used for the 'light' preset (Ivan approved Table 19 as source),literature
+light,awc_m3m3,0.13,m3/m3,FAO-56 Table 19 Sandy loam (thetaFC-thetaWP) range 0.11-0.15; midpoint,literature
+light,theta_fc,0.23,m3/m3,FAO-56 Table 19 Sandy loam range 0.18-0.28; midpoint,literature
+light,theta_wp,0.11,m3/m3,FAO-56 Table 19 Sandy loam range 0.06-0.16; midpoint,literature
+light,rew_mm,8,mm,FAO-56 Table 19 Sandy loam REW range 6-10; midpoint,literature
+medium,texture,loam,,FAO-56 Table 19 row used for the 'medium' preset,literature
+medium,awc_m3m3,0.155,m3/m3,FAO-56 Table 19 Loam (thetaFC-thetaWP) range 0.13-0.18; midpoint,literature
+medium,theta_fc,0.25,m3/m3,FAO-56 Table 19 Loam range 0.20-0.30; midpoint,literature
+medium,theta_wp,0.12,m3/m3,FAO-56 Table 19 Loam range 0.07-0.17; midpoint,literature
+medium,rew_mm,9,mm,FAO-56 Table 19 Loam REW range 8-10; midpoint,literature
+heavy,texture,clay,,FAO-56 Table 19 row used for the 'heavy' preset,literature
+heavy,awc_m3m3,0.16,m3/m3,FAO-56 Table 19 Clay (thetaFC-thetaWP) range 0.12-0.20; midpoint,literature
+heavy,theta_fc,0.36,m3/m3,FAO-56 Table 19 Clay range 0.32-0.40; midpoint,literature
+heavy,theta_wp,0.22,m3/m3,FAO-56 Table 19 Clay range 0.20-0.24; midpoint,literature
+heavy,rew_mm,10,mm,FAO-56 Table 19 Clay REW range 8-12; midpoint,literature

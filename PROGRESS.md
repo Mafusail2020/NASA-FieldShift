@@ -19,3 +19,11 @@ Status: in review.
 - Sunflower heat: only the window is shared with maize, thresholds not set. GDD formula and `heat_basis` accepted. Winter wheat stages left as FAO.
 - FAO-56 Tables 11, 12, 22 filled from fao.org text (status=literature, row/region named in `source`). Row choices and range choices (lower/upper) are mine, listed in each `source`; Ivan to review.
 - Still todo: maize kc_end, zr_min_m, sowing rules/dates, heat windows, frost thresholds, fallows.
+
+## Phase 4 — Water balance and stress metrics
+Status: code and synthetic tests done; real-data run blocked (see open questions).
+- `core/kc.py`: Eq. 62/63/65/66, Annex 7 Kc ini for bare soil (monthly). `core/bucket.py`: snow store + daily bucket. `core/stress.py`: metrics.
+- `params/soils.csv`: light = sandy loam, medium = loam, heavy = clay; FAO-56 Table 19 midpoints. `params/model.csv`: snow_ddf (todo), Ze 0.15 m.
+- Approved by Ivan: Dr kept in mm when Zr grows, cut to new TAW when it shrinks; no surface runoff; AWC from Table 19; Kc ini via Annex 7.
+- Assumptions of mine: W_ini = TEW in Annex 7 corrections; with no wetting event in a month one wetting at month start is assumed; ET = 0 under snow; Ks < 1 counts as a water-stress day; bare month = at least half of days without crop; dr0 = 0 (field capacity) at series start.
+- Annex 7 Example 7-1, Fig. 29 case: FAO prints 0.57, Eq. 7-3 gives 0.533 (Fig. 30a case matches, 0.75). Test is xfail until Ivan decides.
