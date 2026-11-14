@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-14",
+ "generated": "2026-11-15",
  "cells": [
   "44.0_33.75",
   "44.0_34.375",
@@ -335,11 +335,8 @@
    ]
   },
   "sunflower": {
-   "computable": false,
+   "computable": true,
    "missing": [
-    "sowing_temp_c",
-    "sowing_temp_dir",
-    "sowing_window_start_mmdd",
     "sowing_latest_mmdd"
    ],
    "heat_missing": [
@@ -350,11 +347,56 @@
    ]
   },
   "pea": {
-   "computable": false,
+   "computable": true,
    "missing": [
-    "sowing_temp_c",
-    "sowing_temp_dir",
-    "sowing_window_start_mmdd",
+    "sowing_latest_mmdd"
+   ],
+   "heat_missing": [
+    "heat_tmax_1_c",
+    "heat_basis",
+    "heat_start",
+    "heat_end"
+   ]
+  },
+  "soybean": {
+   "computable": true,
+   "missing": [
+    "sowing_latest_mmdd"
+   ],
+   "heat_missing": [
+    "heat_tmax_1_c",
+    "heat_basis",
+    "heat_start",
+    "heat_end"
+   ]
+  },
+  "sugar_beet": {
+   "computable": true,
+   "missing": [
+    "sowing_latest_mmdd"
+   ],
+   "heat_missing": [
+    "heat_tmax_1_c",
+    "heat_basis",
+    "heat_start",
+    "heat_end"
+   ]
+  },
+  "spring_barley": {
+   "computable": true,
+   "missing": [
+    "sowing_latest_mmdd"
+   ],
+   "heat_missing": [
+    "heat_tmax_1_c",
+    "heat_basis",
+    "heat_start",
+    "heat_end"
+   ]
+  },
+  "millet": {
+   "computable": true,
+   "missing": [
     "sowing_latest_mmdd"
    ],
    "heat_missing": [
@@ -425,9 +467,117 @@
  ],
  "kmu_164": [
   {
+   "crop": "winter_rye",
+   "min_return_years": 1,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_barley",
+   "min_return_years": 1,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "spring_barley",
+   "min_return_years": 1,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "oats",
+   "min_return_years": 1,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "buckwheat",
+   "min_return_years": 1,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_wheat",
+   "min_return_years": 2,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "potato",
+   "min_return_years": 2,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "millet",
+   "min_return_years": 2,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "perennial_legumes",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "pea",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "soybean",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF; soybean is not named, my reading is that it belongs to 'pulses (except lupin)'",
+   "status": "estimate"
+  },
+  {
+   "crop": "sugar_beet",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "fodder_beet",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "winter_rapeseed",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "spring_rapeseed",
+   "min_return_years": 3,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "flax",
+   "min_return_years": 5,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "lupin",
+   "min_return_years": 6,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
+   "crop": "cabbage",
+   "min_return_years": 6,
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
+   "status": "literature"
+  },
+  {
    "crop": "sunflower",
    "min_return_years": 7,
-   "source": "KMU Resolution No. 164, as written in CLAUDE.md (article/table to be confirmed)",
+   "source": "KMU Resolution No. 164 of 11.02.2010 (as amended by No. 536 of 30.06.2010), note under the table of norms; https://zakon.rada.gov.ua/laws/show/164-2010-%D0%BF",
    "status": "literature"
   }
  ],

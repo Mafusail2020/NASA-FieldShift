@@ -3,8 +3,11 @@
 // finance) is computed by the site. `field` is the ACTIVE field (the expanded row on the Fields page).
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
-export type CropId = 'winter_wheat' | 'maize' | 'sunflower' | 'pea' | 'black_fallow'
-export const CROP_LABEL: Record<CropId, string> = { winter_wheat: 'Winter wheat', maize: 'Maize', sunflower: 'Sunflower', pea: 'Pea', black_fallow: 'Black fallow' }
+export type CropId = 'winter_wheat' | 'maize' | 'sunflower' | 'pea' | 'soybean' | 'sugar_beet' | 'spring_barley' | 'millet' | 'black_fallow'
+export const CROP_LABEL: Record<CropId, string> = {
+  winter_wheat: 'Winter wheat', maize: 'Maize', sunflower: 'Sunflower', pea: 'Pea', soybean: 'Soybean', sugar_beet: 'Sugar beet',
+  spring_barley: 'Spring barley', millet: 'Millet', black_fallow: 'Black fallow',
+}
 export type Soil = 'light' | 'medium' | 'heavy'
 
 export interface FieldItem {

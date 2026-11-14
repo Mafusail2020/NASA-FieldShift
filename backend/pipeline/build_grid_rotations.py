@@ -8,7 +8,8 @@ parameters. Nothing is invented.
 
 Output: <out>/rotations_grid.json (index) and <out>/rotations/<cell id>.json, in frontend/public/data and
 backend/data/processed. Incremental: a cell that already has an output file is skipped (no cell is recomputed unless --force).
-Run from backend/: python -m pipeline.build_grid_rotations [--force] [--workers N] [--limit N]
+Run from backend/: python -m pipeline.build_grid_rotations [--force] [--workers N] [--limit N] [--cells ID ...]
+--cells recomputes only the named cells (ids like 49.5_31.25), also when their output already exists.
 """
 import argparse
 import json
@@ -150,9 +151,11 @@ def main():
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--cells", nargs="*", default=[], help="cell ids to (re)compute, e.g. 49.5_31.25")
     a = ap.parse_args()
     raws = sorted(RAW_DIR.glob("*.csv"))
-    todo = [r for r in raws if a.force or not (OUT_DIRS[0] / "rotations" / f"{r.stem}.json").exists()]
+    todo = [r for r in raws if r.stem in a.cells] if a.cells else [
+        r for r in raws if a.force or not (OUT_DIRS[0] / "rotations" / f"{r.stem}.json").exists()]
     if a.limit:
         todo = todo[: a.limit]
     print(f"{len(raws)} raw files, {len(todo)} to compute")

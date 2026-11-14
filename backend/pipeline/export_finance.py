@@ -16,7 +16,9 @@ RAW = ROOT / "data" / "raw" / "crops"
 PARAMS = ROOT / "data" / "params"
 OUT = [ROOT.parent / "frontend" / "public" / "data" / "finance_inputs.json", ROOT / "data" / "processed" / "finance_inputs.json"]
 NEEDED = ["faostat_ukraine_crops.csv", "faostat_ukraine_prices.csv", "psd_ukraine_crops.csv", "uga_index_prices.csv"]
-LABELS = {"winter_wheat": "Winter wheat", "maize": "Maize", "sunflower": "Sunflower", "pea": "Pea", "black_fallow": "Black fallow"}
+LABELS = {"winter_wheat": "Winter wheat", "maize": "Maize", "sunflower": "Sunflower", "pea": "Pea", "soybean": "Soybean",
+          "winter_rapeseed": "Winter rapeseed", "winter_barley": "Winter barley", "spring_barley": "Spring barley",
+          "sugar_beet": "Sugar beet", "buckwheat": "Buckwheat", "millet": "Millet", "oats": "Oats", "black_fallow": "Black fallow"}
 # FAOSTAT prices before 1996 are in karbovanets (pre-redenomination, hyperinflation), not comparable with UAH.
 FIRST_UAH_YEAR = 1996
 
