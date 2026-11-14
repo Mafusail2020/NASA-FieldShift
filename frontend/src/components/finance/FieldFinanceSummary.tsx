@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import type { FieldItem } from '../../lib/field'
 import { fmt } from '../../lib/format'
 import { fieldRow, fmtMoney, inCurrency, useFinanceInputs, useFinSettings } from '../../lib/finance'
-import StatusChip from '../StatusChip'
+import { RangeBar, fmtShort } from './RangeBar'
 import './FinanceSummary.css'
 
 export function FieldFinanceSummary({ field }: { field: FieldItem }) {
@@ -13,17 +13,20 @@ export function FieldFinanceSummary({ field }: { field: FieldItem }) {
   if (load.state !== 'ready') return <p className="fsum">{load.state === 'loading' ? 'Finance: loading…' : <span className="fsum-warn">Finance inputs unavailable</span>} {link}</p>
   const r = fieldRow(inCurrency(load.data, S.cur), field, S)
   const c = r.calc
+  const perHa = c && !c.invalid && r.area ? { lo: c.revLow / r.area, hi: c.revHigh / r.area } : null
   return (
-    <p className="fsum">
-      <b>{r.cropLabel ?? 'No crop'}</b>{r.area != null && <>, {fmt(r.area, 1)} ha</>}
-      {!c || c.invalid ? (
-        <> <span className="fsum-incomplete">Incomplete: {c?.invalid ? 'invalid inputs' : [r.area == null && 'no area', !r.cropLabel && 'no crop'].filter(Boolean).join(' and ')}</span></>
-      ) : (
-        <>: revenue {fmtMoney(c.revLow)} to {fmtMoney(c.revHigh)} {S.cur}
-          {c.margin != null ? <>, margin {fmtMoney(c.marLow!)} to {fmtMoney(c.marHigh!)} {S.cur}</> : <> <span className="fsum-muted">margin needs a cost</span></>}
-          {' '}<StatusChip status="estimate" source="Range from national FAOSTAT yields and prices (nominal) and your inputs; an estimate, not a promise." /></>
-      )}
-      {' '}{link}
-    </p>
+    <div>
+      <p className="fsum">
+        <b>{r.cropLabel ?? 'No crop'}</b>{r.area != null && <>, {fmt(r.area, 1)} ha</>}
+        {!c || c.invalid ? (
+          <> <span className="fsum-incomplete">Incomplete: {c?.invalid ? 'invalid inputs' : [r.area == null && 'no area', !r.cropLabel && 'no crop'].filter(Boolean).join(' and ')}</span></>
+        ) : (
+          <>: estimated revenue {fmtShort(c.revLow)} to {fmtShort(c.revHigh)} {S.cur}{perHa && <> (about {fmtMoney(perHa.lo)} to {fmtMoney(perHa.hi)} {S.cur} per ha)</>}
+            {c.margin != null ? <>, margin {fmtShort(c.marLow!)} to {fmtShort(c.marHigh!)} {S.cur}</> : <> <span className="fsum-muted">margin needs a cost</span></>}</>
+        )}
+        {' '}{link}
+      </p>
+      {c && !c.invalid && <RangeBar low={c.revLow} high={c.revHigh} cur={S.cur} label="Revenue" />}
+    </div>
   )
 }

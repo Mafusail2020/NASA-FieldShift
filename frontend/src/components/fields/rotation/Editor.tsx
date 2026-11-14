@@ -10,7 +10,7 @@ export function Editor({ index, rotation, isDefault, onChange }: {
   const uid = useId()
   const reason = (c: string) => {
     const s = index?.crops[c]
-    return s && !s.computable ? `not computable: missing ${s.missing.join(', ')}` : ''
+    return s && !s.computable ? 'not available yet' : ''
   }
   const set = (i: number, c: CropId) => onChange(rotation.map((x, k) => (k === i ? c : x)))
   return (
@@ -37,7 +37,7 @@ export function Editor({ index, rotation, isDefault, onChange }: {
         onClick={() => onChange([...rotation, (rotation[rotation.length - 1] === 'winter_wheat' ? 'maize' : 'winter_wheat') as CropId])}>
         + Add a year
       </button>
-      {rotation.some((c) => reason(c)) && <p className="rot-warn">A crop in your rotation cannot be computed yet. See the comparison for the missing parameters.</p>}
+      {rotation.some((c) => reason(c)) && <p className="rot-warn">{[...new Set(rotation.filter((c) => reason(c)).map(cropName))].join(' and ')}: not available yet, so this rotation cannot be compared.</p>}
     </div>
   )
 }

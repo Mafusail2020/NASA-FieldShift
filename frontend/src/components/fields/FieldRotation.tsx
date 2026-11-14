@@ -62,7 +62,7 @@ function Inner({ field, cell }: { field: FieldItem; cell: GridCell | null }) {
                   : sc?.preset
                     ? <>Automatic: <b>{soil}</b> ({sc.texture}, clay {sc.clay_pct}%, sand {sc.sand_pct}%) from SoilGrids at or near the cell centre, {gs.state === 'ready' ? gs.data.depth ?? '0-30 cm' : ''}.</>
                     : <>Automatic soil is not available{gs.state === 'loading' ? ' (loading)' : gs.state === 'error' ? ' (grid_soil.json could not be loaded)' : sc?.reason ? ` (${sc.reason})` : ' for this cell'}; using <b>medium</b>.</>}
-                {' '}<StatusChip status={field.soil || !sc?.preset ? 'estimate' : gs.state === 'ready' ? gs.data.status : 'estimate'}
+                {' '}<StatusChip status={field.soil || !sc?.preset ? 'estimate' : gs.state === 'ready' ? gs.data.status : 'estimate'} quiet
                   source={field.soil ? 'Chosen by the user' : gs.state === 'ready' ? gs.data.source : 'Fallback preset, not from data'} />
               </p>
               <div role="group" aria-label="Overwrite soil preset" className="rot-seg">
@@ -74,7 +74,7 @@ function Inner({ field, cell }: { field: FieldItem; cell: GridCell | null }) {
                 Use automatic{auto ? ` (${auto})` : ''}
               </button>
               <p className="rot-help">
-                Available water {soilRow(soil, 'awc_m3m3')?.value} m3/m3 <StatusChip status={soilRow(soil, 'awc_m3m3')?.status ?? 'todo'} source={soilRow(soil, 'awc_m3m3')?.source} />
+                Available water {soilRow(soil, 'awc_m3m3')?.value} m3/m3 <StatusChip status={soilRow(soil, 'awc_m3m3')?.status ?? 'todo'} source={soilRow(soil, 'awc_m3m3')?.source} quiet />
                 {' '}A texture class from a global model at or near the cell centre, not a measured soil of your field.
               </p>
             </fieldset>

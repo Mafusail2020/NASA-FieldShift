@@ -20,9 +20,10 @@ export type PairCols = { year: number[] } & Record<MetricKey, (number | null)[]>
 export interface CellRot { id: string; soils: Record<Soil, Record<string, PairCols>>; filled_gap_days: number }
 
 export const CROP_LABEL: Record<string, string> = {
-  winter_wheat: 'Winter wheat', maize: 'Maize', sunflower: 'Sunflower', pea: 'Pea', black_fallow: 'Black fallow',
+  winter_wheat: 'Winter wheat', maize: 'Maize', sunflower: 'Sunflower', pea: 'Pea', soybean: 'Soybean', sugar_beet: 'Sugar beet',
+  spring_barley: 'Spring barley', millet: 'Millet', black_fallow: 'Black fallow',
 }
-export const ALL_CROPS = ['winter_wheat', 'maize', 'sunflower', 'pea', 'black_fallow']
+export const ALL_CROPS = ['winter_wheat', 'maize', 'sunflower', 'pea', 'soybean', 'sugar_beet', 'spring_barley', 'millet', 'black_fallow']
 export const cropName = (c: string) => CROP_LABEL[c] ?? c
 
 // ---- loading (module cache, one request per file) ----
@@ -79,10 +80,11 @@ export function stat(xs: number[]): Stat | null {
 }
 
 // ---- evaluation ----
-export interface Criterion { key: 'ks' | 'wsd' | 'heat' | 'bare'; label: string; unit: string; digits: number; status: Status; source: string; better: 'high' | 'low' }
+// mult: factor from the stored value to the displayed one (Ks 0-1 is shown as the percentage of the water need met)
+export interface Criterion { key: 'ks' | 'wsd' | 'heat' | 'bare'; label: string; unit: string; digits: number; status: Status; source: string; better: 'high' | 'low'; mult?: number }
 export const CRITERIA: Criterion[] = [
-  { key: 'ks', label: 'Mean Ks, mid-season window', unit: '', digits: 2, status: 'estimate', better: 'high',
-    source: 'FAO-56 Ch. 8 Ks from a daily single-bucket water balance; window = FAO-56 mid-season stage (project choice). 1 = no water stress.' },
+  { key: 'ks', label: 'Water need met, mid-season window', unit: '%', digits: 0, mult: 100, status: 'estimate', better: 'high',
+    source: 'FAO-56 Ch. 8 Ks (x 100) from a daily single-bucket water balance; window = FAO-56 mid-season stage (project choice). 100 % = no water stress.' },
   { key: 'wsd', label: 'Water-stress days (Ks < 1) per season', unit: 'days', digits: 0, status: 'estimate', better: 'low',
     source: 'FAO-56 Ch. 8: days when depletion is beyond RAW. No runoff, irrigation or capillary rise modelled.' },
   { key: 'heat', label: 'Heat days in the heat window', unit: 'days', digits: 0, status: 'estimate', better: 'low',
@@ -112,7 +114,7 @@ export function returnGap(rot: string[], crop: string): number {
 export function evaluate(rot: string[], index: RotIndex, cell: CellRot, soil: Soil): EvalResult {
   const bad = [...new Set(rot)].filter((c) => !index.crops[c]?.computable)
   if (bad.length) {
-    return { ok: false, reasons: bad.map((c) => `${cropName(c)}: not computable, missing parameters ${index.crops[c]?.missing.join(', ') || 'unknown'}`) }
+    return { ok: false, reasons: [`${bad.map(cropName).join(' and ')}: not available yet`] }
   }
   const pairs = cell.soils[soil]
   const acc: Record<Criterion['key'], number[]> = { ks: [], wsd: [], heat: [], bare: [] }
@@ -147,9 +149,9 @@ export const canonical = (rot: string[]) =>
 
 export type Priority = 'water' | 'cover' | 'stress'
 export const PRIORITIES: { id: Priority; label: string; hint: string }[] = [
-  { id: 'water', label: 'Water supply', hint: 'Higher median mean Ks first (less water stress in the mid-season window).' },
+  { id: 'water', label: 'Water supply', hint: 'Higher median share of the water need met first (less water stress in the mid-season window).' },
   { id: 'cover', label: 'Soil cover', hint: 'Fewer bare-soil months first. Erosion itself is not modelled; bare months are only a proxy for exposure.' },
-  { id: 'stress', label: 'Dry-year risk', hint: 'Higher Ks in the driest 10% of crop-years (p10) first.' },
+  { id: 'stress', label: 'Dry-year risk', hint: 'Higher share of the water need met in the driest 10% of crop-years (p10) first.' },
 ]
 /** Sort key: smaller is better. null when the rotation has no value for the priority. */
 export function sortKey(ev: Evaluation, p: Priority): number | null {
