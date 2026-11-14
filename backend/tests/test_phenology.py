@@ -35,3 +35,25 @@ def test_gdd_window_by_hand():
 def test_gdd_window_not_reached():
     gdd = daily_gdd(TMAX, TMAX, 10)
     assert gdd_window(date(2020, 12, 25), gdd, 100, 200) is None
+
+
+def test_sowing_temperature_rising_by_hand():
+    from core.phenology import sowing_date_temperature
+    # Tmean: 5 °C until 31 Mar, then +1 °C per day from 1 Apr (6, 7, ...). Rule: 10-day mean >= 13.
+    # Mean of days k..k+9 after 1 Apr (values 5+k+1 .. 5+k+10)... by hand: 10-day mean ending on 1 Apr + n days =
+    # (5*(9-n) + sum_{j=1}^{n+1}(5+j)) / 10 for n < 9. For n = 9: mean of 6..15 = 10.5; n = 12: mean of 9..18 = 13.5;
+    # n = 11: mean of 8..17 = 12.5 -> first >= 13 is n = 12, i.e. 13 April.
+    idx = pd.date_range("2020-01-01", "2020-06-30")
+    vals = [5.0 if d < pd.Timestamp("2020-04-01") else 5.0 + (d - pd.Timestamp("2020-04-01")).days + 1 for d in idx]
+    t = pd.Series(vals, index=idx)
+    assert sowing_date_temperature(t, 2020, 13, "rising", "03-01") == date(2020, 4, 13)
+
+
+def test_sowing_temperature_falling_with_latest_date():
+    from core.phenology import sowing_date_temperature
+    idx = pd.date_range("2020-08-01", "2020-12-31")
+    warm = pd.Series(20.0, index=idx)  # never falls to 17 -> fallback date
+    assert sowing_date_temperature(warm, 2020, 17, "falling", "08-15", "12-01") == date(2020, 12, 1)
+    assert sowing_date_temperature(warm, 2020, 17, "falling", "08-15") is None
+    cool = pd.Series(10.0, index=idx)  # already <= 17 on the first running-mean day after 15 Aug
+    assert sowing_date_temperature(cool, 2020, 17, "falling", "08-15", "12-01") == date(2020, 8, 15)

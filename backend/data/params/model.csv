@@ -1,3 +1,7 @@
 parameter,value,unit,source,status
-snow_ddf,,mm/degC/day,,todo
+snow_ddf,4,mm/degC/day,"Estimate: HESS 30, 2613-2636 (2026) 'Estimating robust melt factors and temperature thresholds for snow modelling across the Northern Hemisphere': melt factors cluster at 3-5 mm/degC/day in temperate climates, 4 = midpoint; not calibrated to Ukraine",estimate
 ze_m,0.15,m,FAO-56 Annex 7 (recommended Ze when unknown),literature
+fallow_length_months,14,months,"Nielsen & Vigil 2010 (Agron. J. 102:537); '14 months or more' of wheat-fallow, USDA ARS AgResearch Jan 2011",literature
+fallow_start_mmdd,07-01,MM-DD,"Approximate start after wheat harvest; Nielsen & Vigil periods follow harvest. My choice, Ivan to confirm",estimate
+fallow_storage_min,0.10,fraction,Nielsen & Vigil 2010 (Agron. J. 102:537) reported range 10-53% (CLAUDE.md),literature
+fallow_storage_max,0.53,fraction,Nielsen & Vigil 2010 (Agron. J. 102:537) reported range 10-53% (CLAUDE.md),literature

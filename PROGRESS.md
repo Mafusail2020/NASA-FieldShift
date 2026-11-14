@@ -27,3 +27,9 @@ Status: code and synthetic tests done; real-data run blocked (see open questions
 - Approved by Ivan: Dr kept in mm when Zr grows, cut to new TAW when it shrinks; no surface runoff; AWC from Table 19; Kc ini via Annex 7.
 - Assumptions of mine: W_ini = TEW in Annex 7 corrections; with no wetting event in a month one wetting at month start is assumed; ET = 0 under snow; Ks < 1 counts as a water-stress day; bare month = at least half of days without crop; dr0 = 0 (field capacity) at series start.
 - Annex 7 Example 7-1, Fig. 29 case: FAO prints 0.57, Eq. 7-3 gives 0.533 (Fig. 30a case matches, 0.75). Test is xfail until Ivan decides.
+
+### Phase 4 follow-up (Ivan: look up snow/fallow values yourself, use FAO sowing rule, fill the rest accordingly)
+- Found and entered: `snow_ddf` = 4 mm/degC/day (estimate; HESS 2026, melt factors cluster at 3-5 in temperate climates, not calibrated to Ukraine); black-fallow depth 1.8 m and 14-month window (Nielsen & Vigil, Nielsen/Vigil/Benjamin 2009 poster; read via search summaries); maize Kc end 0.35 (my choice of the lower FAO value).
+- Sowing: wheat and maize by FAO-56 Table 11 fn 2 temperature rule; search-window starts (15 Aug, 1 Mar) are my estimates. Sunflower and pea: no verified source, left todo.
+- Not entered (sources unverified or ambiguous, noted in `source`): maize/sunflower heat windows, frost thresholds, sunflower/pea sowing temperature, zr_min, green-manure fallow.
+- Fallow storage share (medium soil, Dr = TAW at window start, 34 windows/oblast, window 1 Jul + 14 months): median Vinnytska 0.19, Poltavska 0.21, Kirovohradska 0.16, Odeska 0.09. Odeska median is below 10%; parameters not tuned. Window start state (Dr = TAW) is my assumption.

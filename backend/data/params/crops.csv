@@ -11,17 +11,13 @@ winter_wheat,zr_max_m,1.8,m,"FAO-56 Table 22, Winter Wheat, range 1.5-1.8, upper
 winter_wheat,p,0.55,,"FAO-56 Table 22, Winter Wheat (for ETc ~5 mm/day)",literature
 winter_wheat,h_m,1,m,"FAO-56 Table 12, Winter Wheat, max crop height",literature
 winter_wheat,gdd_base_c,0,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
-winter_wheat,sowing_rule,,calendar|temperature,,todo
-winter_wheat,sowing_mmdd_vinnytska,,MM-DD,,todo
-winter_wheat,sowing_mmdd_poltavska,,MM-DD,,todo
-winter_wheat,sowing_mmdd_kirovohradska,,MM-DD,,todo
-winter_wheat,sowing_mmdd_odeska,,MM-DD,,todo
-winter_wheat,heat_basis,,gdd|days,,todo
-winter_wheat,heat_start,,GDD or days after sowing,,todo
-winter_wheat,heat_end,,GDD or days after sowing,,todo
+winter_wheat,sowing_rule,temperature,calendar|temperature,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
+winter_wheat,heat_basis,days,gdd|days,"Derived: FAO-56 late season (160+75+75=310 -> 335 days after sowing) taken as grain fill; my reading, Ivan to confirm",estimate
+winter_wheat,heat_start,310,days after sowing,"Derived: FAO-56 late season (160+75+75=310 -> 335 days after sowing) taken as grain fill; my reading, Ivan to confirm",estimate
+winter_wheat,heat_end,335,days after sowing,"Derived: FAO-56 late season (160+75+75=310 -> 335 days after sowing) taken as grain fill; my reading, Ivan to confirm",estimate
 winter_wheat,heat_tmax_1_c,30,degC,CLAUDE.md method_decisions (Ivan); threshold not yet verified,estimate
 winter_wheat,heat_tmax_2_c,,degC,,todo
-winter_wheat,frost_spring_c,,degC,,todo
+winter_wheat,frost_spring_c,,degC,Candidate (not entered): about -1 C at heading/flowering (Kansas State summary via search); exact page not confirmed,todo
 winter_wheat,frost_autumn_c,,degC,,todo
 winter_wheat,frost_winter_min_c,,degC,,todo
 maize,L_ini_d,30,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April (30/40/50/50=170)'",literature
@@ -30,19 +26,15 @@ maize,L_mid_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), 
 maize,L_late_d,50,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Maize (grain), Idaho USA, April'",literature
 maize,kc_ini,0.3,,"FAO-56 Table 12, Cereals group value",literature
 maize,kc_mid,1.20,,"FAO-56 Table 12, Maize, Field (grain)",literature
-maize,kc_end,,,FAO-56 Table 12: range 0.60-0.35 depending on grain moisture at harvest (fn 11); Ivan to choose,todo
+maize,kc_end,0.35,,"FAO-56 Table 12 range 0.60-0.35 (fn 11): 0.35 = harvest after complete field drying to ~18% grain moisture. Choice of the lower value is mine, Ivan to confirm",literature
 maize,zr_min_m,,m,see winter_wheat.zr_min_m,todo
 maize,zr_max_m,1.7,m,"FAO-56 Table 22, Maize, Field, range 1.0-1.7, upper value (fn 1)",literature
 maize,p,0.55,,"FAO-56 Table 22, Maize, Field (for ETc ~5 mm/day)",literature
 maize,h_m,2,m,"FAO-56 Table 12, Maize, Field (grain), max crop height",literature
 maize,gdd_base_c,10,degC,CLAUDE.md method_decisions (Ivan); primary source pending,todo
-maize,sowing_rule,,calendar|temperature,,todo
-maize,sowing_mmdd_vinnytska,,MM-DD,,todo
-maize,sowing_mmdd_poltavska,,MM-DD,,todo
-maize,sowing_mmdd_kirovohradska,,MM-DD,,todo
-maize,sowing_mmdd_odeska,,MM-DD,,todo
+maize,sowing_rule,temperature,calendar|temperature,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
 maize,heat_basis,,gdd|days,,todo
-maize,heat_start,,GDD or days after sowing,,todo
+maize,heat_start,,GDD or days after sowing,"Candidate (not entered): NC State climate dashboard lists VT-R1 (silking) at 1400 GDD in F-days (base 50F, ceiling 86F) = ~778 C-days; window width and our uncapped GDD differ. Ivan to decide",todo
 maize,heat_end,,GDD or days after sowing,,todo
 maize,heat_tmax_1_c,32,degC,CLAUDE.md method_decisions (Ivan); source pending,todo
 maize,heat_tmax_2_c,35,degC,CLAUDE.md method_decisions (Ivan); source pending,todo
@@ -61,17 +53,17 @@ sunflower,zr_max_m,1.5,m,"FAO-56 Table 22, Sunflower, range 0.8-1.5, upper value
 sunflower,p,0.45,,"FAO-56 Table 22, Sunflower (for ETc ~5 mm/day)",literature
 sunflower,h_m,2.0,m,"FAO-56 Table 12, Sunflower, max crop height",literature
 sunflower,gdd_base_c,6.7,degC,"NDSU, per CLAUDE.md; exact citation pending",literature
-sunflower,sowing_rule,,calendar|temperature,,todo
+sunflower,sowing_rule,,calendar|temperature,"Candidate (not entered): NDSU via Manitoba fact sheet min soil temperature ~6 C for sunflower; page not retrievable, unverified",todo
 sunflower,sowing_mmdd_vinnytska,,MM-DD,,todo
 sunflower,sowing_mmdd_poltavska,,MM-DD,,todo
 sunflower,sowing_mmdd_kirovohradska,,MM-DD,,todo
 sunflower,sowing_mmdd_odeska,,MM-DD,,todo
 sunflower,heat_basis,,gdd|days,,todo
-sunflower,heat_start,,GDD or days after sowing,,todo
+sunflower,heat_start,,GDD or days after sowing,"Candidate (not entered): NDSU-attributed table via Manitoba sheet R1 569, R5.1 883 GDD from emergence; units (F or C) and 6.7 C base unconfirmed. Ivan to decide",todo
 sunflower,heat_end,,GDD or days after sowing,,todo
 sunflower,heat_tmax_1_c,,degC,,todo
 sunflower,heat_tmax_2_c,,degC,,todo
-sunflower,frost_spring_c,,degC,,todo
+sunflower,frost_spring_c,,degC,Candidate (not entered): seedlings tolerate to about -5 C until the 6-8 leaf stage (NDSU-derived guide via search); unverified,todo
 sunflower,frost_autumn_c,,degC,,todo
 sunflower,frost_winter_min_c,,degC,,todo
 pea,L_ini_d,15,days,"FAO-56 (Allen et al. 1998) Table 11, row 'Peas, Europe, May (15/25/35/15=90)'",literature
@@ -86,7 +78,7 @@ pea,zr_max_m,1.0,m,"FAO-56 Table 22, Peas Dry/Seed, range 0.6-1.0, upper value (
 pea,p,0.40,,"FAO-56 Table 22, Peas Dry/Seed (for ETc ~5 mm/day)",literature
 pea,h_m,0.5,m,"FAO-56 Table 12, Peas, Dry/Seed, max crop height",literature
 pea,gdd_base_c,,degC,,todo
-pea,sowing_rule,,calendar|temperature,,todo
+pea,sowing_rule,,calendar|temperature,"Candidate (not entered): NDSU via Manitoba fact sheet min soil temperature ~4 C for peas; page not retrievable, unverified",todo
 pea,sowing_mmdd_vinnytska,,MM-DD,,todo
 pea,sowing_mmdd_poltavska,,MM-DD,,todo
 pea,sowing_mmdd_kirovohradska,,MM-DD,,todo
@@ -117,5 +109,12 @@ green_manure_fallow,sowing_mmdd_poltavska,,MM-DD,,todo
 green_manure_fallow,sowing_mmdd_kirovohradska,,MM-DD,,todo
 green_manure_fallow,sowing_mmdd_odeska,,MM-DD,,todo
 green_manure_fallow,incorporation_mmdd,,MM-DD,,todo
-black_fallow,kc_ini,,,,todo
-black_fallow,zr_max_m,,m,,todo
+black_fallow,kc_ini,,,No tabulated value: computed daily-by-month with FAO-56 Annex 7 (core.kc.bare_kc_daily),todo
+black_fallow,zr_max_m,1.8,m,"Nielsen, Vigil & Benjamin 2009 (ASA poster, Paper 52327): soil water to 180 cm in Akron wheat-fallow; read via search summary, not the full text",literature
+winter_wheat,sowing_temp_c,17,degC,"FAO-56 Table 11 footnote 2 (10-day running mean of Tmean): fall planting when it decreases to 17 C or 1 December, whichever comes first",literature
+winter_wheat,sowing_temp_dir,falling,,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
+winter_wheat,sowing_window_start_mmdd,08-15,MM-DD,"Start of the search for the 17 C crossing; FAO gives none. My choice, Ivan to confirm",estimate
+winter_wheat,sowing_latest_mmdd,12-01,MM-DD,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
+maize,sowing_temp_c,13,degC,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean): spring planting of maize-grain when it increases to 13 C,literature
+maize,sowing_temp_dir,rising,,FAO-56 Table 11 footnote 2 (10-day running mean of Tmean),literature
+maize,sowing_window_start_mmdd,03-01,MM-DD,"Start of the search for the 13 C crossing; FAO gives none. My choice, Ivan to confirm",estimate

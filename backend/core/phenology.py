@@ -33,3 +33,21 @@ def gdd_window(sowing: date, gdd: pd.Series, start_gdd: float, end_gdd: float):
     if s.empty or e.empty:
         return None
     return s.index[0].date(), e.index[0].date()
+
+
+def sowing_date_temperature(tmean: pd.Series, year: int, threshold: float, direction: str,
+                            window_start: str, latest: str | None = None):
+    """Sowing by the FAO-56 Table 11 fn 2 rule: first day on/after window_start (MM-DD of `year`) on which the
+    10-day running mean (the day and the 9 before it) of Tmean has fallen to <= threshold ('falling') or risen to
+    >= threshold ('rising'). With `latest` (MM-DD), that day is the sowing date if the threshold is not reached
+    earlier. Returns None when neither happens in the series."""
+    run = tmean.rolling(10).mean()
+    start = pd.Timestamp(f"{year}-{window_start}")
+    r = run[run.index >= start]
+    hit = r[r <= threshold] if direction == "falling" else r[r >= threshold]
+    if latest is not None:
+        last = pd.Timestamp(f"{year}-{latest}")
+        hit = hit[hit.index <= last]
+        if hit.empty and last in run.index:
+            return last.date()
+    return hit.index[0].date() if len(hit) else None

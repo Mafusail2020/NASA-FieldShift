@@ -27,7 +27,7 @@ def run_bucket(water_in: pd.Series, snow: pd.Series, eto: pd.Series, kc: pd.Seri
                p: pd.Series, awc: float, dr0: float = 0.0) -> pd.DataFrame:
     """Daily root-zone depletion Dr (mm). awc is available water capacity in mm per m of soil.
 
-    TAW = awc * Zr, RAW = p * TAW. Ks = 1 for Dr <= RAW, else (TAW - Dr) / ((1 - p) TAW) (Ch. 8).
+    TAW = awc * Zr, RAW = p * TAW (p = 1 means no water-stress reduction, used for bare soil, where Annex 7 Kc already includes soil limitation). Ks = 1 for Dr <= RAW, else (TAW - Dr) / ((1 - p) TAW) (Ch. 8).
     When Zr changes, Dr (mm) is kept if it fits (a deeper layer starts at field capacity) and is cut to the new
     TAW if it does not; the change in stored water is returned as `rezone`.
     Storage S = TAW - Dr satisfies  S_t = S_t-1 + rezone + water_in - et - dp.
@@ -42,7 +42,7 @@ def run_bucket(water_in: pd.Series, snow: pd.Series, eto: pd.Series, kc: pd.Seri
         dr_pre = min(dr, taw)
         rezone = (taw - dr_pre) - (taw_prev - dr)
         raw = pp[i] * taw
-        ks = 1.0 if dr_pre <= raw else max((taw - dr_pre) / ((1 - pp[i]) * taw), 0.0)
+        ks = 1.0 if (dr_pre <= raw or pp[i] >= 1) else max((taw - dr_pre) / ((1 - pp[i]) * taw), 0.0)
         et = ks * k[i] * e[i] if sn[i] <= 0 else 0.0
         dr = dr_pre - w[i] + et
         dp = 0.0
