@@ -178,7 +178,7 @@ function Results({ doc, crops, rotation, a, dflt }: { doc: SoilDoc; crops: strin
         )}
       </section>
 
-      <Alternatives doc={doc} a={a} dflt={dflt} />
+      <Alternatives doc={doc} a={a} dflt={dflt} rotLen={rotation.length} />
 
       <details>
         <summary className="fs-hint">What these numbers assume</summary>
@@ -189,8 +189,8 @@ function Results({ doc, crops, rotation, a, dflt }: { doc: SoilDoc; crops: strin
 }
 
 // Soil check of the alternative rotations (the candidates of rotations_grid.json): which crops the salt rules out and the humus balance.
-// Same manure and green-manure inputs as above; yields are the farmer's own where entered, otherwise the national median.
-function Alternatives({ doc, a, dflt }: { doc: SoilDoc; a: SoilAnalysis; dflt(c: string): number | null }) {
+// Manure is the same per year as for your rotation, green manure goes after the ticked crops; yields are the farmer's own where entered, otherwise the national median.
+function Alternatives({ doc, a, dflt, rotLen }: { doc: SoilDoc; a: SoilAnalysis; dflt(c: string): number | null; rotLen: number }) {
   const idx = useRotIndex()
   if (idx.state !== 'ready' || idx.data.candidates.length === 0) return null
   const rows = idx.data.candidates.map((c: Candidate) => {
@@ -198,7 +198,8 @@ function Alternatives({ doc, a, dflt }: { doc: SoilDoc; a: SoilAnalysis; dflt(c:
     const yields = { ...Object.fromEntries(uniq.flatMap((x) => { const v = dflt(x); return v != null && Number.isFinite(v) ? [[x, v]] : [] })), ...a.yields }
     const cs = uniq.map((x) => cropSoil(x, a, doc))
     return { c, lost: cs.filter((x) => x.excluded).map((x) => x.label), noData: cs.filter((x) => x.fSalt == null && a.ece != null).length,
-      h: rotationHumus(c.crops, { ...a, yields }, doc) }
+      // manure is a yearly rate (your per-rotation amount over your rotation length), so rotations of different length compare fairly
+      h: rotationHumus(c.crops, { ...a, yields, manure: ((a.manure ?? 0) / Math.max(rotLen, 1)) * c.crops.length }, doc) }
   })
   return (
     <section aria-label="Soil check of alternative rotations">
