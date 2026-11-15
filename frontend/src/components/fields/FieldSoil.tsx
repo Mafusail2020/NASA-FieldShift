@@ -5,7 +5,7 @@ import { useId, useMemo, useState } from 'react'
 import { CROP_LABEL, type CropId, type FieldItem } from '../../lib/field'
 import { fmt } from '../../lib/format'
 import { lastN, median, useFinanceInputs, YIELD_DEFAULT_YEARS } from '../../lib/finance'
-import { cropSoil, EMPTY_ANALYSIS, rotationHumus, useSoilDoc, type SoilAnalysis, type SoilDoc } from '../../lib/soil'
+import { cropSoil, EMPTY_ANALYSIS, rotationHumus, useCellProps, useSoilDoc, type SoilAnalysis, type SoilDoc } from '../../lib/soil'
 import StatusChip from '../StatusChip'
 import { useRotIndex, type Candidate } from './rotation/model'
 import './soil/soil.css'
@@ -29,8 +29,9 @@ function Num({ id, label, unit, value, min, max, hint, onChange }: {
   )
 }
 
-export function FieldSoil({ field, onUpdate }: { field: FieldItem; onUpdate(patch: Partial<Omit<FieldItem, 'id'>>): void }) {
+export function FieldSoil({ field, cellId, onUpdate }: { field: FieldItem; cellId: string | null; onUpdate(patch: Partial<Omit<FieldItem, 'id'>>): void }) {
   const uid = useId()
+  const cp = useCellProps(cellId)
   const doc = useSoilDoc()
   const fin = useFinanceInputs()
   const a = field.analysis
@@ -53,6 +54,18 @@ export function FieldSoil({ field, onUpdate }: { field: FieldItem; onUpdate(patc
           Enter values from a lab analysis to see which crops the soil allows and how the rotation changes humus. Nothing here changes the weather analysis.
           Leave a box empty if you do not know the value: the site then shows &ldquo;not entered&rdquo; and does not guess.
         </p>
+        {cellId && cp.state === 'ready' && (
+          <p className="fs-suggest" role="status">
+            {cp.props ? (
+              <>
+                SoilGrids suggests <b>pH {fmt(cp.props.ph, 1)}</b> and <b>humus {fmt(cp.props.humusPct, 1)}%</b> for this cell{cp.props.sampledAt ? ' (read near the centre)' : ''}{' '}
+                <StatusChip status={cp.props.status} source={cp.props.source} />{' '}
+                <button type="button" className="fr-btn" onClick={() => { set({ ph: cp.props!.ph, humusPct: cp.props!.humusPct }); setResetKey((k) => k + 1) }}>Use these values</button>
+                <span className="fs-hint"> A global model at 250 m, not a lab analysis; it does not predict salinity. Your own analysis is better.</span>
+              </>
+            ) : <span className="fs-hint">No SoilGrids pH or humus is stored for this cell yet. Enter your own values; salinity always has to be entered.</span>}
+          </p>
+        )}
         <div className="fs-grid" key={resetKey}>
           <Num id={id('ece')} label="Soil salinity ECe" unit="dS/m" value={a.ece} min={0} max={60} hint="Saturated-paste extract. A 1:5 water extract or salt % needs conversion first." onChange={(v) => set({ ece: v })} />
           <Num id={id('ph')} label="Soil pH" unit="water" value={a.ph} min={2} max={12} hint="Water pH, not salt (KCl) pH, which reads lower." onChange={(v) => set({ ph: v })} />

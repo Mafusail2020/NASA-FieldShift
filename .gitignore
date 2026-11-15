@@ -9,3 +9,4 @@ dist/
 backend/data/raw/crops/_cache/
 backend/data/raw/power_grid/
 backend/data/raw/soilgrids/
+backend/data/raw/soilgrids_props/

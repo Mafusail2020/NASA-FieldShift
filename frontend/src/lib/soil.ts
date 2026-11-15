@@ -115,3 +115,26 @@ export function useSoilDoc(): Load {
   }, [])
   return load
 }
+
+// ---- SoilGrids prefill: pH and humus of the field's NASA POWER cell, from grid_soil.json (backend/pipeline/add_soil_props.py) ----
+// Only cells where add_soil_props was run have values; the rest give null. The values are a suggestion the farmer applies by a click.
+export interface CellProps { ph: number; humusPct: number; sampledAt: [number, number] | null; source: string; status: Status }
+type GridSoilFile = { props_source?: string; props_status?: Status; cells: { id: string; ph?: number | null; humus_pct?: number | null; props_sampled_at?: [number, number] }[] }
+let gridPromise: Promise<GridSoilFile> | null = null
+type PropsLoad = { state: 'loading' } | { state: 'error' } | { state: 'ready'; props: CellProps | null }
+export function useCellProps(cellId: string | null): PropsLoad {
+  const [s, set] = useState<{ id: string | null; v: PropsLoad }>({ id: null, v: { state: 'loading' } })
+  useEffect(() => {
+    if (!cellId) return
+    gridPromise ??= fetch('/data/grid_soil.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<GridSoilFile> })
+    let live = true
+    gridPromise.then((d) => {
+      const c = d.cells.find((x) => x.id === cellId)
+      const props = c && c.ph != null && c.humus_pct != null
+        ? { ph: c.ph, humusPct: c.humus_pct, sampledAt: c.props_sampled_at ?? null, source: d.props_source ?? 'ISRIC SoilGrids 2.0', status: d.props_status ?? 'estimate' } : null
+      if (live) set({ id: cellId, v: { state: 'ready', props } })
+    }, () => { gridPromise = null; if (live) set({ id: cellId, v: { state: 'error' } }) })
+    return () => { live = false }
+  }, [cellId])
+  return !cellId ? { state: 'ready', props: null } : s.id === cellId ? s.v : { state: 'loading' }
+}
