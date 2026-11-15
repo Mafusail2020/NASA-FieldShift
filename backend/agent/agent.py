@@ -20,21 +20,34 @@ class Agent:
         self.system = system
 
     def run(self, history: list[dict], ctx: AgentContext) -> Iterator[dict]:
-        """Yields UI events: provider, tool_start, tool_end, chart, text, done / error. `history` is plain user/assistant text turns."""
+        """Yields UI events: text_delta (streamed answer text), text_break, provider, tool_start, tool_end, chart, done / error. `history` is plain user/assistant text turns."""
         messages: list[dict] = [dict(m) for m in history]
         sources: list[dict] = []
         tools = self.registry.specs()
+        streamed = False
         for _ in range(MAX_STEPS):
+            turn = None
             try:
-                turn = self.router.complete(self.system, messages, tools)
+                for ev in self.router.stream(self.system, messages, tools):
+                    if ev["type"] == "text":
+                        yield {"type": "text_delta", "text": ev["text"]}
+                        streamed = True
+                    else:
+                        turn = ev["turn"]
             except LLMError as e:
                 yield {"type": "error", "message": str(e)}
                 return
+            if turn is None:
+                yield {"type": "error", "message": "the model returned nothing"}
+                return
             yield {"type": "provider", "name": turn.provider}
             if not turn.tool_calls:
-                yield {"type": "text", "text": turn.text or "(empty answer)"}
+                if not streamed:
+                    yield {"type": "text_delta", "text": "(empty answer)"}
                 yield {"type": "done", "sources": sources}
                 return
+            if turn.text:
+                yield {"type": "text_break"}  # the next text (after the tools) starts a new paragraph
             blocks = ([{"type": "text", "text": turn.text}] if turn.text else []) + [
                 {"type": "tool_use", "id": c.id, "name": c.name, "input": c.args} for c in turn.tool_calls]
             messages.append({"role": "assistant", "content": blocks})

@@ -72,6 +72,44 @@ def test_agent_loop_runs_tool_then_answers():
     assert "chart" not in json.loads(result)
 
 
+class Streamer(Scripted):
+    """Streams its text in pieces, like a real provider."""
+    def __init__(self, pieces, fail_first=False):
+        super().__init__([])
+        self.pieces, self.fail_first = pieces, fail_first
+
+    def stream(self, system, messages, tools, max_tokens=1500):
+        if self.fail_first:
+            raise LLMError("down")
+        for x in self.pieces:
+            yield {"type": "text", "text": x}
+        yield {"type": "turn", "turn": Turn(text="".join(self.pieces), provider="streamer")}
+
+
+def test_answer_text_is_streamed_in_pieces():
+    ev = list(Agent(LLMRouter([Streamer(["Hel", "lo ", "farmer"])]), REG).run([{"role": "user", "content": "hi"}], CTX))
+    assert [e["text"] for e in ev if e["type"] == "text_delta"] == ["Hel", "lo ", "farmer"]
+    assert ev[-1]["type"] == "done"
+
+
+def test_non_streaming_provider_still_gives_one_delta():
+    p = Scripted([Turn(text="whole answer", provider="s")])
+    ev = list(Agent(LLMRouter([p]), REG).run([{"role": "user", "content": "hi"}], CTX))
+    assert [e["text"] for e in ev if e["type"] == "text_delta"] == ["whole answer"]
+
+
+def test_stream_falls_back_before_text_but_not_after():
+    ev = list(Agent(LLMRouter([Streamer([], fail_first=True), Streamer(["ok"])]), REG).run([{"role": "user", "content": "hi"}], CTX))
+    assert [e["text"] for e in ev if e["type"] == "text_delta"] == ["ok"]
+
+    class Breaks(Streamer):
+        def stream(self, *a, **k):
+            yield {"type": "text", "text": "part"}
+            raise LLMError("cut")
+    ev = list(Agent(LLMRouter([Breaks([]), Streamer(["ok"])]), REG).run([{"role": "user", "content": "hi"}], CTX))
+    assert ev[-1]["type"] == "error" and [e["text"] for e in ev if e["type"] == "text_delta"] == ["part"]
+
+
 def test_router_falls_back_and_reports_failure():
     bad = Scripted([], ok=True)
     good = Scripted([Turn(text="ok", provider="good")])

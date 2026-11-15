@@ -7,6 +7,8 @@ import type { Status } from '../types'
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? ''
 const KEY_STORE = 'fieldshift.anthropicKey'
 const LAYOUT_STORE = 'fieldshift.agent.layout.v1'
+const CHATS_STORE = 'fieldshift.agent.chats.v1'
+const MAX_CHATS = 30
 const MIN_W = 320, MIN_H = 360, TOP = 60
 const SNAP_MS = 120
 export const EXIT_MS = 380  // the window shrinks back into the tab slot over this long
@@ -19,6 +21,7 @@ export interface ChatMsg {
   steps: Step[]; charts: ChartSpec[]; sources: SourceRef[]
   provider?: string; error?: string; pending?: boolean
 }
+export interface Chat { id: string; title: string; updatedAt: number; messages: ChatMsg[] }
 export interface ProviderInfo { name: string; available: boolean; model?: string | null }
 export interface Rect { x: number; y: number; w: number; h: number }
 export type Dock = 'tab' | 'float'
@@ -29,7 +32,11 @@ interface Ctx {
   busy: boolean
   send(text: string): void
   stop(): void
-  clear(): void
+  chats: Pick<Chat, 'id' | 'title' | 'updatedAt'>[]   // history, newest first
+  activeId: string                                  // '' = a new chat that has no message yet
+  newChat(): void
+  openChat(id: string): void
+  deleteChat(id: string): void
   providers: ProviderInfo[] | null
   apiKey: string
   setApiKey(k: string): void
@@ -52,6 +59,14 @@ const read = (k: string) => { try { return localStorage.getItem(k) } catch { ret
 const write = (k: string, v: string) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k) } catch { /* private mode */ } }
 const small = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
 
+function loadChats(): Chat[] {
+  try {
+    const raw = JSON.parse(read(CHATS_STORE) ?? '[]') as Chat[]
+    // a stream cannot survive a reload: close any unfinished answer
+    return raw.map((c) => ({ ...c, messages: c.messages.map((m) => (m.pending ? { ...m, pending: false, error: m.text ? undefined : 'Interrupted.' } : m)) }))
+  } catch { return [] }
+}
+
 function clampRect(r: Rect): Rect {
   const w = Math.max(MIN_W, Math.min(r.w, window.innerWidth - 16))
   const h = Math.max(MIN_H, Math.min(r.h, window.innerHeight - TOP - 8))
@@ -64,7 +79,9 @@ function loadRect(): Rect {
 
 export function AgentProvider({ children }: { children: ReactNode }) {
   const { fields } = useField()
-  const [messages, setMessages] = useState<ChatMsg[]>([])
+  const [chats, setChats] = useState<Chat[]>(loadChats)
+  const [activeId, setActiveId] = useState('')
+  const messages = useMemo(() => chats.find((c) => c.id === activeId)?.messages ?? [], [chats, activeId])
   const [busy, setBusy] = useState(false)
   const [providers, setProviders] = useState<ProviderInfo[] | null>(null)
   const [apiKey, setKey] = useState(() => read(KEY_STORE) ?? '')
@@ -90,15 +107,34 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   }, [apiKey, headers])
 
   const setApiKey = useCallback((k: string) => { const v = k.trim(); setKey(v); write(KEY_STORE, v) }, [])
-  const patch = (id: string, f: (m: ChatMsg) => ChatMsg) => setMessages((ms) => ms.map((m) => (m.id === id ? f(m) : m)))
+  const patchIn = (cid: string, id: string, f: (m: ChatMsg) => ChatMsg) =>
+    setChats((cs) => cs.map((c) => (c.id === cid ? { ...c, messages: c.messages.map((m) => (m.id === id ? f(m) : m)) } : c)))
+
+  // history lives in this browser, like the fields; saved shortly after the last change (streaming changes it many times a second)
+  useEffect(() => {
+    const t = setTimeout(() => write(CHATS_STORE, chats.length ? JSON.stringify(chats) : ''), 500)
+    return () => clearTimeout(t)
+  }, [chats])
 
   const send = useCallback((text: string) => {
     const q = text.trim()
     if (!q || busy) return
     const aid = uid()
+    let cid = activeId
+    const userMsg: ChatMsg = { id: uid(), role: 'user', text: q, steps: [], charts: [], sources: [] }
+    const botMsg: ChatMsg = { id: aid, role: 'assistant', text: '', steps: [], charts: [], sources: [], pending: true }
+    if (!cid) {
+      cid = uid()
+      const fresh: Chat = { id: cid, title: q.length > 42 ? `${q.slice(0, 40)}…` : q, updatedAt: Date.now(), messages: [userMsg, botMsg] }
+      setChats((cs) => [fresh, ...cs].slice(0, MAX_CHATS))
+      setActiveId(cid)
+    } else {
+      const at = cid
+      setChats((cs) => cs.map((c) => (c.id === at ? { ...c, updatedAt: Date.now(), messages: [...c.messages, userMsg, botMsg] } : c)))
+    }
+    const chatId = cid
+    const patch = (id: string, f: (m: ChatMsg) => ChatMsg) => patchIn(chatId, id, f)
     const history = [...messages.filter((m) => !m.error && !m.pending && m.text), { id: '', role: 'user' as const, text: q }].slice(-12)
-    setMessages((ms) => [...ms, { id: uid(), role: 'user', text: q, steps: [], charts: [], sources: [] },
-      { id: aid, role: 'assistant', text: '', steps: [], charts: [], sources: [], pending: true }])
     setBusy(true)
     const ctrl = new AbortController()
     abort.current = ctrl
@@ -116,6 +152,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
         const reader = r.body.getReader()
         const dec = new TextDecoder()
         let buf = ''
+        let gap = false  // text after a tool step starts a new paragraph
         for (;;) {
           const { value, done } = await reader.read()
           if (done) break
@@ -134,6 +171,8 @@ export function AgentProvider({ children }: { children: ReactNode }) {
               return { ...m, steps }
             })
             else if (ev.type === 'chart') patch(aid, (m) => ({ ...m, charts: [...m.charts, ev as ChartSpec] }))
+            else if (ev.type === 'text_break') gap = true
+            else if (ev.type === 'text_delta') { const sep = gap ? '\n\n' : ''; gap = false; patch(aid, (m) => ({ ...m, text: m.text + (m.text ? sep : '') + ev.text })) }
             else if (ev.type === 'text') patch(aid, (m) => ({ ...m, text: ev.text }))
             else if (ev.type === 'done') patch(aid, (m) => ({ ...m, sources: ev.sources ?? [], pending: false }))
             else if (ev.type === 'error') patch(aid, (m) => ({ ...m, error: ev.message, pending: false }))
@@ -148,10 +187,16 @@ export function AgentProvider({ children }: { children: ReactNode }) {
         abort.current = null
       }
     })()
-  }, [busy, messages, fields, headers])
+  }, [busy, messages, activeId, fields, headers])
 
   const stop = useCallback(() => abort.current?.abort(), [])
-  const clear = useCallback(() => { abort.current?.abort(); setMessages([]) }, [])
+  const newChat = useCallback(() => { abort.current?.abort(); setActiveId('') }, [])
+  const openChat = useCallback((id: string) => { abort.current?.abort(); setActiveId(id) }, [])
+  const deleteChat = useCallback((id: string) => {
+    if (id === activeId) { abort.current?.abort(); setActiveId('') }
+    setChats((cs) => cs.filter((c) => c.id !== id))
+  }, [activeId])
+  const list = useMemo(() => [...chats].sort((a, b) => b.updatedAt - a.updatedAt).map(({ id, title, updatedAt }) => ({ id, title, updatedAt })), [chats])
 
   const commit = useCallback((r: Rect) => { const c = clampRect(r); setRect(c); return c }, [])
   const dockBack = useCallback(() => {
@@ -204,9 +249,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   }, [commit])
 
   const value = useMemo<Ctx>(() => ({
-    messages, busy, send, stop, clear, providers, apiKey, setApiKey, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
+    messages, busy, send, stop, chats: list, activeId, newChat, openChat, deleteChat, providers, apiKey, setApiKey, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
     moving, overDock, closing, anchor,
-  }), [messages, busy, send, stop, clear, providers, apiKey, setApiKey, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
+  }), [messages, busy, send, stop, list, activeId, newChat, openChat, deleteChat, providers, apiKey, setApiKey, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

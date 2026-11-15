@@ -12,6 +12,7 @@ import json
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from typing import Iterator
 
 import httpx
 
@@ -48,6 +49,14 @@ class LLMProvider(ABC):
     @abstractmethod
     def complete(self, system: str, messages: list[dict], tools: list[dict], max_tokens: int = 1500) -> Turn:
         """One model call. Raises LLMError on any failure."""
+
+    def stream(self, system: str, messages: list[dict], tools: list[dict], max_tokens: int = 1500) -> Iterator[dict]:
+        """One model call as events: {"type": "text", "text": delta} ... then {"type": "turn", "turn": Turn}.
+        Default: no real streaming, the whole text arrives as one delta. Providers override this."""
+        turn = self.complete(system, messages, tools, max_tokens)
+        if turn.text:
+            yield {"type": "text", "text": turn.text}
+        yield {"type": "turn", "turn": turn}
 
     def describe(self) -> dict:
         ok = self.available()  # the local provider learns its model name here
@@ -88,6 +97,51 @@ class AnthropicProvider(LLMProvider):
             elif b["type"] == "tool_use":
                 turn.tool_calls.append(ToolCall(b["id"], b["name"], b.get("input") or {}))
         return turn
+
+    def stream(self, system, messages, tools, max_tokens=1500) -> Iterator[dict]:
+        if not self.api_key:
+            raise LLMError("no Anthropic key")
+        body = {"model": self.model, "max_tokens": max_tokens, "messages": messages, "stream": True,
+                "system": [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]}
+        if tools:
+            body["tools"] = tools
+        turn, blocks = Turn(provider=self.name), {}
+        try:
+            with httpx.stream("POST", ANTHROPIC_URL, json=body, timeout=httpx.Timeout(self.timeout, connect=10.0),
+                              headers={"x-api-key": self.api_key, "anthropic-version": "2023-06-01"}) as r:
+                if r.status_code != 200:
+                    r.read()
+                    try:
+                        msg = r.json().get("error", {}).get("message", "")
+                    except ValueError:
+                        msg = ""
+                    raise LLMError(f"Anthropic HTTP {r.status_code}: {msg[:200]}")
+                for line in r.iter_lines():
+                    if not line.startswith("data:"):
+                        continue
+                    ev = json.loads(line[5:])
+                    kind = ev.get("type")
+                    if kind == "content_block_start" and ev["content_block"]["type"] == "tool_use":
+                        cb = ev["content_block"]
+                        blocks[ev["index"]] = {"id": cb["id"], "name": cb["name"], "json": ""}
+                    elif kind == "content_block_delta":
+                        d = ev["delta"]
+                        if d["type"] == "text_delta":
+                            turn.text += d["text"]
+                            yield {"type": "text", "text": d["text"]}
+                        elif d["type"] == "input_json_delta" and ev["index"] in blocks:
+                            blocks[ev["index"]]["json"] += d["partial_json"]
+                    elif kind == "error":
+                        raise LLMError("Anthropic: " + ev.get("error", {}).get("message", "stream error")[:200])
+        except httpx.HTTPError as e:
+            raise LLMError(f"Anthropic unreachable: {type(e).__name__}") from e
+        for _, b in sorted(blocks.items()):
+            try:
+                args = json.loads(b["json"] or "{}")
+            except json.JSONDecodeError:
+                args = {}
+            turn.tool_calls.append(ToolCall(b["id"], b["name"], args))
+        yield {"type": "turn", "turn": turn}
 
 
 class LocalProvider(LLMProvider):
@@ -136,6 +190,44 @@ class LocalProvider(LLMProvider):
             turn.tool_calls.append(ToolCall(c.get("id") or f"call_{i}", c["function"]["name"], args))
         return turn
 
+    def stream(self, system, messages, tools, max_tokens=1500) -> Iterator[dict]:
+        if not self.available():
+            raise LLMError("local model server not reachable")
+        body = {"model": self.model, "max_tokens": max_tokens, "messages": self._convert(system, messages), "stream": True}
+        if tools:
+            body["tools"] = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
+                                                                "parameters": t["input_schema"]}} for t in tools]
+        turn, calls = Turn(provider=f"{self.name}:{self.model}"), {}
+        try:
+            with httpx.stream("POST", f"{self.base_url}/chat/completions", json=body, timeout=httpx.Timeout(self.timeout, connect=5.0)) as r:
+                if r.status_code != 200:
+                    raise LLMError(f"local model HTTP {r.status_code}")
+                for line in r.iter_lines():
+                    if not line.startswith("data:") or line[5:].strip() == "[DONE]":
+                        continue
+                    choices = json.loads(line[5:]).get("choices") or []
+                    delta = choices[0].get("delta", {}) if choices else {}
+                    if delta.get("content"):
+                        turn.text += delta["content"]
+                        yield {"type": "text", "text": delta["content"]}
+                    for c in delta.get("tool_calls") or []:
+                        slot = calls.setdefault(c.get("index", len(calls)), {"id": None, "name": "", "args": ""})
+                        slot["id"] = c.get("id") or slot["id"]
+                        f = c.get("function", {})
+                        slot["name"] += f.get("name") or ""
+                        a = f.get("arguments")
+                        slot["args"] += a if isinstance(a, str) else json.dumps(a) if a else ""
+        except httpx.HTTPError as e:
+            raise LLMError(f"local model failed: {type(e).__name__}") from e
+        for i, c in sorted(calls.items()):
+            try:
+                args = json.loads(c["args"] or "{}")
+            except json.JSONDecodeError:
+                args = {}
+            turn.tool_calls.append(ToolCall(c["id"] or f"call_{i}", c["name"], args))
+        turn.text = turn.text.strip()
+        yield {"type": "turn", "turn": turn}
+
     @staticmethod
     def _convert(system: str, messages: list[dict]) -> list[dict]:
         out = [{"role": "system", "content": system}]
@@ -173,6 +265,24 @@ class LLMRouter:
 
     def status(self) -> list[dict]:
         return [p.describe() for p in self.providers]
+
+    def stream(self, system, messages, tools, max_tokens=1500) -> Iterator[dict]:
+        """Like complete(), as events. A provider that fails before any text was sent is skipped; after that the error is raised."""
+        self.errors = []
+        for p in self.providers:
+            if not p.available():
+                continue
+            sent = False
+            try:
+                for ev in p.stream(system, messages, tools, max_tokens):
+                    sent = sent or ev["type"] == "text"
+                    yield ev
+                return
+            except LLMError as e:
+                if sent:
+                    raise
+                self.errors.append(f"{p.name}: {e}")
+        raise LLMError("; ".join(self.errors) or "no model available: enter an Anthropic key or start a local model (Ollama)")
 
     def complete(self, system, messages, tools, max_tokens=1500) -> Turn:
         self.errors = []
