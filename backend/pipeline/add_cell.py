@@ -2,14 +2,14 @@
 
 Cells are not bulk-generated any more. When a farmer's location falls outside every existing cell, this command generates
 just that cell end to end: raw NASA POWER series (about 80 s), annual climate (grid.json), climate-risk statistics
-(grid_layers.json), rotation metrics (rotations/<cell>.json + index) and soil (grid_soil.json). It does nothing for a
+(grid_layers.json), rotation metrics (rotations/<cell>.json + index) and soil (grid_soil.json, with SoilGrids pH and humus). It does nothing for a
 location that is already covered. Everything it writes goes to frontend/public/data and backend/data/processed.
 
 Run by hand from backend/: python -m pipeline.add_cell LAT LON [--dry-run]
 """
 import sys
 
-from pipeline import build_grid, build_grid_rotations, build_layers, fetch_soil
+from pipeline import add_soil_props, build_grid, build_grid_rotations, build_layers, fetch_soil
 
 
 def add(lat: float, lon: float, dry_run: bool = False) -> str:
@@ -27,7 +27,11 @@ def add(lat: float, lon: float, dry_run: bool = False) -> str:
     _, _, err = build_grid_rotations._job((raw,))
     build_grid_rotations.write_index()
     fetch_soil.update([cell])
-    return f"generated cell {cid}" + (f" (rotation analysis skipped: {err})" if err else "")
+    try:
+        add_soil_props.fill(*cell)  # pH and humus suggestion for the soil panel; the cell stays usable without it
+    except RuntimeError as e:
+        err = f"{err}; SoilGrids pH/humus skipped: {e}" if err else f"SoilGrids pH/humus skipped: {e}"
+    return f"generated cell {cid}" + (f" ({err})" if err else "")
 
 
 def main():
