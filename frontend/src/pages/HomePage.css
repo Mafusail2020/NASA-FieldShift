@@ -42,5 +42,6 @@ body.home-bg { background: #fff; background-image: none; }
   transition: width 1s var(--ease);
 }
 .tt-shift.tt-done { color: var(--color-primary); }
-.tt-shift.tt-done::after { width: 100%; }
+/* a little past the box so the bar ends under the right edge of the 't' (measured: the ink of 't' ends 0.039em past the advance width) */
+.tt-shift.tt-done::after { width: calc(100% + 0.04em); }
 @media (prefers-reduced-motion: reduce) { .tt-shift, .tt-shift::after, .home-rest { transition: none; } }
