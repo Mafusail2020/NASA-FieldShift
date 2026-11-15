@@ -28,6 +28,9 @@ body.home-bg { background: #fff; background-image: none; }
   .home-text { max-width: none; height: auto; padding: var(--space-6) var(--space-5) 0; justify-content: flex-start; }
 }
 
+/* the title stays invisible until the soil patch is drawn over it (DigBlock), so it never shows bare before or beside the soil */
+.dig-pending > span { visibility: hidden; }
+
 /* the soil patch that hides the title until the trowel has dug it out (drawn by DigBlock) */
 .dig-canvas { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 2; } /* full viewport: chunks are never clipped */
 

@@ -22,11 +22,11 @@ const rnd = (a: number, b: number) => a + Math.random() * (b - a)
 
 // The title's letters sit under an opaque patch of soil made of glyph cells. The blasts are planned up front so that together
 // they cover every tile (random places, random order, random timing); onDug fires after the last blast.
-function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; onDone(): void }) {
+function DigCanvas({ host, onReady, onDug, onDone }: { host: HTMLElement; onReady(): void; onDug(): void; onDone(): void }) {
   const ref = useRef<HTMLCanvasElement>(null)
   // the parent re-renders when the title is dug: keep the latest callbacks in refs so that never restarts the animation
-  const cb = useRef({ onDug, onDone })
-  cb.current = { onDug, onDone }
+  const cb = useRef({ onReady, onDug, onDone })
+  cb.current = { onReady, onDug, onDone }
 
   useEffect(() => {
     const canvas = ref.current!
@@ -46,7 +46,9 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       // soil grid: covers the title plus one cell of margin; the outer ring is ragged
-      const x0 = r.left - cw, y0 = r.top - ch // viewport coordinates
+      // viewport coordinates of the grid origin; re-read from the title every frame, so a layout shift (late font, scroll) never leaves
+      // the soil in the wrong place
+      let ox = r.left - cw, oy = r.top - ch
       const cols = Math.ceil((w + cw * 2) / cw), rows = Math.ceil((h + ch * 2) / ch)
       const N = cols * rows
       const bg = new Array<string>(N), fg = new Array<string>(N), gl = new Array<string>(N)
@@ -61,7 +63,7 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
           gl[k] = SOIL_GLYPHS[(Math.random() * SOIL_GLYPHS.length) | 0]
         }
       }
-      const cx = (i: number) => x0 + (i + 0.5) * cw, cy = (j: number) => y0 + (j + 0.5) * ch
+      const cx = (i: number) => ox + (i + 0.5) * cw, cy = (j: number) => oy + (j + 0.5) * ch
 
       // plan: keep adding blasts at random uncovered tiles until every tile is inside some blast radius
       type Blast = { x: number; y: number; R: number; t: number; fired: boolean }
@@ -80,13 +82,15 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
         }
       }
       for (let n = blasts.length - 1; n > 0; n--) { const m = (Math.random() * (n + 1)) | 0; [blasts[n], blasts[m]] = [blasts[m], blasts[n]] } // random order
+      const ox0 = ox, oy0 = oy
+      blasts.forEach((b) => { b.x -= ox0; b.y -= oy0 }) // blast centres are kept relative to the title
       blasts.forEach((b, n) => { b.t = START + ((n + Math.random() * 0.7) / blasts.length) * SPAN })
       blasts.sort((a, b) => a.t - b.t)
       const tEnd = blasts[blasts.length - 1].t + 0.1
 
       type Chunk = { x: number; y: number; vx: number; vy: number; a: number; w: number; sc: number; age: number; life: number; bg: string; fg: string; gl: string }
       const chunks: Chunk[] = []
-      let prev = 0, dugFired = false
+      let prev = 0, dugFired = false, readyFired = false
       const t0 = performance.now()
 
       const explode = (b: Blast) => {
@@ -94,7 +98,7 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
         for (let k = 0; k < N; k++) {
           if (!alive[k]) continue
           const px = cx(k % cols), py = cy((k / cols) | 0)
-          const dx = px - b.x, dy = py - b.y, dist = Math.hypot(dx, dy)
+          const dx = px - (b.x + ox), dy = py - (b.y + oy), dist = Math.hypot(dx, dy)
           if (dist > b.R) continue
           alive[k] = 0
           if (Math.random() > DEBRIS_SHARE) continue // the tile is gone, but only some of them become flying chunks
@@ -109,6 +113,8 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
         raf = requestAnimationFrame(frame)
         const t = (now - t0) / 1000, dt = Math.min(0.05, t - prev)
         prev = t
+        const hr = host.getBoundingClientRect()
+        ox = hr.left - cw; oy = hr.top - ch
         for (const b of blasts) if (!b.fired && b.t <= t) explode(b)
 
         ctx.clearRect(0, 0, cssW, cssH)
@@ -117,7 +123,7 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
         for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
           const k = j * cols + i
           if (!alive[k]) continue
-          const x = x0 + i * cw, y = y0 + j * ch
+          const x = ox + i * cw, y = oy + j * ch
           ctx.fillStyle = bg[k]; ctx.fillRect(x, y, cw + 0.5, ch + 0.5)
           ctx.fillStyle = fg[k]; ctx.fillText(gl[k], x, y)
         }
@@ -136,15 +142,24 @@ function DigCanvas({ host, onDug, onDone }: { host: HTMLElement; onDug(): void; 
           ctx.restore()
         }
         ctx.globalAlpha = 1
+        if (!readyFired) { readyFired = true; cb.current.onReady() } // the soil is on screen now: the title may be shown (it sits under it)
         if (!dugFired && t >= tEnd) { dugFired = true; cb.current.onDug() }
         if (dugFired && !chunks.length) { cancelAnimationFrame(raf); cb.current.onDone() }
       }
       raf = requestAnimationFrame(frame)
     }
 
-    // measure only after the web font is in, so the soil patch matches the final title size
-    document.fonts.ready.then(() => { if (!cancelled) run() })
-    return () => { cancelled = true; cancelAnimationFrame(raf) }
+    // measure only after the web font is in, so the soil patch matches the final title size. fonts.ready alone can resolve before the
+    // download has even started, so ask for the weights explicitly, give up waiting after 2.5 s, then wait two frames for the layout to settle
+    const fontsIn = Promise.race([
+      Promise.all([document.fonts.load('700 1em "DM Sans"'), document.fonts.load('400 1em "DM Sans"')]).then(() => document.fonts.ready),
+      new Promise((res) => setTimeout(res, 2500)),
+    ])
+    fontsIn.then(() => { if (!cancelled) requestAnimationFrame(() => requestAnimationFrame(() => { if (!cancelled) run() })) })
+    // a resize reflows the title: no point in digging into the old shape, show the title at once
+    const onResize = () => { if (cancelled) return; cancelled = true; cancelAnimationFrame(raf); cb.current.onReady(); cb.current.onDug(); cb.current.onDone() }
+    window.addEventListener('resize', onResize)
+    return () => { cancelled = true; cancelAnimationFrame(raf); window.removeEventListener('resize', onResize) }
   }, [host])
 
   return <canvas ref={ref} className="dig-canvas" aria-hidden="true" />
@@ -157,15 +172,23 @@ export default function DigBlock() {
   const [host, setHost] = useState<HTMLElement | null>(null)
   const [digging, setDigging] = useState(!reduce)
   const [dug, setDug] = useState(reduce)
+  const [covered, setCovered] = useState(reduce) // the soil is drawn over the title: until then the title text stays hidden
+
+  // failsafe: whatever goes wrong (font never arrives, canvas fails), the title and the text below it appear after 4 s
+  useEffect(() => {
+    if (covered) return
+    const t = setTimeout(() => { setCovered(true); setDug(true); setDigging(false) }, 4000)
+    return () => clearTimeout(t)
+  }, [covered])
 
   return (
     <>
-      <h1 className="dig-title" aria-label={TITLE_BEFORE + TITLE_SHIFT} ref={setHost}>
+      <h1 className={`dig-title${covered ? '' : ' dig-pending'}`} aria-label={TITLE_BEFORE + TITLE_SHIFT} ref={setHost}>
         <span aria-hidden="true">
           {TITLE_BEFORE}
           <span className={`tt-shift${dug ? ' tt-done' : ''}`}>{TITLE_SHIFT}</span>
         </span>
-        {digging && host && <DigCanvas host={host} onDug={() => setDug(true)} onDone={() => setDigging(false)} />}
+        {digging && host && <DigCanvas host={host} onReady={() => setCovered(true)} onDug={() => setDug(true)} onDone={() => setDigging(false)} />}
       </h1>
       <p className={`home-tag home-rest${dug ? ' on' : ''}`}>{TAG[0]}<br />{TAG[1]}</p>
       <p className={`home-desc home-rest${dug ? ' on' : ''}`}>{DESC}</p>
