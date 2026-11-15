@@ -5,9 +5,7 @@ import { useField } from './field'
 import type { Status } from '../types'
 
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? ''
-const KEY_STORE = 'fieldshift.anthropicKey'
 const LAYOUT_STORE = 'fieldshift.agent.layout.v1'
-const WEB_STORE = 'fieldshift.agent.web.v1'
 const CHATS_STORE = 'fieldshift.agent.chats.v1'
 const MAX_CHATS = 30
 const MIN_W = 320, MIN_H = 360, TOP = 60
@@ -40,10 +38,6 @@ interface Ctx {
   deleteChat(id: string): void
   pinChat(id: string): void
   providers: ProviderInfo[] | null
-  apiKey: string
-  webSearch: boolean          // let Claude search the web (Anthropic's server-side tool); the local model ignores it
-  setWebSearch(on: boolean): void
-  setApiKey(k: string): void
   dock: Dock
   rect: Rect
   canFloat: boolean
@@ -84,12 +78,10 @@ function loadRect(): Rect {
 export function AgentProvider({ children }: { children: ReactNode }) {
   const { fields } = useField()
   const [chats, setChats] = useState<Chat[]>(loadChats)
-  const [webSearch, setWeb] = useState(() => read(WEB_STORE) !== 'off')
   const [activeId, setActiveId] = useState('')
   const messages = useMemo(() => chats.find((c) => c.id === activeId)?.messages ?? [], [chats, activeId])
   const [busy, setBusy] = useState(false)
   const [providers, setProviders] = useState<ProviderInfo[] | null>(null)
-  const [apiKey, setKey] = useState(() => read(KEY_STORE) ?? '')
   const [dock, setDock] = useState<Dock>('tab')
   const [rect, setRect] = useState<Rect>(() => clampRect(loadRect()))
   const [moving, setMoving] = useState(false)
@@ -101,18 +93,14 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   const rectRef = useRef(rect)
   useEffect(() => { rectRef.current = rect }, [rect])
 
-  const headers = useCallback((): Record<string, string> => (apiKey ? { 'X-Anthropic-Key': apiKey } : {}), [apiKey])
-
   useEffect(() => {
     let live = true
     const t = setTimeout(() => {
-      fetch(`${API}/api/agent/status`, { headers: headers() }).then((r) => r.json()).then((j) => live && setProviders(j.providers)).catch(() => live && setProviders([]))
+      fetch(`${API}/api/agent/status`).then((r) => r.json()).then((j) => live && setProviders(j.providers)).catch(() => live && setProviders([]))
     }, 300)
     return () => { live = false; clearTimeout(t) }
-  }, [apiKey, headers])
+  }, [])
 
-  const setWebSearch = useCallback((on: boolean) => { setWeb(on); write(WEB_STORE, on ? '' : 'off') }, [])
-  const setApiKey = useCallback((k: string) => { const v = k.trim(); setKey(v); write(KEY_STORE, v) }, [])
   const patchIn = (cid: string, id: string, f: (m: ChatMsg) => ChatMsg) =>
     setChats((cs) => cs.map((c) => (c.id === cid ? { ...c, messages: c.messages.map((m) => (m.id === id ? f(m) : m)) } : c)))
 
@@ -147,8 +135,8 @@ export function AgentProvider({ children }: { children: ReactNode }) {
     void (async () => {
       try {
         const r = await fetch(`${API}/api/agent/chat`, {
-          method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', ...headers() },
-          body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.text })), fields, web_search: webSearch }),
+          method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.text })), fields }),
         })
         if (!r.ok || !r.body) {
           let d = ''
@@ -195,7 +183,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
         abort.current = null
       }
     })()
-  }, [busy, messages, activeId, fields, webSearch, headers])
+  }, [busy, messages, activeId, fields])
 
   const stop = useCallback(() => abort.current?.abort(), [])
   const newChat = useCallback(() => { abort.current?.abort(); setActiveId('') }, [])
@@ -258,9 +246,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   }, [commit])
 
   const value = useMemo<Ctx>(() => ({
-    messages, busy, send, stop, chats: list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, webSearch, setWebSearch, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
+    messages, busy, send, stop, chats: list, activeId, newChat, openChat, deleteChat, pinChat, providers, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
     moving, overDock, closing, anchor,
-  }), [messages, busy, send, stop, list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, webSearch, setWebSearch, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
+  }), [messages, busy, send, stop, list, activeId, newChat, openChat, deleteChat, pinChat, providers, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

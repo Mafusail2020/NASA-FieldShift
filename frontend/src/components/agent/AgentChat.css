@@ -122,14 +122,8 @@
 .ag-ctxbtn:hover { background: var(--color-neutral-tint); }
 .ag-ctxbtn svg { width: 14px; height: 14px; fill: none; stroke: var(--color-muted); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .ag-model { display: inline-flex; align-items: baseline; gap: var(--space-2); font: inherit; color: var(--color-text); background: transparent; border: 0; padding: var(--space-1) var(--space-2); margin-right: calc(var(--space-2) * -1); border-radius: var(--radius-md); cursor: pointer; }
-.ag-model:hover { background: var(--color-neutral-tint); }
 .ag-tier { color: var(--color-muted); }
-.ag-key { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); font-size: 13px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
-.ag-key input { font: inherit; padding: var(--space-2); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-bg); color: var(--color-text); }
-.ag-check { display: flex; align-items: flex-start; gap: var(--space-2); font-size: 13px; color: var(--color-text); cursor: pointer; }
-.ag-check input { margin-top: 2px; accent-color: var(--color-primary-strong); }
 .ag-sources a { color: var(--color-primary-strong); }
-.ag-hint { margin: 0; font-size: 12.5px; color: var(--color-muted); }
 .ag-row { display: flex; gap: var(--space-2); }
 .ag-btn { font: inherit; font-weight: 700; font-size: 14px; padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); border: 1px solid var(--color-primary); background: var(--color-primary); color: var(--color-text); cursor: pointer; transition: background-color 0.2s; }
 .ag-btn:hover:not(:disabled) { background: var(--color-primary-hover); }

@@ -2,7 +2,7 @@ import json
 import time
 from collections import defaultdict, deque
 
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
@@ -23,7 +23,6 @@ class Msg(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[Msg] = Field(min_length=1, max_length=30)
     fields: list[dict] = Field(default_factory=list, max_length=40)
-    web_search: bool = True  # let Claude use Anthropic's web search (ignored by the local model)
 
 
 def _limit(ip: str) -> None:
@@ -36,17 +35,17 @@ def _limit(ip: str) -> None:
 
 
 @router.get("/status")
-def status(x_anthropic_key: str | None = Header(default=None)):
-    """Which models can answer right now. Never returns the key."""
-    return {"providers": LLMRouter.from_request(x_anthropic_key).status()}
+def status():
+    """Which models can answer right now."""
+    return {"providers": LLMRouter.from_request().status()}
 
 
 @router.post("/chat")
-def chat(req: ChatRequest, request: Request, x_anthropic_key: str | None = Header(default=None)):
+def chat(req: ChatRequest, request: Request):
     _limit(request.client.host if request.client else "?")
     if req.messages[-1].role != "user":
         raise HTTPException(422, "last message must be from the user")
-    agent = Agent(LLMRouter.from_request(x_anthropic_key, req.web_search))
+    agent = Agent(LLMRouter.from_request())
     history = [m.model_dump() for m in req.messages]
 
     def stream():

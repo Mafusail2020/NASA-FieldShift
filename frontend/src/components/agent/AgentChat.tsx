@@ -13,16 +13,7 @@ const WHEAT = 'M12 21V9M12 2.5c1.6 1.4 1.6 3.2 0 4.8-1.6-1.6-1.6-3.4 0-4.8ZM12 1
 const TOOL_LABEL: Record<string, string> = {
   list_fields: 'Read your fields', get_field: 'Read field details', get_climate: 'Yearly climate', get_monthly_climate: 'Monthly climate',
   get_risk_layers: 'Climate trends', season_twin: 'Season twins', get_crop: 'Crop parameters', search_kb: 'Knowledge base',
-  evaluate_rotation: 'Rotation risk', compare_rotations: 'Compare rotations', soil_check: 'Soil check', web_search: 'Web search',
-}
-
-// 'claude-sonnet-5-5' -> 'Sonnet 5.5'
-function modelName(id?: string | null): string {
-  if (!id) return ''
-  const parts = id.replace(/^claude-/, '').split('-')
-  const words = parts.filter((p) => !/^\d+$/.test(p)).map((p) => p[0].toUpperCase() + p.slice(1))
-  const ver = parts.filter((p) => /^\d+$/.test(p)).join('.')
-  return [...words, ver].filter(Boolean).join(' ')
+  evaluate_rotation: 'Rotation risk', compare_rotations: 'Compare rotations', soil_check: 'Soil check',
 }
 
 function Wheat({ className }: { className?: string }) {
@@ -64,28 +55,10 @@ function Bubble({ m }: { m: ChatMsg }) {
               ))}</ul>
             </details>
           )}
-          {m.provider && <span className="ag-prov">{m.provider.startsWith('local') ? 'Local model' : 'Claude'}</span>}
+          {m.provider && <span className="ag-prov">Local model</span>}
         </div>
       )}
     </div>
-  )
-}
-
-function KeyPanel({ onClose }: { onClose: () => void }) {
-  const { apiKey, setApiKey, webSearch, setWebSearch } = useAgent()
-  const [draft, setDraft] = useState(apiKey)
-  const save = (e: FormEvent) => { e.preventDefault(); setApiKey(draft); onClose() }
-  return (
-    <form className="ag-key" onSubmit={save}>
-      <label htmlFor="ag-key">Anthropic API key (optional)</label>
-      <input id="ag-key" type="password" autoComplete="off" spellCheck={false} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="sk-ant-…" />
-      <label className="ag-check"><input type="checkbox" checked={webSearch} onChange={(e) => setWebSearch(e.target.checked)} />Let Claude search the web when the project data cannot answer</label>
-      <div className="ag-row">
-        <button type="submit" className="ag-btn">Save key</button>
-        {apiKey && <button type="button" className="ag-btn ag-ghost" onClick={() => { setDraft(''); setApiKey(''); onClose() }}>Remove</button>}
-      </div>
-      <p className="ag-hint">Stored in this browser only and sent with each question to the Field Shift server, which passes it to Anthropic. Without a key the assistant uses the local model (Ollama) if it runs. Web search is Claude only; its results are shown as "Web" (unverified) with links, never as project data.</p>
-    </form>
   )
 }
 
@@ -128,7 +101,6 @@ function Menu({ label, children, wrapClass }: { label: ReactNode; children: (clo
 export default function AgentChat({ variant = 'window' }: { variant?: 'page' | 'window' }) {
   const { messages, busy, send, stop, newChat, providers, popOut, canFloat } = useAgent()
   const [text, setText] = useState('')
-  const [keyOpen, setKeyOpen] = useState(false)
   const [side, setSide] = useState<boolean | null>(null)  // null = automatic: open when the container is wide
   const [lang, setLang] = useState(DICTATION[0].lang)
   const [listening, setListening] = useState(false)
@@ -165,10 +137,9 @@ export default function AgentChat({ variant = 'window' }: { variant?: 'page' | '
     area.current?.focus()
   }
 
-  const claude = providers?.find((p) => p.name === 'anthropic' && p.available)
   const local = providers?.find((p) => p.name === 'local' && p.available)
-  const model = providers === null ? 'Checking…' : claude ? modelName(claude.model) : local ? (local.model ?? 'Local model') : 'No model'
-  const tier = providers === null || !(claude || local) ? '' : claude ? 'Cloud' : 'Local'
+  const model = providers === null ? 'Checking…' : local ? (local.model ?? 'Local model') : 'No model'
+  const tier = local ? 'Local' : ''
 
   return (
     <div className={`ag-shell${wide ? ' wide' : ''}`} ref={shell}>
@@ -224,11 +195,10 @@ export default function AgentChat({ variant = 'window' }: { variant?: 'page' | '
             </div>
           </form>
 
-          {keyOpen && <KeyPanel onClose={() => setKeyOpen(false)} />}
           <div className="ag-meta">
-            <button type="button" className="ag-model" onClick={() => setKeyOpen((o) => !o)} aria-expanded={keyOpen} title="Model and API key">
+            <span className="ag-model" title="Local model">
               {model}{tier && <span className="ag-tier">{tier}</span>}
-            </button>
+            </span>
           </div>
           {empty && (
             <div className="ag-hints">
