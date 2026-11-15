@@ -120,6 +120,5 @@ Read-only agent: the farmer asks about their fields, the weather history, rotati
 - Frontend: `lib/agent.tsx` (state above the router, so the chat survives navigation), `components/agent/` (chat, charts, floating window), `pages/AssistantPage.tsx`. Drag the Assistant tab out of the toolbar (or "Pop out") to get a movable, resizable window; Esc or the dock button puts it back. Below 640px it is tab-only.
 - Knowledge base: `data/kb/*.md` is a draft written by Claude (status estimate): an agronomist must review it.
 - Streaming: the answer text streams token by token (`LLMProvider.stream`; Anthropic SSE and OpenAI-style SSE for the local model; a provider without streaming gives one chunk). The router falls back to the next model only if the first fails before sending any text. Events: `text_delta`, `text_break`.
-- Chat history: left column (Recents, new chat, delete), kept in this browser's localStorage like the fields (30 chats max). In the narrow floating window it slides over the chat.
 - Not done: write actions (`propose_action`), finance tool (finance data is sample), disease/stress photo tool, JS tests. Local 4B model answers take 1-2 min on a laptop.
 - Tests: `tests/test_agent.py` (scripted provider, no network).

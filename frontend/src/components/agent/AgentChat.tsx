@@ -4,7 +4,6 @@ import { useField } from '../../lib/field'
 import StatusChip from '../StatusChip'
 import type { Status } from '../../types'
 import AgentChart from './AgentChart'
-import ChatHistory from './ChatHistory'
 import MiniMarkdown from './miniMarkdown'
 import './AgentChat.css'
 
@@ -93,11 +92,10 @@ function KeyPanel({ onClose }: { onClose: () => void }) {
 }
 
 export default function AgentChat() {
-  const { messages, busy, send, stop, newChat, providers } = useAgent()
+  const { messages, busy, send, stop, clear, providers } = useAgent()
   const { fields } = useField()
   const [text, setText] = useState('')
   const [keyOpen, setKeyOpen] = useState(false)
-  const [histOpen, setHistOpen] = useState(false)  // history drawer (narrow containers only)
   const end = useRef<HTMLDivElement>(null)
   const area = useRef<HTMLTextAreaElement>(null)
   const empty = messages.length === 0
@@ -111,12 +109,6 @@ export default function AgentChat() {
   const model = providers === null ? 'Checking…' : claude ? `Claude ${modelName(claude.model)}` : local ? `Local · ${local.model ?? 'model'}` : 'No model'
 
   return (
-    <div className="ag-shell">
-    <ChatHistory open={histOpen} onClose={() => setHistOpen(false)} />
-    <div className="ag-main">
-    <button type="button" className="ag-toggle" onClick={() => setHistOpen((o) => !o)} aria-expanded={histOpen} aria-label="Chat history" title="Chat history">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3" /><path d="M9.5 4.5v15" /></svg>
-    </button>
     <div className={`ag${empty ? ' ag-is-empty' : ''}`}>
       <div className="ag-log" role="log" aria-live="polite" aria-label="Conversation">
         {empty && (
@@ -135,7 +127,7 @@ export default function AgentChat() {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(e) } }} />
         <div className="ag-bar">
-          <button type="button" className="ag-icon" onClick={newChat} disabled={empty} aria-label="New chat" title="New chat">
+          <button type="button" className="ag-icon" onClick={clear} disabled={empty} aria-label="New chat" title="New chat">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           </button>
           {busy
@@ -158,8 +150,6 @@ export default function AgentChat() {
           {SUGGESTIONS.map((s) => <button key={s.label} type="button" className="ag-pill" onClick={() => send(s.q)} disabled={busy}>{s.label}</button>)}
         </div>
       )}
-    </div>
-    </div>
     </div>
   )
 }
