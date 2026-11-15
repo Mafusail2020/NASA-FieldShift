@@ -3,7 +3,9 @@ import FieldDetail from '../components/fields/FieldDetail'
 import { FarmFinanceSummary } from '../components/finance/FarmFinanceSummary'
 import { CROP_LABEL, useField, type FieldItem } from '../lib/field'
 import { findCell, useGrid } from '../lib/grid'
+import { useScrollReveal } from '../lib/scrollReveal'
 import './FieldsPage.css'
+import './FieldsMotion.css'
 
 const fmtHa = (v: number) => v.toLocaleString('en', { maximumFractionDigits: v < 10 ? 2 : 1 })
 
@@ -17,6 +19,7 @@ function cellState(f: FieldItem, hasGrid: boolean): 'ok' | 'out' | 'idle' {
 }
 
 export default function FieldsPage() {
+  useScrollReveal()
   const { fields, activeId, selectField, addField, removeField, updateField } = useField()
   const g = useGrid()
   const grid = g.state === 'ready' ? g.grid : null

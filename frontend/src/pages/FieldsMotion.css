@@ -1,0 +1,203 @@
+/* Scroll-triggered appearing animations of the Fields tab. CSS only; lib/scrollReveal.ts decides when they start.
+   A block below the visible screen gets data-fm="wait": its animations are paused on their first (hidden) frame. Scrolling it into view
+   sets data-fm="go" and they play once. Blocks that are on screen at load are set to "go" at once (with a small start offset per block, --fm-base), so the first screen plays at load. Everything sits inside
+   prefers-reduced-motion: no-preference (and the script does nothing with reduced motion). Fill mode is `backwards` (the shine uses `both`),
+   so afterwards each element is back to its normal style and hover or focus transforms keep working. */
+@media (prefers-reduced-motion: no-preference) {
+
+/* ---------- keyframes ---------- */
+@keyframes fm-slide-left { from { opacity: 0; transform: translateX(-26px); } }
+@keyframes fm-slide-right { from { opacity: 0; transform: translateX(26px); } }
+@keyframes fm-pop { 0% { opacity: 0; transform: scale(0.6); } 60% { opacity: 1; transform: scale(1.08); } }
+@keyframes fm-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes fm-iris { from { clip-path: circle(0% at 50% 50%); transform: scale(1.08); } to { clip-path: circle(75% at 50% 50%); transform: none; } }
+@keyframes fm-rise-blur { from { opacity: 0; transform: translateY(14px); filter: blur(6px); } }
+@keyframes fm-grow-x { from { transform: scaleX(0); } }
+@keyframes fm-flip { from { opacity: 0; transform: rotateX(-70deg) translateY(12px); } }
+@keyframes fm-reel { from { opacity: 0; transform: translateY(60%); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+@keyframes fm-stripe { from { transform: scaleY(0); } }
+@keyframes fm-scan { 0% { background-size: 0 3px; background-position: 0 100%; } 50% { background-size: 100% 3px; background-position: 0 100%; } 100% { background-size: 0 3px; background-position: 100% 100%; } }
+@keyframes fm-deal { from { opacity: 0; transform: translate(-26px, 34px) rotate(-5deg) scale(0.93); } }
+@keyframes fm-bar-up { from { transform: scaleY(0); } }
+@keyframes fm-draw { from { stroke-dashoffset: 4000; } to { stroke-dashoffset: 0; } }
+@keyframes fm-dot { from { opacity: 0; transform: scale(0); } }
+@keyframes fm-soft { from { opacity: 0; transform: translateY(18px); } }
+@keyframes fm-seg { from { opacity: 0; transform: translateX(var(--from, 0)); } }
+@keyframes fm-shine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+
+/* waiting blocks: everything inside them stays paused on its first frame until the block is scrolled to */
+.fp [data-fm="wait"], .fp [data-fm="wait"] *, .fp [data-fm="wait"] *::before, .fp [data-fm="wait"] *::after,
+.fp ~ .srcfold[data-fm="wait"], .fp ~ .srcfold[data-fm="wait"] * { animation-play-state: paused !important; }
+
+/* 1 slide-in from the left (list heading), 2 elastic pop, 3 wipe reveal, 4 iris + settle (the map; its marker is not animated) */
+.fp .fp-side-top h1[data-fm] { animation: fm-slide-left 0.6s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fp-add[data-fm] { animation: fm-pop 0.6s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fp-sum[data-fm] { animation: fm-soft 0.6s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fd-name[data-fm], .fp .fg-verdict[data-fm] { animation: fm-wipe 0.9s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fd-top .cp-mini[data-fm] { animation: fm-iris 1s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fr-meta[data-fm] .fr-btn { animation: fm-pop 0.55s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fr-meta[data-fm] .fr-btn:nth-child(2) { animation-delay: calc(var(--fm-base, 0ms) + 90ms); }
+/* 6 rise and de-blur, staggered */
+.fp .fr-inputs[data-fm] .fr-f { animation: fm-rise-blur 0.65s var(--ease) calc(var(--fm-base, 0ms) + var(--k, 0) * 80ms) backwards; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(1) { --k: 0; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(2) { --k: 1; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(3) { --k: 2; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(4) { --k: 3; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(5) { --k: 4; }
+  .fp .fr-inputs[data-fm] .fr-f:nth-child(6) { --k: 5; }
+/* 7 bar grow: the dark spread follows the pale part */
+.fp .fr-fin[data-fm] .fsum { animation: fm-soft 0.6s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .fr-fin[data-fm] .rbar-low, .fp .fr-fin[data-fm] .rbar-spread { transform-origin: 0 50%; }
+.fp .fr-fin[data-fm] .rbar-low { animation: fm-grow-x 0.9s var(--ease) calc(var(--fm-base, 0ms) + 0.2s) backwards; }
+.fp .fr-fin[data-fm] .rbar-spread { animation: fm-grow-x 0.9s var(--ease) calc(var(--fm-base, 0ms) + 0.6s) backwards; }
+/* 8 3D flip-up of the passport tiles, 9 number reel, the accent stripe draws down */
+.fp .pass-group[data-fm] .fg-tiles { perspective: 900px; }
+.fp .pass-group[data-fm] .fg-tile { transform-origin: 50% 0; animation: fm-flip 0.7s var(--ease) calc(var(--fm-base, 0ms) + var(--d, 0s)) backwards; }
+.fp .pass-group[data-fm] .fg-tile::before { transform-origin: 50% 0; animation: fm-stripe 0.5s var(--ease) calc(var(--fm-base, 0ms) + var(--d, 0s) + 0.35s) backwards; }
+.fp .pass-group[data-fm] .fg-val { animation: fm-reel 0.6s var(--ease) calc(var(--fm-base, 0ms) + var(--d, 0s) + 0.25s) backwards; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(1) { --d: 0.00s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(2) { --d: 0.09s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(3) { --d: 0.18s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(4) { --d: 0.27s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(5) { --d: 0.36s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(6) { --d: 0.45s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(7) { --d: 0.54s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(8) { --d: 0.63s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(9) { --d: 0.72s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(10) { --d: 0.81s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(11) { --d: 0.90s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(12) { --d: 0.99s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(13) { --d: 1.08s; }
+  .fp .pass-group[data-fm] .fg-tile:nth-child(14) { --d: 1.17s; }
+/* 11 scan-line sweep under headings: a bar runs across the text once and is gone (no permanent underline) */
+.fp :is(.fc-head h3, .pass-head h3, .rot h2, .rot h3:not(.coll-h), .ft-head h3)[data-fm] {
+  width: fit-content;
+  background: linear-gradient(var(--color-primary), var(--color-primary)) 0 100% / 0 3px no-repeat;
+  animation: fm-scan 1.2s var(--ease) var(--fm-base, 0ms) backwards;
+}
+/* 12 card deal */
+.fp .fc-card[data-fm], .fp .ft-card[data-fm] { transform-origin: 0 100%; animation: fm-deal 0.75s var(--ease) var(--fm-base, 0ms) backwards; }
+/* 13 bars grow from the baseline, 14 lines draw themselves, 15 dots burst, trend and mean lines grow from the left */
+.fp .fc-card[data-fm] .fc-chart svg > rect { transform-box: fill-box; transform-origin: 50% 100%; animation: fm-bar-up 0.6s var(--ease) calc(var(--fm-base, 0ms) + 0.3s + var(--n, 0) * 18ms) backwards; }
+.fp .fc-card[data-fm] .fc-chart polyline { stroke-dasharray: 4000; animation: fm-draw 1.4s var(--ease) calc(var(--fm-base, 0ms) + 0.4s) backwards; }
+.fp .fc-card[data-fm] .fc-chart circle { transform-box: fill-box; transform-origin: 50% 50%; animation: fm-dot 0.4s var(--ease) calc(var(--fm-base, 0ms) + 0.6s + var(--n, 0) * 14ms) backwards; }
+.fp .fc-card[data-fm] :is(.fc-trend, .fc-mean) { transform-box: fill-box; transform-origin: 0 50%; animation: fm-grow-x 0.9s var(--ease) calc(var(--fm-base, 0ms) + 0.9s) backwards; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(1) { --n: 1; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(2) { --n: 2; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(3) { --n: 3; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(4) { --n: 4; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(5) { --n: 5; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(6) { --n: 6; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(7) { --n: 7; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(8) { --n: 8; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(9) { --n: 9; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(10) { --n: 10; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(11) { --n: 11; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(12) { --n: 12; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(13) { --n: 13; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(14) { --n: 14; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(15) { --n: 15; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(16) { --n: 16; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(17) { --n: 17; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(18) { --n: 18; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(19) { --n: 19; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(20) { --n: 20; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(21) { --n: 21; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(22) { --n: 22; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(23) { --n: 23; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(24) { --n: 24; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(25) { --n: 25; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(26) { --n: 26; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(27) { --n: 27; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(28) { --n: 28; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(29) { --n: 29; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(30) { --n: 30; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(31) { --n: 31; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(32) { --n: 32; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(33) { --n: 33; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(34) { --n: 34; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(35) { --n: 35; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(36) { --n: 36; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(37) { --n: 37; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(38) { --n: 38; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(39) { --n: 39; }
+  .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(40) { --n: 40; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(1) { --n: 1; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(2) { --n: 2; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(3) { --n: 3; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(4) { --n: 4; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(5) { --n: 5; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(6) { --n: 6; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(7) { --n: 7; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(8) { --n: 8; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(9) { --n: 9; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(10) { --n: 10; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(11) { --n: 11; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(12) { --n: 12; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(13) { --n: 13; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(14) { --n: 14; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(15) { --n: 15; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(16) { --n: 16; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(17) { --n: 17; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(18) { --n: 18; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(19) { --n: 19; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(20) { --n: 20; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(21) { --n: 21; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(22) { --n: 22; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(23) { --n: 23; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(24) { --n: 24; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(25) { --n: 25; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(26) { --n: 26; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(27) { --n: 27; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(28) { --n: 28; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(29) { --n: 29; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(30) { --n: 30; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(31) { --n: 31; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(32) { --n: 32; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(33) { --n: 33; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(34) { --n: 34; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(35) { --n: 35; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(36) { --n: 36; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(37) { --n: 37; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(38) { --n: 38; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(39) { --n: 39; }
+  .fp .fc-card[data-fm] .fc-chart circle:nth-child(40) { --n: 40; }
+/* 16 table rows cascade in from the right, 17 segmented buttons alternate sides, rotation years slide in */
+.fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr { animation: fm-slide-right 0.5s var(--ease) calc(var(--fm-base, 0ms) + var(--n, 0) * 55ms) backwards; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(1) { --n: 0; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(2) { --n: 1; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(3) { --n: 2; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(4) { --n: 3; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(5) { --n: 4; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(6) { --n: 5; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(7) { --n: 6; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(8) { --n: 7; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(9) { --n: 8; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(10) { --n: 9; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(11) { --n: 10; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(12) { --n: 11; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(13) { --n: 12; }
+  .fp :is(.rot-tablewrap, .cf-wrap, .fs-tablewrap)[data-fm] tbody tr:nth-child(14) { --n: 13; }
+.fp :is(.rot-seg, .fc-seg)[data-fm] > * { animation: fm-seg 0.5s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp :is(.rot-seg, .fc-seg)[data-fm] > :nth-child(odd) { --from: -34px; }
+.fp :is(.rot-seg, .fc-seg)[data-fm] > :nth-child(even) { --from: 34px; animation-delay: calc(var(--fm-base, 0ms) + 80ms); }
+.fp .rot-years[data-fm] li { animation: fm-slide-right 0.5s var(--ease) calc(var(--fm-base, 0ms) + var(--n, 0) * 70ms) backwards; }
+  .fp .rot-years[data-fm] li:nth-child(1) { --n: 0; }
+  .fp .rot-years[data-fm] li:nth-child(2) { --n: 1; }
+  .fp .rot-years[data-fm] li:nth-child(3) { --n: 2; }
+  .fp .rot-years[data-fm] li:nth-child(4) { --n: 3; }
+  .fp .rot-years[data-fm] li:nth-child(5) { --n: 4; }
+  .fp .rot-years[data-fm] li:nth-child(6) { --n: 5; }
+  .fp .rot-years[data-fm] li:nth-child(7) { --n: 6; }
+  .fp .rot-years[data-fm] li:nth-child(8) { --n: 7; }
+/* 19 soft rise for the larger blocks */
+.fp :is(.coll, .rot-sec, .cf, .fs, .ft-head)[data-fm], .fp ~ .srcfold[data-fm] { animation: fm-soft 0.7s var(--ease) var(--fm-base, 0ms) backwards; }
+/* 18 shine sweep: a light band crosses the soil suggestion and the humus cards once (it ends off the card, clipped) */
+.fp .fs-suggest[data-fm], .fp .fs-cards[data-fm] .fs-card { position: relative; overflow: hidden; }
+.fp .fs-suggest[data-fm]::after, .fp .fs-cards[data-fm] .fs-card::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(100deg, transparent 38%, rgb(255 255 255 / 0.75) 50%, transparent 62%); animation: fm-shine 1.1s ease-out calc(var(--fm-base, 0ms) + 0.3s) both; }
+.fp .fs-cards[data-fm] .fs-card:nth-child(2)::after { animation-delay: calc(var(--fm-base, 0ms) + 0.45s); }
+.fp .fs-cards[data-fm] .fs-card:nth-child(3)::after { animation-delay: calc(var(--fm-base, 0ms) + 0.6s); }
+.fp .fs-cards[data-fm] .fs-card:nth-child(4)::after { animation-delay: calc(var(--fm-base, 0ms) + 0.75s); }
+}
+/* printing: show everything */
+@media print { .fp [data-fm], .fp [data-fm] * { animation: none !important; } }
