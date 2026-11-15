@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { FieldItem } from './field'
 import { soilFactorOf, type SoilDoc } from './soil'
 // Pure helpers for the Finance page. No data is invented here: every input comes from finance_inputs.json or the user.
-export type FStatus = 'data' | 'literature' | 'estimate' | 'todo'
+export type FStatus = 'data' | 'literature' | 'estimate' | 'sample' | 'todo'
 export interface YearValue { year: number; value: number }
 export interface CropInputs {
   label: string
@@ -12,7 +12,11 @@ export interface CropInputs {
   price_source: string | null; price_status: FStatus
   psd: { year: number; value: number; status: FStatus; source: string }[]
   cost_uah_per_ha: number | null; cost_status: FStatus
+  // Sample cost items in USD/ha (illustrative, status "sample"); the view-only fields below are filled by inCurrency in the chosen currency.
+  cost_items?: CostItem[]; cost_items_source?: string | null; cost_items_status?: FStatus
+  cost_default?: number | null; cost_var?: number | null
 }
+export interface CostItem { item: string; kind: 'variable' | 'fixed'; usd_per_ha: number }
 export interface FinanceInputs {
   generated: string
   crops: Record<string, CropInputs>
@@ -130,9 +134,21 @@ export function useFinanceInputs(): Load {
 }
 
 // Inputs with every crop price taken from the FAOSTAT column of the selected currency.
-export function inCurrency(raw: FinanceInputs, cur: Currency): FinanceInputs {
-  return { ...raw, crops: Object.fromEntries(Object.entries(raw.crops).map(([id, c]) => [id, { ...c, prices: priceSeries(c.prices, cur) }])) }
+// Default cost (sample items, USD) is converted with the rate; a typed cost always wins.
+export function inCurrency(raw: FinanceInputs, cur: Currency, rate: number = raw.fx.uah_per_usd): FinanceInputs {
+  const conv = (usd: number) => (cur === 'USD' ? usd : usd * rate)
+  const sum = (c: CropInputs, kind?: CostItem['kind']) => (c.cost_items ?? []).filter((i) => !kind || i.kind === kind).reduce((t, i) => t + i.usd_per_ha, 0)
+  return { ...raw, crops: Object.fromEntries(Object.entries(raw.crops).map(([id, c]) => {
+    const has = (c.cost_items?.length ?? 0) > 0 && Number.isFinite(conv(1))
+    return [id, { ...c, prices: priceSeries(c.prices, cur), cost_default: has ? Math.round(conv(sum(c))) : null, cost_var: has ? Math.round(conv(sum(c, 'variable'))) : null }]
+  })) }
 }
+// The exchange rate in use: typed (valid) or the FAO implied default.
+export function fxRate(raw: FinanceInputs, s: FinSettings): number {
+  const t = s.rateStr.trim() !== '' ? Number(s.rateStr) : NaN
+  return validPos(t) ? t : raw.fx.uah_per_usd
+}
+export const viewData = (raw: FinanceInputs, s: FinSettings) => inCurrency(raw, s.cur, fxRate(raw, s))
 
 const parseStr = (s: string | undefined) => (s == null || s.trim() === '' ? null : Number(s))
 
@@ -143,15 +159,19 @@ export function cropCalc(c: CropInputs, area: number, yS: string | undefined, pS
   const dflt = median(lastN(c.yields, YIELD_DEFAULT_YEARS).map((p) => p.value)) * soil
   const y = typed ? Number(yS) : dflt
   const p = pS && pS.trim() !== '' ? Number(pS) : c.prices[c.prices.length - 1]?.value ?? NaN
-  const costRaw = parseStr(cS)
+  const typedCost = parseStr(cS)
+  const costRaw = typedCost ?? c.cost_default ?? null // typed cost, else the sample default
   const invalid = !validPos(y) || !validPos(p) || (costRaw != null && !validNonNeg(costRaw))
   const cost = costRaw != null && validNonNeg(costRaw) ? costRaw : null
   const yr = lastN(c.yields, YIELD_RANGE_YEARS).map((q) => q.value * (typed ? 1 : soil))
+  const costDefault = typedCost == null && cost != null
+  const varShare = c.cost_var != null && c.cost_default ? c.cost_var / c.cost_default : null // gross margin: variable part of the cost
   const sc: Scenario = { areaHa: area, yieldTHa: y, price: p, cost, k: 1 }
   const res = compute(sc)
   const rg = rangeOf(sc, { low: percentile(yr, 0.1), high: percentile(yr, 0.9) }, spread / 100)
   return {
-    invalid, y, p, cost, rev: res.revenue, revLow: rg.revenuePerHa.low * area, revHigh: rg.revenuePerHa.high * area,
+    invalid, y, p, cost, costDefault, varShare, gross: res.revenue != null && cost != null && varShare != null ? res.revenue - cost * varShare * area : null,
+    rev: res.revenue, revLow: rg.revenuePerHa.low * area, revHigh: rg.revenuePerHa.high * area,
     margin: res.margin, marLow: rg.marginPerHa ? rg.marginPerHa.low * area : null, marHigh: rg.marginPerHa ? rg.marginPerHa.high * area : null,
   }
 }
@@ -179,4 +199,50 @@ export function farmTotals(rows: FieldRow[]) {
     rev: { low: sum((c) => c.revLow), mid: sum((c) => c.rev), high: sum((c) => c.revHigh) },
     mar: hasMargin ? { low: sum((c) => c.marLow!), mid: sum((c) => c.margin!), high: sum((c) => c.marHigh!) } : null,
   }
+}
+
+// ---- Stage 2: scenarios, sensitivity grid, tornado, break-even rows. Pure, per hectare unless said otherwise. ----
+const margin1 = (y: number, p: number, k: number, cost: number | null) => y * k * p - (cost ?? 0)
+
+export interface ScenarioCol { name: 'Bad' | 'Base' | 'Good'; yieldTHa: number; price: number; res: Result }
+// Bad = low yield and low price, Good = high both; Base = the central values. A typed yield outside the range widens the range.
+export function threeScenarios(s: Scenario, y: Range, spread: number): ScenarioCol[] {
+  const lo = Math.min(y.low, s.yieldTHa), hi = Math.max(y.high, s.yieldTHa)
+  const mk = (name: ScenarioCol['name'], yy: number, pp: number): ScenarioCol => ({ name, yieldTHa: yy, price: pp, res: compute({ ...s, yieldTHa: yy, price: pp }) })
+  return [mk('Bad', lo, s.price * (1 - spread)), mk('Base', s.yieldTHa, s.price), mk('Good', hi, s.price * (1 + spread))]
+}
+
+// 5 x 5 grid of margin per ha (revenue per ha when there is no cost). Rows = yield low..high, columns = price -spread..+spread.
+export function marginGrid(s: Scenario, y: Range, spread: number) {
+  const lo = Math.min(y.low, s.yieldTHa), hi = Math.max(y.high, s.yieldTHa)
+  const yields = [lo, (lo + s.yieldTHa) / 2, s.yieldTHa, (s.yieldTHa + hi) / 2, hi]
+  const sp = Math.max(spread, 0.1)
+  const prices = [-1, -0.5, 0, 0.5, 1].map((f) => s.price * (1 + f * sp))
+  return { yields, prices, cells: yields.map((yy) => prices.map((pp) => margin1(yy, pp, s.k, s.cost))), hasCost: s.cost != null }
+}
+
+export interface TornadoRow { name: 'Yield' | 'Price' | 'Cost'; low: number; high: number }
+// Margin per ha when one driver moves -pct / +pct and the others stay. Sorted by swing, largest first.
+export function tornado(s: Scenario, pct = 0.1): { base: number; rows: TornadoRow[] } | null {
+  if (s.cost == null) return null
+  const m = (y: number, p: number, c: number) => margin1(y, p, s.k, c)
+  const mk = (name: TornadoRow['name'], a: number, b: number): TornadoRow => ({ name, low: Math.min(a, b), high: Math.max(a, b) })
+  const rows = [
+    mk('Yield', m(s.yieldTHa * (1 - pct), s.price, s.cost), m(s.yieldTHa * (1 + pct), s.price, s.cost)),
+    mk('Price', m(s.yieldTHa, s.price * (1 - pct), s.cost), m(s.yieldTHa, s.price * (1 + pct), s.cost)),
+    mk('Cost', m(s.yieldTHa, s.price, s.cost * (1 - pct)), m(s.yieldTHa, s.price, s.cost * (1 + pct))),
+  ].sort((a, b) => b.high - b.low - (a.high - a.low))
+  return { base: m(s.yieldTHa, s.price, s.cost), rows }
+}
+
+export interface BreakEvenRow { id: string; label: string; y: number; p: number; cost: number | null; costDefault: boolean; beY: number | null; beP: number | null }
+// One row per crop with the farm's current inputs (typed or default), k not applied.
+export function breakEvenRows(data: FinanceInputs, ids: string[], s: FinSettings): BreakEvenRow[] {
+  return ids.flatMap((id) => {
+    const c = data.crops[id]
+    if (!c) return []
+    const x = cropCalc(c, 1, s.yieldStr[id], s.priceStr[id], s.costStr[id], s.spread)
+    const ok = !x.invalid && x.cost != null
+    return [{ id, label: c.label, y: x.y, p: x.p, cost: x.cost, costDefault: x.costDefault, beY: ok ? x.cost! / x.p : null, beP: ok ? x.cost! / x.y : null }]
+  })
 }

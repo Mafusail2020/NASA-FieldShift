@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useField } from '../../lib/field'
 import { fmt } from '../../lib/format'
-import { farmTotals, fieldRow, fmtMoney, inCurrency, useFinanceInputs, useFinSettings } from '../../lib/finance'
+import { farmTotals, fieldRow, fmtMoney, viewData, useFinanceInputs, useFinSettings } from '../../lib/finance'
 import { useSoilDoc } from '../../lib/soil'
 import StatusChip from '../StatusChip'
 import { RangeBar, fmtShort } from './RangeBar'
@@ -16,7 +16,7 @@ export function FarmFinanceSummary() {
   const sd = soil.state === 'ready' ? soil.data : null
   if (load.state === 'loading') return <section className="fsum-card" aria-busy="true"><p className="fsum">Finance: loading…</p></section>
   if (load.state === 'error') return <section className="fsum-card"><p className="fsum"><span className="fsum-warn">Finance inputs unavailable.</span> <Link className="fsum-link" to="/finance">Open Finance</Link></p></section>
-  const T = farmTotals(fields.map((f) => fieldRow(inCurrency(load.data, S.cur), f, S, sd)))
+  const T = farmTotals(fields.map((f) => fieldRow(viewData(load.data, S), f, S, sd)))
   const left = T.total - T.counted
   const per = (v: number) => (T.area > 0 ? v / T.area : null)
   const row = (name: string, r: { low: number; high: number }) => {

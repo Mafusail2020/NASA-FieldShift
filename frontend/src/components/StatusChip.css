@@ -8,3 +8,4 @@
 .status-data, .status-literature { background: var(--color-neutral-tint); color: var(--color-text); }
 .status-estimate { border-style: dashed; }
 .status-todo { background: var(--color-bg); border-style: dotted; }
+.status-sample { border-style: dashed; background: var(--color-primary-wash); color: var(--color-primary-strong); }

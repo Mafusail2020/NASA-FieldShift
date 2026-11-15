@@ -41,6 +41,9 @@ function getJson<T>(url: string): Promise<T> {
   return p
 }
 
+/** One cell's pair data (module cache); used by the Finance page for several fields at once. */
+export const loadCellRot = (id: string) => getJson<CellRot>(`/data/rotations/${id}.json`)
+
 export type Load<T> = { state: 'loading' } | { state: 'error' } | { state: 'ready'; data: T }
 
 export function useRotIndex(): Load<RotIndex> {

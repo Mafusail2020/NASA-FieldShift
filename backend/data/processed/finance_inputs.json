@@ -321,7 +321,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 40.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 40.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 25.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 45.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 25.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "maize": {
    "label": "Maize",
@@ -626,7 +665,46 @@
     }
    ],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 110.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 190.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 60.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 45.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "millet": {
    "label": "Millet",
@@ -912,7 +990,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 15.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 50.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 25.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 45.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 25.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "oats": {
    "label": "Oats",
@@ -1198,7 +1315,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 70.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 50.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 28.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "pea": {
    "label": "Pea",
@@ -1484,7 +1640,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 80.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 50.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "soybean": {
    "label": "Soybean",
@@ -1720,7 +1915,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 65.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "spring_barley": {
    "label": "Spring barley",
@@ -2006,7 +2240,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 110.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 45.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "sugar_beet": {
    "label": "Sugar beet",
@@ -2292,7 +2565,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 160.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 220.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 140.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 120.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "sunflower": {
    "label": "Sunflower",
@@ -2597,7 +2909,46 @@
     }
    ],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 70.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 80.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 60.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 30.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "winter_barley": {
    "label": "Winter barley",
@@ -2883,7 +3234,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 130.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 55.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 60.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 35.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "winter_rapeseed": {
    "label": "Winter rapeseed",
@@ -3119,7 +3509,46 @@
    "price_status": "data",
    "psd": [],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 45.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 200.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 110.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 70.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 35.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   },
   "winter_wheat": {
    "label": "Winter wheat",
@@ -3424,7 +3853,46 @@
     }
    ],
    "cost_uah_per_ha": null,
-   "cost_status": "todo"
+   "cost_status": "todo",
+   "cost_items": [
+    {
+     "item": "seed",
+     "kind": "variable",
+     "usd_per_ha": 60.0
+    },
+    {
+     "item": "fertilizer",
+     "kind": "variable",
+     "usd_per_ha": 150.0
+    },
+    {
+     "item": "protection",
+     "kind": "variable",
+     "usd_per_ha": 70.0
+    },
+    {
+     "item": "fuel",
+     "kind": "variable",
+     "usd_per_ha": 70.0
+    },
+    {
+     "item": "labour",
+     "kind": "variable",
+     "usd_per_ha": 40.0
+    },
+    {
+     "item": "rent",
+     "kind": "fixed",
+     "usd_per_ha": 90.0
+    },
+    {
+     "item": "overhead",
+     "kind": "fixed",
+     "usd_per_ha": 60.0
+    }
+   ],
+   "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
+   "cost_items_status": "sample"
   }
  },
  "uga": [
@@ -3576,6 +4044,6 @@
  "notes": {
   "yields": "National FAOSTAT yields, all farm categories (not enterprises), no oblast split.",
   "prices": "FAOSTAT producer prices, nominal UAH/t, current prices of each year, last year 2023. Years before 1996 dropped (karbovanets).",
-  "missing": "Costs per hectare, prices after 2023, UAH/USD rate and local market prices are not available from open sources; the user enters them."
+  "missing": "Costs per hectare, prices after 2023, UAH/USD rate and local market prices are not available from open sources; the user enters them. Default costs are illustrative samples."
  }
 }

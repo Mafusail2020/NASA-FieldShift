@@ -10,6 +10,8 @@ def test_real_export_values():
     assert w["yields"][-1]["year"] == 2024 and abs(w["yields"][-1]["value"] - 4.595) < 0.01
     assert w["cost_uah_per_ha"] is None and w["cost_status"] == "todo"
     assert min(p["year"] for p in w["prices"]) >= 1996
+    assert {i["kind"] for i in w["cost_items"]} == {"variable", "fixed"} and w["cost_items_status"] == "sample"
+    assert all(d["crops"][c]["cost_items"] for c in d["crops"])
     assert all(r["source"] and r["status"] for r in d["k"])
 
 

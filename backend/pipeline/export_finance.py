@@ -1,6 +1,6 @@
 """Export the inputs of the Finance page to finance_inputs.json (national, source-stamped, no invented values).
 
-Reads data/raw/crops/*.csv (written by pipeline.fetch_crop_info) and data/params/k_predecessor.csv, prices.csv.
+Reads data/raw/crops/*.csv (written by pipeline.fetch_crop_info) and data/params/k_predecessor.csv, prices.csv, costs.csv (sample).
 Writes frontend/public/data/finance_inputs.json and a copy in data/processed/.
 Run from backend/: python -m pipeline.export_finance
 """
@@ -51,6 +51,7 @@ def build(raw: Path = RAW, params: Path = PARAMS) -> dict:
     uga = pd.read_csv(raw / "uga_index_prices.csv")
     k = pd.read_csv(params / "k_predecessor.csv")
     cost = pd.read_csv(params / "prices.csv")
+    items = pd.read_csv(params / "costs.csv")
 
     crops = {}
     for crop in sorted(yields.crop.unique()):
@@ -65,6 +66,10 @@ def build(raw: Path = RAW, params: Path = PARAMS) -> dict:
             "price_source": p.source.iloc[0] if len(p) else None, "price_status": p.status.iloc[0] if len(p) else "todo",
             "psd": [{"year": int(r.market_year), "value": num(r.yield_t_ha), "status": r.status, "source": r.source} for r in s.itertuples() if pd.notna(r.yield_t_ha)],
             "cost_uah_per_ha": None, "cost_status": "todo",
+            # Sample cost items in USD/ha (variable = seed, fertilizer, protection, fuel, labour; fixed = rent, overhead). Illustrative, status "sample".
+            "cost_items": [{"item": r.item, "kind": r.kind, "usd_per_ha": float(r.usd_per_ha)} for r in items[items.crop == crop].itertuples()],
+            "cost_items_source": items[items.crop == crop].source.iloc[0] if (items.crop == crop).any() else None,
+            "cost_items_status": items[items.crop == crop].status.iloc[0] if (items.crop == crop).any() else "todo",
         }
     for r in cost[cost.parameter == "cost_uah_per_ha"].itertuples():
         if r.crop in crops and pd.notna(r.value):
@@ -79,7 +84,7 @@ def build(raw: Path = RAW, params: Path = PARAMS) -> dict:
         "notes": {
             "yields": "National FAOSTAT yields, all farm categories (not enterprises), no oblast split.",
             "prices": f"FAOSTAT producer prices, nominal UAH/t, current prices of each year, last year 2023. Years before {FIRST_UAH_YEAR} dropped (karbovanets).",
-            "missing": "Costs per hectare, prices after 2023, UAH/USD rate and local market prices are not available from open sources; the user enters them.",
+            "missing": "Costs per hectare, prices after 2023, UAH/USD rate and local market prices are not available from open sources; the user enters them. Default costs are illustrative samples.",
         },
     }
 
