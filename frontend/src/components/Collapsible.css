@@ -1,0 +1,14 @@
+.coll { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+.coll-h { margin: 0; }
+.coll-btn { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: var(--space-3) var(--space-4); cursor: pointer; border-radius: var(--radius-md); }
+.coll-btn:hover { background: var(--color-primary-wash); }
+.coll-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.coll-title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-weight: 700; }
+.coll-title small { font-size: 13px; font-weight: 400; color: var(--color-muted); letter-spacing: 0; }
+.coll-chev { flex: none; width: 10px; height: 10px; margin-right: 4px; border-right: 2.5px solid var(--color-primary-strong); border-bottom: 2.5px solid var(--color-primary-strong); transform: rotate(-45deg); transition: transform 0.3s var(--ease); }
+.coll-open .coll-chev { transform: rotate(45deg); }
+.coll-panel { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 0.35s var(--ease), visibility 0s linear 0.35s; }
+.coll-open > .coll-panel { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows 0.35s var(--ease), visibility 0s; }
+.coll-inner { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: var(--space-2); padding: 0 var(--space-4); opacity: 0; transition: opacity 0.25s var(--ease), padding 0.35s var(--ease); }
+.coll-open > .coll-panel > .coll-inner { opacity: 1; padding: var(--space-1) var(--space-4) var(--space-4); }
+@media (prefers-reduced-motion: reduce) { .coll-chev, .coll-panel, .coll-inner { transition: none !important; } }

@@ -1,5 +1,6 @@
 import { Fragment, useId, useMemo, useState } from 'react'
 import { cropSoil, useSoilDoc, type SoilAnalysis } from '../../../lib/soil'
+import Collapsible from '../../Collapsible'
 import StatusChip from '../../StatusChip'
 import '../soil/soil.css'
 import {
@@ -184,8 +185,8 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
         </p>
       </section>
 
-      <section className="rot-sec" aria-labelledby={`${uid}c`}>
-        <h3 id={`${uid}c`}>Comparison, rotation by rotation</h3>
+      <section className="rot-sec">
+        <Collapsible title="Comparison, rotation by rotation" hint="Full numbers, evidence, gaps and risks for each option">
         <p className="rot-help">Each rotation is evaluated for every harvest year and every starting phase. Text below is a fixed template filled from the computed values.</p>
         {all.map((r, i) => {
           const ev = r.ev
@@ -237,6 +238,7 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
           </details>
           )
         })}
+        </Collapsible>
       </section>
     </>
   )
