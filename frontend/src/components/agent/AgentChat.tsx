@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react'
 import { useAgent, type ChatMsg } from '../../lib/agent'
-import { useField } from '../../lib/field'
+import ChatSidebar, { ICON } from './ChatSidebar'
+import useDismiss from './useDismiss'
 import StatusChip from '../StatusChip'
 import type { Status } from '../../types'
 import AgentChart from './AgentChart'
@@ -14,13 +15,6 @@ const TOOL_LABEL: Record<string, string> = {
   get_risk_layers: 'Climate trends', season_twin: 'Season twins', get_crop: 'Crop parameters', search_kb: 'Knowledge base',
   evaluate_rotation: 'Rotation risk', compare_rotations: 'Compare rotations', soil_check: 'Soil check',
 }
-
-const SUGGESTIONS = [
-  { label: 'Brief me on my fields', q: 'Brief me on all my fields: the main weather risks of each.' },
-  { label: 'Driest year', q: 'Which year was driest at my field, and is it getting drier?' },
-  { label: 'Compare rotations', q: 'Compare my rotation with the alternatives for the active field.' },
-  { label: 'Sunflower before wheat?', q: 'Why is sunflower a poor predecessor for winter wheat?' },
-]
 
 // 'claude-sonnet-5-5' -> 'Sonnet 5.5'
 function modelName(id?: string | null): string {
@@ -91,65 +85,149 @@ function KeyPanel({ onClose }: { onClose: () => void }) {
   )
 }
 
-export default function AgentChat() {
-  const { messages, busy, send, stop, clear, providers } = useAgent()
-  const { fields } = useField()
+// ---- voice input (browser speech recognition; hidden where the browser has none) ----
+interface Recognition {
+  lang: string; continuous: boolean; interimResults: boolean
+  start(): void; stop(): void
+  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null
+  onend: (() => void) | null; onerror: (() => void) | null
+}
+const Rec = typeof window === 'undefined' ? undefined
+  : (window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition }).SpeechRecognition
+    ?? (window as unknown as { webkitSpeechRecognition?: new () => Recognition }).webkitSpeechRecognition
+const DICTATION = [{ lang: 'en-US', label: 'English' }, { lang: 'uk-UA', label: 'Ukrainian' }]
+
+function useWide(ref: RefObject<HTMLElement | null>, min = 760) {
+  const [wide, setWide] = useState(true)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const ro = new ResizeObserver(([e]) => setWide(e.contentRect.width >= min))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [ref, min])
+  return wide
+}
+
+function Menu({ label, children, wrapClass }: { label: ReactNode; children: (close: () => void) => ReactNode; wrapClass?: string }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const close = useCallback(() => setOpen(false), [])
+  useDismiss(ref, open, close)
+  return (
+    <div className={`ag-pop ${wrapClass ?? ''}`} ref={ref}>
+      <button type="button" className="ag-ctxbtn" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>{label}<svg viewBox="0 0 24 24" aria-hidden="true"><path d={ICON.chevron} /></svg></button>
+      {open && <div className="ag-menu up" role="menu">{children(close)}</div>}
+    </div>
+  )
+}
+export default function AgentChat({ variant = 'window' }: { variant?: 'page' | 'window' }) {
+  const { messages, busy, send, stop, newChat, providers, popOut, canFloat } = useAgent()
   const [text, setText] = useState('')
   const [keyOpen, setKeyOpen] = useState(false)
+  const [side, setSide] = useState<boolean | null>(null)  // null = automatic: open when the container is wide
+  const [lang, setLang] = useState(DICTATION[0].lang)
+  const [listening, setListening] = useState(false)
+  const shell = useRef<HTMLDivElement>(null)
   const end = useRef<HTMLDivElement>(null)
   const area = useRef<HTMLTextAreaElement>(null)
+  const rec = useRef<Recognition | null>(null)
+  const wide = useWide(shell)
+  const visible = side ?? wide
   const empty = messages.length === 0
+
   // the box grows with the text up to a limit
-  useEffect(() => { const a = area.current; if (a) { a.style.height = 'auto'; a.style.height = `${Math.min(a.scrollHeight, 160)}px` } }, [text])
+  useEffect(() => { const a = area.current; if (a) { a.style.height = 'auto'; a.style.height = `${Math.min(a.scrollHeight, 200)}px` } }, [text])
   useEffect(() => { end.current?.scrollIntoView({ block: 'end' }) }, [messages])
-  const submit = (e: FormEvent) => { e.preventDefault(); send(text); setText('') }
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'o') { e.preventDefault(); newChat() } }
+    window.addEventListener('keydown', key)
+    return () => { window.removeEventListener('keydown', key); rec.current?.stop() }
+  }, [newChat])
+  const submit = (e: FormEvent) => { e.preventDefault(); rec.current?.stop(); send(text); setText('') }
+
+  const dictate = () => {
+    if (!Rec) return
+    if (listening) { rec.current?.stop(); return }
+    const r = new Rec()
+    const base = text ? `${text.trimEnd()} ` : ''
+    r.lang = lang; r.continuous = true; r.interimResults = true
+    r.onresult = (e) => setText(base + Array.from(e.results).map((x) => x[0].transcript).join(' ').trim())
+    r.onend = () => setListening(false)
+    r.onerror = () => setListening(false)
+    rec.current = r
+    r.start()
+    setListening(true)
+    area.current?.focus()
+  }
 
   const claude = providers?.find((p) => p.name === 'anthropic' && p.available)
   const local = providers?.find((p) => p.name === 'local' && p.available)
-  const model = providers === null ? 'Checking…' : claude ? `Claude ${modelName(claude.model)}` : local ? `Local · ${local.model ?? 'model'}` : 'No model'
+  const model = providers === null ? 'Checking…' : claude ? modelName(claude.model) : local ? (local.model ?? 'Local model') : 'No model'
+  const tier = providers === null || !(claude || local) ? '' : claude ? 'Cloud' : 'Local'
 
   return (
-    <div className={`ag${empty ? ' ag-is-empty' : ''}`}>
-      <div className="ag-log" role="log" aria-live="polite" aria-label="Conversation">
-        {empty && (
-          <div className="ag-hello">
-            <Wheat className="ag-logo" />
-            <h2>Back to the fields</h2>
+    <div className={`ag-shell${wide ? ' wide' : ''}`} ref={shell}>
+      {visible && !wide && <div className="ag-scrim" onClick={() => setSide(false)} aria-hidden="true" />}
+      {visible && <ChatSidebar onToggle={() => setSide(false)} onPick={() => { if (!wide) setSide(false) }} />}
+      <div className="ag-main">
+        <div className="ag-top">
+          {!visible && <button type="button" className="ag-ibtn" onClick={() => setSide(true)} aria-label="Open sidebar" title="Open sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d={ICON.panel} /></svg></button>}
+          <span className="ag-grow" />
+          {variant === 'page' && canFloat && (
+            <button type="button" className="ag-ibtn" onClick={() => popOut()} aria-label="Pop out into a window" title="Pop out into a window">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></svg>
+            </button>
+          )}
+        </div>
+
+        <div className={`ag${empty ? ' ag-is-empty' : ''}`}>
+          <div className="ag-log" role="log" aria-live="polite" aria-label="Conversation">
+            {empty && (
+              <div className="ag-hello">
+                <Wheat className="ag-logo" />
+                <h2>Back to the fields</h2>
+              </div>
+            )}
+            {messages.map((m) => <Bubble key={m.id} m={m} />)}
+            <div ref={end} />
           </div>
-        )}
-        {messages.map((m) => <Bubble key={m.id} m={m} />)}
-        <div ref={end} />
-      </div>
 
-      <form className="ag-composer" onSubmit={submit}>
-        <label htmlFor="ag-q" className="sr-only">Your question</label>
-        <textarea id="ag-q" ref={area} rows={1} value={text} placeholder="Ask about your fields…"
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(e) } }} />
-        <div className="ag-bar">
-          <button type="button" className="ag-icon" onClick={clear} disabled={empty} aria-label="New chat" title="New chat">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-          </button>
-          {busy
-            ? <button type="button" className="ag-send" onClick={stop} aria-label="Stop" title="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" stroke="none" /></svg></button>
-            : <button type="submit" className="ag-send" disabled={!text.trim()} aria-label="Send" title="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg></button>}
+          <form className="ag-composer" onSubmit={submit}>
+            <label htmlFor="ag-q" className="sr-only">Your question</label>
+            <textarea id="ag-q" ref={area} rows={1} value={text} placeholder={empty ? 'How can I help you today?' : 'Reply…'}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit(e) } }} />
+            <div className="ag-bar">
+              <button type="button" className="ag-icon" onClick={newChat} disabled={empty} aria-label="New chat" title="New chat">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d={ICON.plus} /></svg>
+              </button>
+              <span className="ag-bar-end">
+                {Rec && (
+                  <>
+                    <button type="button" className={`ag-icon${listening ? ' rec' : ''}`} onClick={dictate} aria-pressed={listening} aria-label={listening ? 'Stop dictation' : 'Dictate'} title={listening ? 'Stop dictation' : 'Dictate'}>
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
+                    </button>
+                    <Menu wrapClass="ag-lang" label={<span className="sr-only">Dictation language</span>}>
+                      {(close) => DICTATION.map((d) => <button key={d.lang} type="button" role="menuitemradio" aria-checked={d.lang === lang} className={d.lang === lang ? 'sel' : undefined} onClick={() => { setLang(d.lang); close() }}>{d.label}</button>)}
+                    </Menu>
+                  </>
+                )}
+                {busy
+                  ? <button type="button" className="ag-send" onClick={stop} aria-label="Stop" title="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" stroke="none" /></svg></button>
+                  : <button type="submit" className="ag-send" disabled={!text.trim()} aria-label="Send" title="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg></button>}
+              </span>
+            </div>
+          </form>
+
+          {keyOpen && <KeyPanel onClose={() => setKeyOpen(false)} />}
+          <div className="ag-meta">
+            <button type="button" className="ag-model" onClick={() => setKeyOpen((o) => !o)} aria-expanded={keyOpen} title="Model and API key">
+              {model}{tier && <span className="ag-tier">{tier}</span>}
+            </button>
+          </div>
         </div>
-      </form>
-
-      {keyOpen && <KeyPanel onClose={() => setKeyOpen(false)} />}
-      <div className="ag-meta">
-        <span>{fields.length ? `${fields.length} field${fields.length > 1 ? 's' : ''} shared` : 'No fields shared'}</span>
-        <button type="button" className="ag-model" onClick={() => setKeyOpen((o) => !o)} aria-expanded={keyOpen} title="Model and API key">
-          {model}
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-        </button>
       </div>
-
-      {empty && (
-        <div className="ag-pills">
-          {SUGGESTIONS.map((s) => <button key={s.label} type="button" className="ag-pill" onClick={() => send(s.q)} disabled={busy}>{s.label}</button>)}
-        </div>
-      )}
     </div>
   )
 }

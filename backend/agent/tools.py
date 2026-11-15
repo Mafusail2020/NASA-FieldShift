@@ -26,17 +26,27 @@ class AgentContext:
     """What the request carries: the farmer's fields (they live in the browser, not on the server)."""
     fields: list[dict] = field(default_factory=list)
 
+    def names(self) -> str:
+        return ", ".join(f"'{f.get('name')}'" for f in self.fields)
+
     def field_by(self, ref: str | None) -> dict:
+        """Find a field by name (case-insensitive, a unique part of the name is enough) or id. Errors list the field names."""
         if not self.fields:
             raise ToolError("the farmer has no fields yet")
-        if ref is None:
+        if ref is None or not str(ref).strip():
             if len(self.fields) == 1:
                 return self.fields[0]
-            raise ToolError("several fields exist: pass field_id (see list_fields)")
+            raise ToolError(f"name the field (field_id). Fields: {self.names()}")
+        key = " ".join(str(ref).lower().split())
         for f in self.fields:
-            if ref in (f.get("id"), f.get("name")):
+            if key in (str(f.get("id", "")).lower(), " ".join(str(f.get("name", "")).lower().split())):
                 return f
-        raise ToolError(f"unknown field '{ref}'")
+        part = [f for f in self.fields if key in str(f.get("name", "")).lower()]
+        if len(part) == 1:
+            return part[0]
+        if part:
+            raise ToolError(f"'{ref}' matches several fields: {', '.join(repr(f.get('name')) for f in part)}")
+        raise ToolError(f"no field called '{ref}'. Fields: {self.names()}")
 
     def cell_of(self, f: dict) -> str:
         cid = f.get("cellId")
@@ -66,13 +76,13 @@ def _obj(props: dict, required: list[str] | None = None) -> dict:
     return {"type": "object", "properties": props, "required": required or []}
 
 
-FIELD_ID = {"type": "string", "description": "field id or name from list_fields; may be omitted when there is one field"}
+FIELD_ID = {"type": "string", "description": "the field NAME as the farmer wrote it (e.g. 'North'; a unique part of the name is enough), or its id. Call list_fields to see the names. May be omitted only when the farmer has one field"}
 GRID_SRC = "NASA POWER daily 1991-2025 (MERRA-2 reanalysis), cell centre, FAO-56 Penman-Monteith ETo"
 
 
 class ListFields(Tool):
     name = "list_fields"
-    description = "List all of the farmer's fields with crop, area, rotation, sowing date and grid cell. Call first for any question about 'my fields'."
+    description = "List the NAMES of all the farmer's fields with crop, area, rotation, sowing date and grid cell. Call it first for any question about 'my fields', or when you are unsure which field a name refers to."
     input_schema = _obj({})
 
     def run(self, ctx, args):

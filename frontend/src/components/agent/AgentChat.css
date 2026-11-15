@@ -1,19 +1,69 @@
-/* Layout follows Claude's chat: a centred column; greeting + composer in the middle while empty; once chatting, plain-text answers
-   with the composer docked at the bottom and a quiet meta row (context left, model right) under it. */
-.ag { display: flex; flex-direction: column; height: 100%; min-height: 0; max-width: 760px; margin: 0 auto; width: 100%; gap: var(--space-2); }
-.ag-is-empty { justify-content: center; padding-bottom: var(--space-5); }
-.ag-log { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-2) var(--space-1) var(--space-3); scrollbar-width: thin; }
-.ag-is-empty .ag-log { flex: 0 0 auto; overflow: visible; padding-bottom: var(--space-4); }
+/* Claude's chat layout in the project palette: sidebar (brand, nav rows, Pinned, Recents) + a centred chat column.
+   Empty: greeting, composer, meta row. Chatting: plain-text answers, composer docked at the bottom. Colours come from tokens only. */
+.ag-shell { container-type: inline-size; position: relative; display: flex; height: 100%; min-height: 0; overflow: hidden; background: var(--color-bg); }
+.ag-main { position: relative; flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: var(--space-5) var(--space-4) var(--space-4); }
+.ag-top { position: absolute; z-index: 2; inset: var(--space-3) var(--space-3) auto; display: flex; align-items: center; pointer-events: none; }
+.ag-top > * { pointer-events: auto; }
+.ag-grow { flex: 1; }
+.ag-ibtn { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-muted); cursor: pointer; }
+.ag-ibtn:hover { background: var(--color-neutral-tint); color: var(--color-text); }
+.ag-ibtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-.ag-hello { display: flex; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-4) 0; }
-.ag-hello h2 { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -0.02em; color: var(--color-text); }
-.ag-logo { width: 34px; height: 34px; fill: none; stroke: var(--color-primary); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+/* ---- sidebar ---- */
+.ag-side { width: 287px; flex: none; display: flex; flex-direction: column; background: var(--color-primary-wash); border-right: 1px solid var(--color-border); animation: ag-side-in 0.25s var(--ease); }
+@keyframes ag-side-in { from { transform: translateX(-12px); opacity: 0; } to { transform: none; opacity: 1; } }
+.ag-brand { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-2) var(--space-3); }
+.ag-brand-name { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; color: var(--color-text); }
+.ag-navrows { display: flex; flex-direction: column; gap: 2px; padding: var(--space-2) var(--space-2) 0; }
+.ag-nav { display: flex; align-items: center; gap: var(--space-3); width: 100%; height: 36px; padding: 0 var(--space-3); font: inherit; font-size: 15px; color: var(--color-text); background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; text-align: left; }
+.ag-nav:hover, .ag-nav.on { background: var(--color-neutral-tint); }
+.ag-nav svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ag-nav span { flex: 1; }
+.ag-nav kbd { font: inherit; font-size: 12px; color: var(--color-muted); letter-spacing: 0.04em; }
+.ag-search { font: inherit; font-size: 14px; margin: 2px 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); }
+.ag-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-5) var(--space-2) var(--space-3); scrollbar-width: thin; }
+.ag-scroll section + section { margin-top: var(--space-4); }
+.ag-label { display: flex; align-items: center; gap: var(--space-1); font: inherit; font-size: 13.5px; color: var(--color-muted); background: transparent; border: 0; padding: var(--space-1) var(--space-3); margin-bottom: var(--space-1); cursor: pointer; border-radius: var(--radius-sm); }
+.ag-label:hover { color: var(--color-text); }
+.ag-label svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s var(--ease); }
+.ag-label svg.shut { transform: rotate(-90deg); }
+.ag-chats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.ag-chat-row { position: relative; display: flex; align-items: center; border-radius: var(--radius-md); }
+.ag-chat-row:hover, .ag-chat-row.on, .ag-chat-row.menu-open { background: var(--color-neutral-tint); }
+.ag-chat { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--space-3); height: 36px; padding: 0 var(--space-3); font: inherit; font-size: 15px; color: var(--color-text); background: transparent; border: 0; text-align: left; cursor: pointer; border-radius: var(--radius-md); }
+.ag-chat span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent); mask-image: linear-gradient(to right, black calc(100% - 28px), transparent); }
+.ag-chat-ico { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--color-muted); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ag-more { position: absolute; right: var(--space-1); display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-muted); cursor: pointer; opacity: 0; transition: opacity 0.15s; }
+.ag-chat-row:hover .ag-more, .ag-more:focus-visible, .ag-chat-row.menu-open .ag-more { opacity: 1; }
+.ag-more:hover { color: var(--color-text); }
+.ag-more svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+.ag-side-empty { margin: 0; padding: 0 var(--space-3); font-size: 13.5px; color: var(--color-muted); }
+
+/* popover menus (chat row options, field picker, dictation language) */
+.ag-menu { position: absolute; z-index: 20; top: calc(100% - 2px); right: var(--space-1); min-width: 150px; display: flex; flex-direction: column; padding: var(--space-1); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); }
+.ag-menu.up { top: auto; bottom: calc(100% + 6px); right: auto; left: 0; }
+.ag-pop.ag-lang .ag-menu.up { left: auto; right: 0; }
+.ag-menu button { display: flex; align-items: center; gap: var(--space-2); width: 100%; font: inherit; font-size: 14px; color: var(--color-text); background: transparent; border: 0; border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); cursor: pointer; text-align: left; white-space: nowrap; }
+.ag-menu button:hover, .ag-menu button.sel { background: var(--color-neutral-tint); }
+.ag-menu button.sel { font-weight: 700; }
+.ag-menu button.danger { color: var(--color-danger); }
+.ag-menu svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- chat column ---- */
+.ag { display: flex; flex-direction: column; flex: 1; height: 100%; min-height: 0; max-width: 700px; margin: 0 auto; width: 100%; gap: var(--space-2); }
+.ag-is-empty { justify-content: center; padding-bottom: 9vh; }
+.ag-log { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-6) var(--space-1) var(--space-3); scrollbar-width: thin; }
+.ag-is-empty .ag-log { flex: 0 0 auto; overflow: visible; padding: 0 0 var(--space-5); }
+
+.ag-hello { display: flex; align-items: center; justify-content: center; gap: var(--space-3); }
+.ag-hello h2 { margin: 0; font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -0.025em; color: var(--color-text); }
+.ag-logo { width: 42px; height: 42px; flex: none; fill: none; stroke: var(--color-primary); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
 /* messages: the answer is plain text on the page; the question is a soft rounded block */
-.ag-msg { font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.ag-msg { font-size: 15.5px; line-height: 1.65; overflow-wrap: anywhere; }
 .ag-msg p { margin: 0 0 var(--space-2); }
 .ag-msg p:last-child { margin-bottom: 0; }
-.ag-user { align-self: flex-end; max-width: 85%; background: var(--color-neutral-tint); border-radius: calc(var(--radius-lg) * 1.5); padding: var(--space-2) var(--space-4); }
+.ag-user { align-self: flex-end; max-width: 85%; background: var(--color-neutral-tint); border-radius: var(--radius-lg); padding: var(--space-2) var(--space-4); }
 .ag-bot { align-self: stretch; color: var(--color-text); }
 .md ul { margin: 0 0 var(--space-3); padding-left: 1.3em; }
 .md li { margin-bottom: 4px; }
@@ -30,7 +80,6 @@
 .ag-wait { display: flex; align-items: center; gap: var(--space-2); color: var(--color-muted); }
 .ag-pulse { width: 22px; height: 22px; fill: none; stroke: var(--color-primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; animation: ag-pulse 1.4s ease-in-out infinite; }
 @keyframes ag-pulse { 0%, 100% { transform: scale(0.85) rotate(-6deg); opacity: 0.6; } 50% { transform: scale(1.1) rotate(6deg); opacity: 1; } }
-/* streaming caret after the last character */
 .ag-caret { display: inline-block; width: 7px; height: 1.05em; margin-left: 2px; vertical-align: text-bottom; border-radius: 2px; background: var(--color-primary); animation: ag-blink 1s steps(2, start) infinite; }
 .ag-error { color: var(--color-danger); font-size: 14px; }
 
@@ -41,43 +90,51 @@
 .ag-sources summary { cursor: pointer; }
 .ag-sources ul { margin: var(--space-2) 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
 .ag-prov { margin-left: auto; }
-
 .agent-chart { margin: 0 0 var(--space-3); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
 .agent-chart figcaption { font-size: 12.5px; font-weight: 700; color: var(--color-muted); margin-bottom: var(--space-1); }
 
-/* composer: one rounded box, text on top, icon bar below */
-.ag-composer { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) var(--space-3) var(--space-2); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: calc(var(--radius-lg) * 1.5); box-shadow: var(--shadow-md); transition: border-color 0.2s, box-shadow 0.2s; }
+/* ---- composer: one rounded box, text on top, icon bar below ---- */
+.ag-composer { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-4) var(--space-3) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: 20px; box-shadow: var(--shadow-md); transition: border-color 0.2s, box-shadow 0.2s; }
 .ag-composer:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-tint), var(--shadow-md); }
-.ag-composer textarea { font: inherit; font-size: 15.5px; line-height: 1.5; resize: none; border: 0; outline: 0; background: transparent; color: var(--color-text); min-height: 52px; max-height: 160px; padding: 0 var(--space-1); }
+.ag-composer textarea { font: inherit; font-size: 16px; line-height: 1.5; resize: none; border: 0; outline: 0; background: transparent; color: var(--color-text); min-height: 48px; max-height: 200px; padding: 0; }
 .ag-composer textarea::placeholder { color: var(--color-muted); }
 .ag-bar { display: flex; align-items: center; justify-content: space-between; }
+.ag-bar-end { display: flex; align-items: center; gap: 2px; }
 .ag-icon, .ag-send { display: grid; place-items: center; border: 0; cursor: pointer; font: inherit; }
-.ag-icon { width: 32px; height: 32px; border-radius: var(--radius-md); background: transparent; color: var(--color-muted); }
-.ag-icon:hover:not(:disabled) { background: var(--color-primary-tint); color: var(--color-text); }
-.ag-send { width: 34px; height: 34px; border-radius: var(--radius-md); background: var(--color-primary); color: var(--color-text); transition: background-color 0.2s, transform 0.15s var(--ease); }
-.ag-send:hover:not(:disabled) { background: var(--color-primary-hover); }
+.ag-icon { width: 34px; height: 34px; border-radius: var(--radius-md); background: transparent; color: var(--color-text); }
+.ag-icon:hover:not(:disabled) { background: var(--color-neutral-tint); }
+.ag-icon.rec { color: var(--color-primary-strong); background: var(--color-primary-tint); animation: ag-blink 1.2s ease-in-out infinite; }
+.ag-send { width: 34px; height: 34px; margin-left: var(--space-2); border-radius: var(--radius-md); background: var(--color-primary-strong); color: var(--color-surface); transition: filter 0.2s, transform 0.15s var(--ease); }
+.ag-send:hover:not(:disabled) { filter: brightness(1.12); }
 .ag-send:active:not(:disabled) { transform: scale(0.94); }
 .ag-icon:disabled, .ag-send:disabled { opacity: 0.4; cursor: not-allowed; }
-.ag-icon svg, .ag-send svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ag-icon svg, .ag-send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ag-lang .ag-ctxbtn { padding: var(--space-1); margin-left: -4px; }
 
-/* meta row under the composer: context left, model right */
-.ag-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-3); font-size: 13px; color: var(--color-muted); }
-.ag-model { display: inline-flex; align-items: center; gap: 4px; font: inherit; color: var(--color-text); background: transparent; border: 0; padding: var(--space-1) var(--space-2); margin-right: calc(var(--space-2) * -1); border-radius: var(--radius-md); cursor: pointer; }
+/* ---- meta row under the composer: model on the right ---- */
+.ag-meta { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); padding: 0 var(--space-3); font-size: 14.5px; color: var(--color-text); }
+.ag-pop { position: relative; }
+.ag-ctxbtn { display: inline-flex; align-items: center; gap: 4px; font: inherit; color: inherit; background: transparent; border: 0; padding: var(--space-1) var(--space-2); margin-left: calc(var(--space-2) * -1); border-radius: var(--radius-md); cursor: pointer; }
+.ag-ctxbtn:hover { background: var(--color-neutral-tint); }
+.ag-ctxbtn svg { width: 14px; height: 14px; fill: none; stroke: var(--color-muted); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ag-model { display: inline-flex; align-items: baseline; gap: var(--space-2); font: inherit; color: var(--color-text); background: transparent; border: 0; padding: var(--space-1) var(--space-2); margin-right: calc(var(--space-2) * -1); border-radius: var(--radius-md); cursor: pointer; }
 .ag-model:hover { background: var(--color-neutral-tint); }
-.ag-model svg { width: 13px; height: 13px; fill: none; stroke: var(--color-muted); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ag-tier { color: var(--color-muted); }
 .ag-key { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); font-size: 13px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .ag-key input { font: inherit; padding: var(--space-2); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-bg); color: var(--color-text); }
 .ag-hint { margin: 0; font-size: 12.5px; color: var(--color-muted); }
-
-.ag-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); margin-top: var(--space-3); }
-.ag-pill { font: inherit; font-size: 13.5px; color: var(--color-muted); background: transparent; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); padding: 6px var(--space-3); cursor: pointer; transition: background-color 0.2s, color 0.2s; }
-.ag-pill:hover:not(:disabled) { background: var(--color-primary-wash); color: var(--color-text); }
-
 .ag-row { display: flex; gap: var(--space-2); }
 .ag-btn { font: inherit; font-weight: 700; font-size: 14px; padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); border: 1px solid var(--color-primary); background: var(--color-primary); color: var(--color-text); cursor: pointer; transition: background-color 0.2s; }
 .ag-btn:hover:not(:disabled) { background: var(--color-primary-hover); }
 .ag-ghost { background: transparent; border-color: var(--color-border-strong); }
 .ag-ghost:hover:not(:disabled) { background: var(--color-primary-tint); }
-.ag :focus-visible, .agw :focus-visible { outline: 2px solid var(--color-primary-strong); outline-offset: 2px; }
+.ag :focus-visible, .ag-side :focus-visible, .ag-top :focus-visible, .agw :focus-visible { outline: 2px solid var(--color-primary-strong); outline-offset: 2px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-@media (prefers-reduced-motion: reduce) { .ag-pulse, .ag-step.run::before, .ag-caret { animation: none; } }
+
+/* narrow container (the floating window): the sidebar slides over the chat */
+.ag-scrim { position: absolute; inset: 0; z-index: 3; background: rgb(43 29 18 / 28%); }
+.ag-shell:not(.wide) .ag-side { position: absolute; z-index: 4; inset: 0 auto 0 0; width: min(287px, 88%); box-shadow: var(--shadow-lg); }
+.ag-shell:not(.wide) .ag-main { padding: var(--space-5) var(--space-3) var(--space-3); }
+.ag-shell:not(.wide) .ag-hello h2 { font-size: 30px; }
+.ag-shell:not(.wide) .ag-logo { width: 32px; height: 32px; }
+@media (prefers-reduced-motion: reduce) { .ag-pulse, .ag-step.run::before, .ag-caret, .ag-icon.rec, .ag-side { animation: none; } }

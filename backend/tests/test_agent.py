@@ -40,11 +40,23 @@ def test_tools_return_source_and_status():
         assert r["source"] and r["status"], name
 
 
+def test_fields_are_found_by_name():
+    two = AgentContext([{"id": "a1", "name": "North Hill", "lat": 46.4, "lon": 30.7}, {"id": "b2", "name": "North Valley", "lat": 48.0, "lon": 30.0},
+                        {"id": "c3", "name": "River", "lat": 48.0, "lon": 30.0}])
+    name = lambda ref: REG.run("get_field", two, {"field_id": ref})
+    assert name("river")["data"]["field"]["id"] == "c3"            # case-insensitive
+    assert name("hill")["data"]["field"]["id"] == "a1"             # unique part of the name
+    assert name("b2")["data"]["field"]["name"] == "North Valley"   # id still works
+    assert "matches several" in name("north")["error"]
+    assert "'North Hill'" in name("zzz")["error"] and "'River'" in name("zzz")["error"]  # errors list the names
+    assert "Fields:" in REG.run("get_field", two, {})["error"]
+
+
 def test_tool_errors_are_data_not_exceptions():
     assert "outside the grid" in REG.run("get_field", CTX, {"field_id": "f2"})["error"]
-    assert "unknown field" in REG.run("get_field", CTX, {"field_id": "zzz"})["error"]
+    assert "no field called" in REG.run("get_field", CTX, {"field_id": "zzz"})["error"]
     assert "unknown crop" in REG.run("get_crop", CTX, {"crop": "banana"})["error"]
-    assert "several fields" in REG.run("get_field", CTX, {})["error"]
+    assert "name the field" in REG.run("get_field", CTX, {})["error"]
     assert "unknown tool" in REG.run("nope", CTX, {})["error"]
 
 
