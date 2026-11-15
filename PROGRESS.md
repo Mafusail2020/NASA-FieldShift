@@ -79,11 +79,30 @@ Status: built and tested locally; browser-checked at 1280 and 360 px (headless C
 - SoilGrids prefill: `python -m pipeline.add_soil_props LAT LON` adds pH (water) and humus (organic carbon x 1.724, assumption) to ONE cell of `grid_soil.json`; it skips cells that already have them. The panel shows them as a suggestion with a "Use these values" button (never applied silently). Only the cell 46.5_30.625 (test field near Odesa) has values so far: the other 305 cells would need 300+ new SoilGrids requests, which I did not run because of the no-bulk-fetch rule. Salinity is not predicted by SoilGrids.
 - Weather comparison table (`rotation/Compare.tsx`): a Salt column appears when ECe is entered (share of normal yield left for the weakest crop; red tag and drop from the offered options when a crop is below 50 %; crops without salt data are labelled). It does not change the weather numbers or the sorting. pH is not in the table (it only warns, in the soil panel).
 
+### Phase 9: remaining todo
+Needs Ivan or a source:
+- Data gaps: salinity of millet, buckwheat, white mustard, narrow-leaf lupin; humus (residues, K, mineralisation) of winter rapeseed and buckwheat; pH of buckwheat; mineralisation under black fallow (zonal norm). Until filled the panel says "no data".
+- Mineralisation norms are not tied to a zone; check them for southern chernozems against zonal norms (the doc says so).
+- pH limits (ECOCROP) are probably too narrow for alkaline southern soils: an agronomist should review them before pH is used for more than a warning.
+- Review the proxy and low-confidence values: oilseed radish and hairy vetch salinity (proxies), oats and white sweet clover salinity (category only), soybean and spring-wheat humus (proxies).
+- Confirm the manure reading: input per rotation, spread over the rotation years; the manure norm for a zero balance is per year as in the source formula.
+- Confirm or drop the "humus after 10 years" figure: it rests on my layer-mass assumption (3,900 t/ha, `model.csv`).
+Code, not started:
+- ECe conversion helper (EC 1:5 extract or salt % -> ECe). It depends on texture and has to be agreed with a lab, so the inputs only accept ECe for now.
+- Black-fallow humus: a rotation with fallow shows the mean without the fallow year (too high) until the mineralisation norm exists.
+- Green manure: the species tables (salt, pH) are loaded but the panel only takes a mass; no species choice and no salt or pH check for the green manure; "occupied fallow" green manure (takes a rotation year, needs its own mineralisation norm) is not modelled.
+- SoilGrids pH and humus: per cell only (decision). Only cell 46.5_30.625 has them; `add_cell` fetches them for new cells. No bulk fetch of the other cells.
+- `/api/soil/evaluate` is separate from the old oblast endpoints (`/api/regions/.../rotations/evaluate`): salt and pH are not in those.
+- Salt column in the comparison table: the committed `Compare.tsx` lists only the draft rotations A-E. The "one change" and "best of all" lists in the uncommitted rotation rewrite should drop rotations with a crop ruled out by salt; check this when that work is committed.
+- No JavaScript test runner: `lib/soil.ts` is checked against the Python vectors by hand (`checkVectors` with node), not in CI.
+- Not tested: real touch input, screen readers, the Finance page farm view with soil-scaled yields.
+
 ## Open items for Ivan
 1. Derzhstat enterprise yields, prices, costs (Phase 6) -> then run `yields`, `validate`, `export`.
 2. Sunflower and pea: sowing rule, heat windows, frost thresholds; maize heat window.
 3. Approve or replace the A-E drafts; review `uk.json`; decide the occupied-area map; Annex 7 Fig. 29 xfail.
 4. Deployment: accounts and `VITE_API_URL`.
+5. Soil analysis (Phase 9): sources for the data gaps, zonal mineralisation norms, agronomist review of the pH limits, manure reading and the 10-year humus figure (see "Phase 9: remaining todo").
 
 ## Season twins (winter wheat, maize)
 Done for the demo. The farmer enters a sowing date; `core/twin.py` compares the weather since sowing with the same window in each of 35 past years (10-day blocks of cumulative rain, cumulative GDD, Tmax, radiation, z-scored) and returns the 3 closest years with how they ended (ripe date by GDD, late-stage rain and dry spell, hot days in the grain-fill window, frost days, next 30 days). API: `GET /api/twin?lat&lon&crop&sowing[&as_of]`. UI: sowing-date input in the field form and a "Season twins" section in the field page, with a saved-example fallback `public/data/twin_sample.json`.
