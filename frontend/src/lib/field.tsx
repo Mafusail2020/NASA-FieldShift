@@ -19,6 +19,7 @@ export interface FieldItem {
   areaHa: number | null      // area in hectares, entered by the farmer
   cellId: string | null      // NASA POWER grid cell containing (lat, lon), set by the Fields page; null when unknown or outside the grid
   crop: CropId | null        // crop grown this season
+  sowingDate: string | null  // this season's sowing date, YYYY-MM-DD (season twins); null = not set
   rotation: CropId[]         // this field's current rotation, one crop per year, in order (may be empty)
   locked: boolean            // location lock: coordinates and map cannot be changed by accident
   soil: Soil | null          // soil preset chosen by the user; null = automatic (from the grid cell, see grid_soil.json)
@@ -41,7 +42,7 @@ interface Ctx {
 
 const KEY = 'fieldshift.field.v3'
 const OLD_KEYS = ['fieldshift.field.v2', 'fieldshift.field.v1']
-const blank = (n: number): FieldItem => ({ id: `f${Date.now().toString(36)}${n}`, name: `Field ${n}`, lat: null, lon: null, areaHa: null, cellId: null, crop: null, rotation: [], locked: false, soil: null, analysis: EMPTY_ANALYSIS })
+const blank = (n: number): FieldItem => ({ id: `f${Date.now().toString(36)}${n}`, name: `Field ${n}`, lat: null, lon: null, areaHa: null, cellId: null, crop: null, sowingDate: null, rotation: [], locked: false, soil: null, analysis: EMPTY_ANALYSIS })
 const FieldCtx = createContext<Ctx | null>(null)
 
 // Fields saved by the earlier map version carried a drawn polygon: its centre becomes the coordinates.

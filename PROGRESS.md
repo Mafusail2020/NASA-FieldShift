@@ -84,3 +84,9 @@ Status: built and tested locally; browser-checked at 1280 and 360 px (headless C
 2. Sunflower and pea: sowing rule, heat windows, frost thresholds; maize heat window.
 3. Approve or replace the A-E drafts; review `uk.json`; decide the occupied-area map; Annex 7 Fig. 29 xfail.
 4. Deployment: accounts and `VITE_API_URL`.
+
+## Season twins (winter wheat, maize)
+Done for the demo. The farmer enters a sowing date; `core/twin.py` compares the weather since sowing with the same window in each of 35 past years (10-day blocks of cumulative rain, cumulative GDD, Tmax, radiation, z-scored) and returns the 3 closest years with how they ended (ripe date by GDD, late-stage rain and dry spell, hot days in the grain-fill window, frost days, next 30 days). API: `GET /api/twin?lat&lon&crop&sowing[&as_of]`. UI: sowing-date input in the field form and a "Season twins" section in the field page, with a saved-example fallback `public/data/twin_sample.json`.
+- The archive ends in 2025. `python -m pipeline.refresh_season LAT LON` fetches the current year for one existing cell into `data/raw/power_season/` (the only NASA call outside the archive pipelines; the API never calls NASA).
+- Not a forecast; outcomes come from weather only (no yield data). Heat/late-stage windows and 30/32 °C thresholds are estimates (`SEASONS` in core/twin.py). Other crops: not covered yet.
+- Tests: `tests/test_twin.py`.

@@ -7,6 +7,7 @@ import { FieldClimate } from './FieldClimate'
 import { FieldGlance } from './FieldGlance'
 import { FieldRotation } from './FieldRotation'
 import { FieldSoil } from './FieldSoil'
+import { FieldTwin } from './FieldTwin'
 import MiniMap from './MiniMap'
 import { LAT_RANGE, LON_RANGE, num, parsePair } from './coords'
 
@@ -122,6 +123,10 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
             {CROPS.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </div>
+        <div className="fr-f">
+          <label htmlFor={id('sow')}>Sowing date</label>
+          <input id={id('sow')} type="date" value={field.sowingDate ?? ''} onChange={(e) => onUpdate({ sowingDate: e.target.value || null })} />
+        </div>
       </div>
 
       <div className="fr-meta">
@@ -147,6 +152,7 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
       <div className="fr-body">
         <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
         <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
+        <section className="fr-sec fr-wide" aria-label="Season twins"><FieldTwin field={field} onUpdate={onUpdate} /></section>
         <section className="fr-sec fr-wide" aria-label="Soil analysis"><FieldSoil field={field} cellId={cell?.id ?? null} onUpdate={onUpdate} /></section>
       </div>
     </article>
