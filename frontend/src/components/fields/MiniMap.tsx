@@ -59,7 +59,7 @@ export default function MiniMap({ lat, lon, locked = false, onMove }: Props) {
         <TileLayer url={ESRI} maxZoom={18} eventHandlers={{ tileerror: () => setTileError(true), tileload: () => setTileError(false) }} />
       </MapContainer>
       <div className="cp-pin" aria-hidden="true"><i /><i /><b /></div>
-      <div className="cp-attrib">Imagery: Esri, Maxar, Earthstar Geographics</div>
+      <div className="cp-attrib">Powered by Esri · Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community</div>
       {tileError && <div className="cp-tile-error" role="status">Satellite imagery could not be loaded. Check your connection.</div>}
     </div>
   )
