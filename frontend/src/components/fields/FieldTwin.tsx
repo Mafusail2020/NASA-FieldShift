@@ -46,7 +46,7 @@ export function FieldTwin({ field, onUpdate }: { field: FieldItem; onUpdate(patc
             {' '}{verdict ? <>{verdict[0].toUpperCase() + verdict.slice(1)}.</> : <>None of them ended with a late drought or grain-fill heat.</>}
           </p>
           <div className="ft-cards">
-            {r.twins.map((x, i) => <TwinCard key={x.year} t={x} color={COLORS[i]} done={done} ref0={r.reference} />)}
+            {r.twins.map((x, i) => <TwinCard key={x.year} t={x} color={COLORS[i]} done={done} ref0={r.reference} winter={r.crop === 'winter_wheat'} />)}
           </div>
           <Chart s={r.series} twins={r.twins} nowDay={r.days_since_sowing} />
           <ul className="ft-notes">{[...r.notes, r.note].map((n) => <li key={n}>{n}</li>)}</ul>
@@ -75,7 +75,7 @@ export function FieldTwin({ field, onUpdate }: { field: FieldItem; onUpdate(patc
   )
 }
 
-function TwinCard({ t, color, done, ref0 }: { t: Twin; color: string; done: boolean; ref0: { late_rain_mm_median: number; heat_days_median: number } }) {
+function TwinCard({ t, color, done, ref0, winter }: { t: Twin; color: string; done: boolean; winter: boolean; ref0: { late_rain_mm_median: number; heat_days_median: number } }) {
   return (
     <article className="ft-card" style={{ borderTopColor: color }}>
       <h4>{t.year} <small>{strength(t.distance)} · distance {t.distance.toFixed(2)}</small></h4>
@@ -85,7 +85,7 @@ function TwinCard({ t, color, done, ref0 }: { t: Twin; color: string; done: bool
         <div><dt>Rain in the late stages</dt><dd>{t.late_rain_mm} mm <small>(usual {ref0.late_rain_mm_median})</small></dd></div>
         <div><dt>Longest dry spell then</dt><dd>{t.late_dry_spell_days} days</dd></div>
         <div><dt>Hot days in the grain-fill window</dt><dd>{t.heat_days} <small>(usual {ref0.heat_days_median})</small></dd></div>
-        <div><dt>Frost days after winter</dt><dd>{t.frost_days}</dd></div>
+        <div><dt>{winter ? 'Frost days after winter' : 'Frost days in the season'}</dt><dd>{t.frost_days}</dd></div>
         {!done && t.next30_rain_mm != null && <div><dt>Next 30 days after this point</dt><dd>{t.next30_rain_mm} mm rain, {t.next30_heat_days} hot days</dd></div>}
       </dl>
       <p className="ft-tags">{t.flags.length ? t.flags.map((f) => <span key={f} className={`ft-tag${f === 'wet finish' ? ' ft-tag-ok' : ''}`}>{f}</span>) : <span className="ft-tag ft-tag-ok">no late drought or heat</span>}</p>
