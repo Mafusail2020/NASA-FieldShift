@@ -90,7 +90,7 @@ function Inner({ field, cell }: { field: FieldItem; cell: GridCell | null }) {
           )}
           {!missing && data.state === 'loading' && <div className="rot-skel" role="status" aria-label="Loading cell rotation data" />}
           {!missing && data.state === 'error' && <p className="rot-err" role="alert">Could not load rotation data for cell {cell.id}.</p>}
-          {!missing && data.state === 'ready' && <Compare index={index} cell={data.data} soil={soil} current={current} />}
+          {!missing && data.state === 'ready' && <Compare index={index} cell={data.data} soil={soil} current={current} analysis={field.analysis} />}
 
           </div>
           <section className="rot-sec rot-full" aria-labelledby={`${uid}nm`}>

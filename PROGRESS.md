@@ -77,7 +77,7 @@ Status: built and tested locally; browser-checked at 1280 and 360 px (headless C
 - Gaps (todo): salinity of millet, buckwheat, white mustard, narrow-leaf lupin; humus of winter rapeseed, buckwheat, black-fallow mineralisation; pH of buckwheat. Proxies (estimate): oilseed radish, hairy vetch salinity; soybean and spring-wheat humus. Low confidence: oats, white sweet clover salinity.
 - Alternatives A-E: `FieldSoil` has a soil check table (crops ruled out by salt, humus per year) read from the candidates of `rotations_grid.json`. A rotation with black fallow shows the humus mean without the fallow year (no mineralisation norm yet), so its mean is too high. `Compare.tsx` is untouched.
 - SoilGrids prefill: `python -m pipeline.add_soil_props LAT LON` adds pH (water) and humus (organic carbon x 1.724, assumption) to ONE cell of `grid_soil.json`; it skips cells that already have them. The panel shows them as a suggestion with a "Use these values" button (never applied silently). Only the cell 46.5_30.625 (test field near Odesa) has values so far: the other 305 cells would need 300+ new SoilGrids requests, which I did not run because of the no-bulk-fetch rule. Salinity is not predicted by SoilGrids.
-- Not done: salt and pH are not in the weather comparison table itself.
+- Weather comparison table (`rotation/Compare.tsx`): a Salt column appears when ECe is entered (share of normal yield left for the weakest crop; red tag and drop from the offered options when a crop is below 50 %; crops without salt data are labelled). It does not change the weather numbers or the sorting. pH is not in the table (it only warns, in the soil panel).
 
 ## Open items for Ivan
 1. Derzhstat enterprise yields, prices, costs (Phase 6) -> then run `yields`, `validate`, `export`.

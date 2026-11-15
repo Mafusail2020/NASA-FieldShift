@@ -1,5 +1,7 @@
 import { useId, useMemo, useState } from 'react'
+import { cropSoil, useSoilDoc, type SoilAnalysis } from '../../../lib/soil'
 import StatusChip from '../../StatusChip'
+import '../soil/soil.css'
 import {
   CRITERIA, PRIORITIES, canonical, cropName, evaluate, sortKey, type Candidate, type CellRot, type Criterion, type EvalResult, type Evaluation,
   type Priority, type RotIndex, type Soil,
@@ -13,24 +15,38 @@ const HEAD: Record<Criterion['key'], string> = { ks: 'Water need met', wsd: 'Str
 const WORSE: Record<Criterion['key'], string> = { ks: 'less of the water need met', wsd: 'more water-stress days', heat: 'more heat days', bare: 'more bare soil' }
 const sg = (d: number, digits: number, unit: string) => `${d > 0 ? '+' : '−'}${f(Math.abs(d), digits)}${unit}`
 
-export function Compare({ index, cell, soil, current }: { index: RotIndex; cell: CellRot; soil: Soil; current: string[] }) {
+export function Compare({ index, cell, soil, current, analysis }: { index: RotIndex; cell: CellRot; soil: Soil; current: string[]; analysis?: SoilAnalysis }) {
   const uid = useId()
+  // Salt column: only when the farmer entered ECe. A crop below the salt-exclusion share is not offered as an option (the farmer's own rotation stays, flagged).
+  const sd = useSoilDoc()
+  const doc = sd.state === 'ready' ? sd.data : null
+  const saltOn = analysis?.ece != null && !!doc
+  const salt = (rot: string[]) => {
+    if (!saltOn) return null
+    const cs = [...new Set(rot)].filter((c) => c !== 'black_fallow').map((c) => cropSoil(c, analysis!, doc!))
+    const have = cs.filter((c) => c.fSalt != null)
+    return { lost: cs.filter((c) => c.excluded), noData: cs.filter((c) => c.fSalt == null), worst: have.length ? have.reduce((a, b) => (b.fSalt! < a.fSalt! ? b : a)) : null }
+  }
+  const blocked = (rot: string[]) => (salt(rot)?.lost.length ?? 0) > 0
   const [prio, setPrio] = useState<Priority>('water')
   const soilName = index.soil_params.find((r) => r.soil === soil && r.parameter === 'texture')?.value ?? soil
 
-  const { base, alts } = useMemo(() => {
+  const { base, alts, dropped } = useMemo(() => {
     const base: Row | null = current.length
       ? { id: 'current', title: 'Your rotation', cand: null, baseline: true, rot: current, res: evaluate(current, index, cell, soil) } : null
     const seen = new Set(base ? [canonical(current)] : [])
     const alts: Row[] = []
+    let dropped = 0
     for (const c of index.candidates) {
+      if (blocked(c.crops)) { dropped++; continue }
       const key = canonical(c.crops)
       const dupe = seen.has(key)
       seen.add(key)
       alts.push({ id: c.id, title: `${c.name}${dupe && base && canonical(current) === key ? ' (same as yours)' : ''}`, cand: c, baseline: false, rot: c.crops, res: evaluate(c.crops, index, cell, soil) })
     }
-    return { base, alts: alts.filter((a) => !(base && canonical(a.rot) === canonical(base.rot))) }
-  }, [index, cell, soil, current])
+    return { base, dropped, alts: alts.filter((a) => !(base && canonical(a.rot) === canonical(base.rot))) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, cell, soil, current, saltOn, analysis?.ece, analysis?.gypsum])
 
   const baseEv = base?.res.ok ? base.res.ev : null
   const computable = alts.filter((a) => a.res.ok) as (Row & { res: { ok: true; ev: Evaluation } })[]
@@ -116,7 +132,7 @@ export function Compare({ index, cell, soil, current }: { index: RotIndex; cell:
         <div className="rot-tablewrap" tabIndex={0} role="region" aria-label="Trade-offs table">
           <table className="rot-table">
             <caption className="sr-only">Trade-offs between rotations, sorted by the chosen priority</caption>
-            <thead><tr><th scope="col">Option</th>{CRITERIA.map((c) => <th scope="col" key={c.key} title={c.label} className={c.key === primary ? 'rot-prio' : undefined}>{HEAD[c.key]}<small>{c.better === 'high' ? 'higher is better' : 'lower is better'}</small></th>)}</tr></thead>
+            <thead><tr><th scope="col">Option</th>{CRITERIA.map((c) => <th scope="col" key={c.key} title={c.label} className={c.key === primary ? 'rot-prio' : undefined}>{HEAD[c.key]}<small>{c.better === 'high' ? 'higher is better' : 'lower is better'}</small></th>)}{saltOn && <th scope="col" title="Share of normal yield left after salinity, for the weakest crop of the rotation (FAO-61 salt tolerance, ECe entered in the soil analysis)">Salt<small>weakest crop, higher is better</small></th>}</tr></thead>
             <tbody>
               {tableRows.map((r, i) => {
                 const n = base?.res.ok ? i : i + 1   // rank among options; the baseline has no number
@@ -129,12 +145,23 @@ export function Compare({ index, cell, soil, current }: { index: RotIndex; cell:
                       {t.length > 0 && <span className="rot-trade">Trade-off: {t.join(', ')}</span>}
                     </th>
                     {CRITERIA.map((c) => <td key={c.key} className={c.key === primary ? 'rot-prio' : undefined}>{r.res.ok ? cell2(r.res.ev, c, r.baseline) : <span className="rot-na">n/a</span>}</td>)}
+                    {saltOn && (() => {
+                      const sl = salt(r.rot)!
+                      return (
+                        <td>
+                          {sl.worst ? <><b>{f(sl.worst.fSalt! * 100, 0)} %</b> <span className="fs-note">{sl.worst.label}</span></> : <span className="rot-na">n/a</span>}
+                          {sl.lost.length > 0 && <span className="fs-tag fs-tag-bad">Not recommended: {sl.lost.map((c) => c.label).join(', ')}</span>}
+                          {sl.noData.length > 0 && <span className="fs-tag fs-tag-low">No salt data: {sl.noData.map((c) => c.label).join(', ')}</span>}
+                        </td>
+                      )
+                    })()}
                   </tr>
                 )
               })}
             </tbody>
           </table>
         </div>
+        {saltOn && dropped > 0 && <p className="rot-help" role="status">Salinity (ECe {f(analysis!.ece!, 1)} dS/m) rules out a crop in {dropped} of the draft rotations, so they are not offered here. The Salt column is the share of normal yield left for the weakest crop; it does not change the weather numbers or the sorting.</p>}
         <p className="rot-help">
           Water need met is the share of the crop&rsquo;s water need that the soil could supply (100 % = no water stress). Heat days exist for winter wheat only.
         </p>
