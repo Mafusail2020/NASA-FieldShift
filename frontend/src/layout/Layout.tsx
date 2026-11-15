@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Toolbar from './Toolbar'
+import SourcesFold from '../components/SourcesFold'
 import './Layout.css'
 
 export default function Layout() {
@@ -9,6 +10,7 @@ export default function Layout() {
       <Toolbar />
       <main id="main" className="main" tabIndex={-1}>
         <Outlet />
+        <SourcesFold />
       </main>
     </>
   )

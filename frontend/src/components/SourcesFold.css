@@ -1,0 +1,9 @@
+.srcfold { margin: var(--space-6) auto var(--space-5); width: min(100% - 2 * var(--space-4), 1100px); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+.srcfold > summary { cursor: pointer; padding: var(--space-3) var(--space-4); font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: var(--space-2); }
+.srcfold-n { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: var(--radius-pill); background: var(--color-primary-tint); color: var(--color-primary-strong); }
+.srcfold-help { margin: 0; padding: 0 var(--space-4) var(--space-3); font-size: 13px; color: var(--color-muted); }
+.srcfold-grp { padding: 0 var(--space-4) var(--space-3); }
+.srcfold-grp h3 { margin: 0 0 var(--space-1); font-size: 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); }
+.srcfold-grp h3 small { font-weight: 400; color: var(--color-muted); font-size: 12.5px; }
+.srcfold-grp ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 12.5px; line-height: 1.45; color: var(--color-text); overflow-wrap: anywhere; }
+@media (max-width: 640px) { .srcfold { margin-bottom: 84px; } }  /* clear the bottom tab bar */
