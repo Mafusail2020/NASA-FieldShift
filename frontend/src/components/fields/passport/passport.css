@@ -1,0 +1,22 @@
+.pass { display: grid; gap: var(--space-4); font-family: var(--font); color: var(--color-text); }
+.pass-head { display: grid; gap: var(--space-1); }
+.pass-head h3 { margin: 0; font-size: 18px; }
+.pass-meta { margin: 0; font-size: 13px; color: var(--color-muted); }
+.pass-group { display: grid; gap: var(--space-2); }
+.pass-group h4 { margin: 0; font-size: 13px; font-weight: 700; color: var(--color-primary-strong); text-transform: uppercase; letter-spacing: 0.04em; }
+.pass .fg-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 760px) { .pass .fg-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 360px) { .pass .fg-tiles { grid-template-columns: minmax(0, 1fr); } }
+.fg-tile.pass-empty { background: var(--color-primary-wash); border-style: dashed; box-shadow: none; }
+.fg-tile.pass-empty .fg-val { font-size: 16px; color: var(--color-muted); }
+.pass-state { margin: 0; font-size: 14px; color: var(--color-muted); }
+.pass-note { margin: 0; font-size: 12px; color: var(--color-muted); }
+.main .pass-head h3 { font-size: 22px; }
+@media (max-width: 480px) { .main .pass-head h3 { font-size: 20px; } }
+.fg-val.pass-good, .pass-legend .pass-good { color: var(--color-success); }
+.fg-val.pass-bad, .pass-legend .pass-bad { color: var(--color-danger); }
+.pass-legend { margin: 0; font-size: 12.5px; color: var(--color-muted); }
+.pass-legend .pass-good, .pass-legend .pass-bad { font-weight: 700; }
+.pass-flag { justify-self: start; margin: 2px 0; padding: 1px 8px; border-radius: var(--radius-pill); font-size: 11.5px; font-weight: 700; }
+.pass-flag-good { color: var(--color-success); background: var(--color-success-tint); }
+.pass-flag-bad { color: var(--color-danger); background: var(--color-danger-tint); }
