@@ -1,0 +1,38 @@
+.agw { transform-origin: 0 0; position: fixed; z-index: 1200; display: flex; flex-direction: column; background: var(--color-bg); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+.agw-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-2) var(--space-3); background: var(--color-primary); color: var(--color-text); cursor: grab; touch-action: none; user-select: none; }
+.agw-head:active { cursor: grabbing; }
+.agw-title { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 700; }
+.agw-title svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.agw-btn { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: var(--radius-md); background: transparent; color: inherit; cursor: pointer; }
+.agw-btn:hover { background: rgb(255 255 255 / 35%); }
+.agw-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.agw-body { flex: 1; min-height: 0; padding: var(--space-3); }
+.agw-grip { position: absolute; touch-action: none; z-index: 2; }
+.agw-n, .agw-s { left: 10px; right: 10px; height: 8px; cursor: ns-resize; }
+.agw-e, .agw-w { top: 10px; bottom: 10px; width: 8px; cursor: ew-resize; }
+.agw-n { top: 0; } .agw-s { bottom: 0; } .agw-e { right: 0; } .agw-w { left: 0; }
+.agw-ne, .agw-nw, .agw-se, .agw-sw { width: 14px; height: 14px; }
+.agw-ne { top: 0; right: 0; cursor: nesw-resize; } .agw-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.agw-nw { top: 0; left: 0; cursor: nwse-resize; } .agw-se { bottom: 0; right: 0; cursor: nwse-resize; }
+@media (max-width: 640px) { .agw { display: none; } }
+
+/* The window IS the tab: it starts with the tab's box and orange fill, grows to the window, and the content fades in on top.
+   --fx/--fy/--fsx/--fsy (tab box relative to the window) and --tx/--ty/--tsx/--tsy (tab slot, on exit) are set in AgentWindow. */
+.agw { animation: agw-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.25s, box-shadow 0.25s; }
+.agw-head > *, .agw-body { animation: agw-fade 0.25s 0.18s ease-out backwards; transition: opacity 0.14s; }
+.agw-moving { box-shadow: 0 34px 64px -18px rgb(120 60 10 / 42%), 0 6px 14px rgb(120 60 10 / 12%); }
+.agw-over { background: var(--color-primary); box-shadow: none; }
+.agw-over .agw-head > *, .agw-over .agw-body, .agw-over .agw-grip { opacity: 0; pointer-events: none; }
+.agw-out { animation: agw-out 0.38s cubic-bezier(0.55, 0, 0.3, 1) forwards; pointer-events: none; }
+.agw-out .agw-head > *, .agw-out .agw-body { animation: agw-fade-out 0.14s ease-in forwards; }
+@keyframes agw-in {
+  from { transform: translate(var(--fx, 0px), var(--fy, 0px)) scale(var(--fsx, 0.25), var(--fsy, 0.1)); background: var(--color-primary); box-shadow: none; }
+  to { transform: none; background: var(--color-bg); }
+}
+@keyframes agw-out {
+  from { transform: none; background: var(--color-bg); }
+  to { transform: translate(var(--tx, 0px), var(--ty, -40px)) scale(var(--tsx, 0.25), var(--tsy, 0.1)); background: var(--color-primary); box-shadow: none; }
+}
+@keyframes agw-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes agw-fade-out { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .agw, .agw-out, .agw-head > *, .agw-body { animation: none; } .agw-out { opacity: 0; } }

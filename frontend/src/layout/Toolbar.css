@@ -73,3 +73,16 @@
   }
   .nav-link { min-width: 0; flex-direction: column; gap: 0; padding: 4px; font-size: 12px; }
 }
+
+/* Assistant tab: rubber-band while it is pulled, a squash on release, a shrink-out when it leaves, a bounce when it comes back. */
+.nav-asst { touch-action: none; user-select: none; -webkit-user-select: none; }
+.nav-pulling { z-index: 3; transition: none; cursor: grabbing; filter: drop-shadow(0 6px 10px rgb(120 60 10 / 28%)); background: var(--color-primary-tint); border-radius: var(--radius-md); }
+.nav-snapback { transition: transform 0.45s cubic-bezier(0.34, 1.9, 0.5, 1); }
+.nav-slot { visibility: hidden; pointer-events: none; }  /* keeps the slot while the window grows out of / shrinks into it */
+.nav-enter { animation: nav-enter 0.28s var(--ease); }
+.nav-drop { pointer-events: none; background: var(--color-primary-tint); }
+@keyframes nav-enter { from { transform: scale(0.9); opacity: 0.4; } to { transform: none; opacity: 1; } }
+.nav-hint { position: absolute; left: 0; right: 0; bottom: 3px; display: flex; align-items: center; justify-content: center; gap: 2px; font-size: 10.5px; font-weight: 400; letter-spacing: 0.02em; color: var(--color-muted); pointer-events: none; animation: nav-hint 0.2s 0.15s ease-out both; }
+.nav-hint svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes nav-hint { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nav-enter, .nav-hint { animation: none; } .nav-snapback { transition: none; } }

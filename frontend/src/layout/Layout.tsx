@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Toolbar from './Toolbar'
 import SourcesFold from '../components/SourcesFold'
+import AgentWindow from '../components/agent/AgentWindow'
 import './Layout.css'
 
 export default function Layout() {
@@ -12,6 +13,7 @@ export default function Layout() {
         <Outlet />
         <SourcesFold />
       </main>
+      <AgentWindow />
     </>
   )
 }
