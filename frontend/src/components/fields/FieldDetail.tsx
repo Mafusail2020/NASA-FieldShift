@@ -4,6 +4,7 @@ import type { CropId, FieldItem } from '../../lib/field'
 import type { GridCell, GridDoc } from '../../types'
 import { FieldFinanceSummary } from '../finance/FieldFinanceSummary'
 import { FieldClimate } from './FieldClimate'
+import { CropFit } from './cropfit/CropFit'
 import { FieldPassport } from './passport/FieldPassport'
 import { FieldRotation } from './FieldRotation'
 import { FieldSoil } from './FieldSoil'
@@ -150,7 +151,7 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
       <section className="fr-glance" aria-label="Field passport"><FieldPassport field={field} cell={cell} /></section>
 
       <div className="fr-body">
-        <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
+        <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /><div className="fr-cropfit"><CropFit field={field} cell={cell} /></div></section>
         <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
         <section className="fr-sec fr-wide" aria-label="Season twins"><FieldTwin field={field} onUpdate={onUpdate} /></section>
         <section className="fr-sec fr-wide" aria-label="Soil analysis"><FieldSoil field={field} cellId={cell?.id ?? null} onUpdate={onUpdate} /></section>
