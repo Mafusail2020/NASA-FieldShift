@@ -12,6 +12,5 @@ export const STATUS_LABEL = LABEL
 // `quiet` is kept for the callers that pass it; it no longer matters because nothing but "Sample" is drawn.
 export default function StatusChip({ status, source }: { status: Status; source?: string; quiet?: boolean }) {
   useEffect(() => (source ? registerSource(status, source) : undefined), [status, source])
-  if (status !== 'sample') return null
-  return <span className={`status status-${status}`} title={source}>{LABEL[status]}</span>
+  return null // no chip is drawn, "Sample" included
 }

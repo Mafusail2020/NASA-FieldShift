@@ -326,37 +326,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 40.0
+     "usd_per_ha": 35.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 40.0
+     "usd_per_ha": 35.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 25.0
+     "usd_per_ha": 20.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 45.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 25.0
+     "usd_per_ha": 20.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -670,37 +670,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 110.0
+     "usd_per_ha": 95.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 190.0
+     "usd_per_ha": 160.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 45.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -1000,32 +1000,32 @@
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 50.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 25.0
+     "usd_per_ha": 20.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 45.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 25.0
+     "usd_per_ha": 20.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -1320,37 +1320,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 70.0
+     "usd_per_ha": 60.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 50.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 28.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -1645,37 +1645,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 80.0
+     "usd_per_ha": 70.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 50.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -1920,37 +1920,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 65.0
+     "usd_per_ha": 55.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -2245,37 +2245,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 110.0
+     "usd_per_ha": 95.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 45.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -2570,37 +2570,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 160.0
+     "usd_per_ha": 135.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 220.0
+     "usd_per_ha": 185.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 140.0
+     "usd_per_ha": 120.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 120.0
+     "usd_per_ha": 100.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -2914,37 +2914,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 70.0
+     "usd_per_ha": 60.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 80.0
+     "usd_per_ha": 70.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 30.0
+     "usd_per_ha": 25.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -3239,37 +3239,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 130.0
+     "usd_per_ha": 110.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 55.0
+     "usd_per_ha": 45.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 35.0
+     "usd_per_ha": 30.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -3514,37 +3514,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 45.0
+     "usd_per_ha": 40.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 200.0
+     "usd_per_ha": 170.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 110.0
+     "usd_per_ha": 95.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 70.0
+     "usd_per_ha": 60.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 35.0
+     "usd_per_ha": 30.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",
@@ -3858,37 +3858,37 @@
     {
      "item": "seed",
      "kind": "variable",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     },
     {
      "item": "fertilizer",
      "kind": "variable",
-     "usd_per_ha": 150.0
+     "usd_per_ha": 130.0
     },
     {
      "item": "protection",
      "kind": "variable",
-     "usd_per_ha": 70.0
+     "usd_per_ha": 60.0
     },
     {
      "item": "fuel",
      "kind": "variable",
-     "usd_per_ha": 70.0
+     "usd_per_ha": 60.0
     },
     {
      "item": "labour",
      "kind": "variable",
-     "usd_per_ha": 40.0
+     "usd_per_ha": 35.0
     },
     {
      "item": "rent",
      "kind": "fixed",
-     "usd_per_ha": 90.0
+     "usd_per_ha": 75.0
     },
     {
      "item": "overhead",
      "kind": "fixed",
-     "usd_per_ha": 60.0
+     "usd_per_ha": 50.0
     }
    ],
    "cost_items_source": "Sample: illustrative round numbers for the demo, not from a published budget or survey. Replace with Derzhstat or enterprise data.",

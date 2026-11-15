@@ -300,7 +300,6 @@ function FinanceInner() {
     const low = [...withM].sort((a, b) => a.calc!.margin! / a.area! - b.calc!.margin! / b.area!)[0]
     if (withM.length > 1 && low) actions.push({ tone: 'warn', text: `${low.f.name}: lowest margin per ha` })
     for (const r of T.ok) { const w = farmW?.fields[r.f.id]; if (w && w.losing / w.n > 0.25) actions.push({ tone: 'loss', text: `${r.f.name}: loss in ${w.losing} of ${w.n} years` }) }
-    if (T.ok.some((r) => r.calc!.costDefault)) actions.push({ tone: 'warn', text: 'Enter your own costs', href: '#fin-crops' })
   }
 
   return (
