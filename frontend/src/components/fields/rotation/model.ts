@@ -9,10 +9,16 @@ export type MetricKey = (typeof METRIC_KEYS)[number]
 
 export interface CropStatus { computable: boolean; missing: string[]; heat_missing: string[] }
 export interface Candidate { id: string; name: string; crops: string[]; source: string; status: Status }
+/** Every rotation that follows the rules (backend/core/generate.py), as indices into `crops`; the same for every cell. */
+export interface SuggestDoc {
+  crops: string[]; rotations: number[][]; lengths: number[]
+  rules: { min_distinct?: number; default_max_run?: number; max_run?: Record<string, number>; max_count?: Record<string, number>; no_adjacent?: string[][]; status: Status; source: string }
+}
 export interface SoilRow { soil: string; parameter: string; value: string; unit: string; source: string; status: Status }
 export interface RotIndex {
   generated: string; cells: string[]; years: [number, number]; soils: Soil[]
   crops: Record<string, CropStatus>; candidates: Candidate[]
+  suggest: SuggestDoc
   kmu_164: { crop: string; min_return_years: number; source: string; status: Status }[]
   soil_params: SoilRow[]; snow: string; source: string; status: Status
 }
@@ -174,4 +180,70 @@ export function useGridSoil(): Load<SoilDoc> {
     return () => { live = false }
   }, [])
   return s
+}
+
+// ---- suggested rotations: rotations that follow the rules, evaluated on this cell's own pairs ----
+export interface Suggestion { rot: string[]; ev: Evaluation; change: string | null }
+
+const validCache = new WeakMap<RotIndex, { list: string[][]; keys: Set<string> }>()
+function validOf(index: RotIndex) {
+  let v = validCache.get(index)
+  if (!v) {
+    const list = index.suggest.rotations.map((r) => r.map((i) => index.suggest.crops[i]))
+    v = { list, keys: new Set(list.map(canonical)) }
+    validCache.set(index, v)
+  }
+  return v
+}
+
+/** Crops in `canonical` equal-rotation sense: rotations that differ only by the start year are the same. */
+const sameRot = (a: string[], b: string[]) => a.length === b.length && canonical(a) === canonical(b)
+
+/** Rotations one edit away from `cur` (swap one crop, add one crop, remove one crop) that follow the rules. */
+export function oneChange(cur: string[], index: RotIndex): { rot: string[]; change: string }[] {
+  const { keys } = validOf(index)
+  const out = new Map<string, { rot: string[]; change: string }>()
+  const add = (rot: string[], change: string) => {
+    const k = canonical(rot)
+    if (keys.has(k) && k !== (cur.length ? canonical(cur) : '') && !out.has(k)) out.set(k, { rot, change })
+  }
+  const crops = index.suggest.crops
+  cur.forEach((c, i) => {
+    for (const x of crops) if (x !== c) add([...cur.slice(0, i), x, ...cur.slice(i + 1)], `Replace ${cropName(c).toLowerCase()} with ${cropName(x).toLowerCase()} in year ${i + 1}`)
+    if (cur.length > 1) add([...cur.slice(0, i), ...cur.slice(i + 1)], `Remove ${cropName(c).toLowerCase()} (year ${i + 1})`)
+  })
+  for (let i = 0; i <= cur.length; i++) for (const x of crops) add([...cur.slice(0, i), x, ...cur.slice(i)], `Add ${cropName(x).toLowerCase()} as year ${i + 1}`)
+  return [...out.values()]
+}
+
+/** Smallest number of positions in which two same-length rotations differ, over all start years. */
+function distance(a: string[], b: string[]): number {
+  const n = a.length
+  let best = n
+  for (let s = 0; s < n; s++) { let d = 0; for (let i = 0; i < n; i++) if (a[i] !== b[(i + s) % n]) d++; best = Math.min(best, d) }
+  return best
+}
+
+/** Best `k` by one priority. Skips the rotations in `skip` and, when `minDist` > 0, any rotation of the same length with fewer than `minDist` differences from one already chosen or skipped. */
+export function pickTop(list: Suggestion[], prio: Priority, k: number, skip: string[][] = [], minDist = 2): Suggestion[] {
+  const scored = list.flatMap((s) => { const key = sortKey(s.ev, prio); return key == null ? [] : [{ s, key }] })
+  scored.sort((a, b) => a.key - b.key || a.s.rot.length - b.s.rot.length || a.s.rot.join().localeCompare(b.s.rot.join()))
+  const chosen: Suggestion[] = []
+  for (const { s } of scored) {
+    if (skip.some((q) => sameRot(q, s.rot))) continue
+    if (minDist > 0 && [...chosen.map((c) => c.rot), ...skip].some((q) => q.length === s.rot.length && distance(s.rot, q) < minDist)) continue
+    chosen.push(s)
+    if (chosen.length === k) break
+  }
+  return chosen
+}
+
+/** All rule-following rotations evaluated on this cell and soil (a few thousand, a fraction of a second). */
+export function evaluateAll(index: RotIndex, cell: CellRot, soil: Soil): Suggestion[] {
+  const out: Suggestion[] = []
+  for (const rot of validOf(index).list) {
+    const r = evaluate(rot, index, cell, soil)
+    if (r.ok) out.push({ rot, ev: r.ev, change: null })
+  }
+  return out
 }

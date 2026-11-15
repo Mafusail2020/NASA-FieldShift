@@ -1,23 +1,38 @@
 // Fixed templates, filled only from computed values. No generated prose, no numbers that were not computed.
-import { cropName, CRITERIA, type Candidate, type Evaluation, type RotIndex, type Stat } from './model'
+import { cropName, CRITERIA, type Evaluation, type RotIndex, type Stat } from './model'
 
 export const f = (v: number, d: number) => v.toFixed(d)
 export const range = (s: Stat, d: number, mult = 1) => `${f(s.med * mult, d)} (80 % of years: ${f(s.p10 * mult, d)} to ${f(s.p90 * mult, d)})`
 export const label = (rot: string[]) => rot.map(cropName).join(' > ')
 
-export function why(ev: Evaluation, cand: Candidate | null, base: Evaluation | null): string[] {
+export type Origin = { kind: 'yours' } | { kind: 'closest'; change: string } | { kind: 'best'; priority: string; of: number }
+
+export function why(ev: Evaluation, origin: Origin, base: Evaluation | null): string[] {
   const out: string[] = []
-  if (cand) {
-    out.push(`Draft candidate "${cand.name}". It was written by the project team from the crops that currently have complete data, not by an agronomist. It is a rotation to compare, not a recommendation.`)
-  } else {
-    out.push('This is the rotation you entered. It is the baseline for the comparison.')
-  }
-  if (cand && base) {
+  if (origin.kind === 'yours') out.push('This is the rotation you entered. It is the baseline for the comparison.')
+  else if (origin.kind === 'closest') out.push(`One change from your rotation: ${origin.change.toLowerCase()}. It follows the rules listed above the table, and it was picked from the rotations one change away by the priority you chose. It is an option to compare, not a recommendation.`)
+  else out.push(`Among the ${origin.of} rotations that follow the rules listed above the table, this is one of the best by "${origin.priority}". It may differ a lot from what you grow now. It is an option to compare, not a recommendation.`)
+  if (origin.kind !== 'yours' && base) {
     const a = ev.stats.ks, b = base.stats.ks
     if (a && b) out.push(`Median water need met ${f(a.med * 100, 0)} % here against ${f(b.med * 100, 0)} % for your rotation.`)
     const c = ev.stats.bare, d = base.stats.bare
     if (c && d) out.push(`Median bare-soil months per year ${f(c.med, 1)} here against ${f(d.med, 1)} for your rotation.`)
   }
+  return out
+}
+
+/** The rules behind the suggestions, in words, from the index (the same file the rotations come from). */
+export function rulesText(index: RotIndex): string[] {
+  const { rules, lengths, crops } = index.suggest
+  const maxLen = Math.max(...lengths)
+  const out = [`Rotations of ${Math.min(...lengths)} to ${maxLen} years, at least ${rules.min_distinct ?? 2} different crops.`]
+  const kmu = index.kmu_164.filter((k) => crops.includes(k.crop) && k.min_return_years > 1)
+  out.push(`Return intervals of KMU No. 164: ${kmu.map((k) => `${cropName(k.crop).toLowerCase()} ${k.min_return_years} years`).join(', ')}.`)
+  const long = kmu.filter((k) => k.min_return_years > maxLen).map((k) => cropName(k.crop).toLowerCase())
+  if (long.length) out.push(`${long.map((c) => c[0].toUpperCase() + c.slice(1)).join(' and ')} cannot appear in rotations of up to ${maxLen} years, because the norm is longer than the rotation.`)
+  for (const g of rules.no_adjacent ?? []) out.push(`${g.map((c) => cropName(c).toLowerCase()).join(' and ')} never follow each other (project rule).`)
+  for (const [c, n] of Object.entries(rules.max_count ?? {})) out.push(`At most ${n} ${cropName(c).toLowerCase()} per rotation (project rule).`)
+  if (rules.default_max_run) out.push(`No crop more than ${rules.default_max_run} years in a row${rules.max_run?.maize ? `, maize up to ${rules.max_run.maize}` : ''} (project rule).`)
   return out
 }
 

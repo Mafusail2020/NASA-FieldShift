@@ -24,6 +24,7 @@ import yaml
 
 from core.bucket import snow_store
 from core.crops import load_crops
+from core.generate import enumerate_rotations, rules_from_params
 from core.kc import bare_kc_daily
 from core.pairs import FALLOW, STAGES, Climate, Params, compute_pair
 from core.params import get_value, load_params
@@ -118,6 +119,16 @@ def _job(args):
     return cid, time.time() - t, None
 
 
+def suggest_doc(cfg: dict, crops: list[str]) -> dict:
+    """Every valid rotation (KMU return intervals + suggest_rules), the same for every cell. Rotations are lists of indices into
+    `crops`, in canonical order. The page evaluates them on the cell's own pairs; nothing here depends on the weather."""
+    sr = cfg["suggest_rules"]
+    pos = {c: i for i, c in enumerate(crops)}
+    rots = enumerate_rotations(crops, rules_from_params(cfg, crops), sr["lengths"])
+    return {"crops": crops, "rotations": [[pos[c] for c in r] for r in rots], "rules": {k: v for k, v in sr.items() if k != "lengths"},
+            "lengths": sr["lengths"]}
+
+
 def index_doc(cells: list[str], P: Params) -> dict:
     soils = load_params(PARAMS / "soils.csv", ["soil", "parameter"])
     cfg = yaml.safe_load((PARAMS / "rotations.yaml").read_text())
@@ -130,6 +141,7 @@ def index_doc(cells: list[str], P: Params) -> dict:
         "soils": list(SOILS),
         "crops": crop_status(P),
         "candidates": cfg["rotations"],
+        "suggest": suggest_doc(cfg, list(ALL_CROPS)),
         "kmu_164": cfg["kmu_164"],
         "soil_params": soil_rows,
         "snow": "Snow from the temperature-based degree-day store (snow_ddf in params/model.csv, estimate); POWER snow depth is not downloaded for the grid.",

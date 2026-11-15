@@ -78,3 +78,20 @@ def test_shortlist_orders_by_priority_and_drops_near_duplicates():
     # ('a','b') differs from ('b','b') in one position: with min_distance=2 it is dropped as a near-duplicate
     got = [r["crops"] for r in shortlist(rots, pairs, "water", k=3, min_distance=2)]
     assert ["b", "b"] in got and ["a", "b"] not in got
+
+
+def test_no_adjacent_group_is_cyclic():
+    rules = Rules(no_adjacent=[frozenset({"p", "s"})], min_distinct=2)
+    got = enumerate_rotations(["p", "s", "x"], rules, [3, 4])
+    assert ("p", "s", "x") not in got and ("p", "x", "s") not in got   # s and p are neighbours around the end
+    assert ("p", "x", "p", "s") not in got                             # p, s adjacent
+    assert ("p", "x", "s", "x") in got
+    assert ("p", "p", "x") in got                                      # the group rule is about different crops; same-crop runs are max_run
+
+
+def test_rules_from_params():
+    from core.generate import rules_from_params
+    cfg = {"kmu_164": [{"crop": "w", "min_return_years": 2}, {"crop": "z", "min_return_years": 9}],
+           "suggest_rules": {"max_run": {"m": 3}, "max_count": {"f": 1}, "default_max_run": 2, "no_adjacent": [["p", "s"]]}}
+    r = rules_from_params(cfg, ["w", "m"])
+    assert r.min_gap == {"w": 2} and r.max_run == {"m": 3} and r.max_count == {"f": 1} and r.no_adjacent == [frozenset({"p", "s"})]

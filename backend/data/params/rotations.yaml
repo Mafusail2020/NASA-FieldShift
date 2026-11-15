@@ -107,3 +107,16 @@ rotations:
     crops: [winter_wheat]
     source: "Draft by Claude, Ivan to approve"
     status: estimate
+
+# Rules for the suggested rotations (core/generate.py). KMU return intervals above are the legal part; everything here is a
+# project choice, status=estimate, to be confirmed by an agronomist. Maize: KMU No. 164 allows 2-3 years in a row.
+suggest_rules:
+  lengths: [2, 3, 4, 5]
+  min_distinct: 2
+  default_max_run: 2
+  max_run: {maize: 3, black_fallow: 1}
+  max_count: {black_fallow: 1}
+  no_adjacent:            # a legume does not follow a legume (disease and root-rot build-up)
+    - [pea, soybean]
+  status: estimate
+  source: "Project choice. Return intervals: KMU Resolution No. 164 (kmu_164 above). Legume rule: common agronomic practice, no single source entered yet."

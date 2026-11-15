@@ -91,3 +91,4 @@
   .rot-full { grid-column: 1 / -1; }
 }
 .rot-msg-error { color: var(--color-danger); }
+.rot-table tr.rot-grp th { background: var(--color-primary-wash); color: var(--color-primary-strong); font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em; }

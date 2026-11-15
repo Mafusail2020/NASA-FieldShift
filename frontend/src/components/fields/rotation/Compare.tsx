@@ -1,14 +1,15 @@
-import { useId, useMemo, useState } from 'react'
+import { Fragment, useId, useMemo, useState } from 'react'
 import { cropSoil, useSoilDoc, type SoilAnalysis } from '../../../lib/soil'
 import StatusChip from '../../StatusChip'
 import '../soil/soil.css'
 import {
-  CRITERIA, PRIORITIES, canonical, cropName, evaluate, sortKey, type Candidate, type CellRot, type Criterion, type EvalResult, type Evaluation,
-  type Priority, type RotIndex, type Soil,
+  CRITERIA, PRIORITIES, cropName, evaluate, evaluateAll, oneChange, pickTop, type CellRot, type Criterion, type Evaluation,
+  type Priority, type RotIndex, type Soil, type Suggestion,
 } from './model'
-import { evidence, f, gaps, label, range, risks, why } from './texts'
+import { evidence, f, gaps, label, range, risks, rulesText, why, type Origin } from './texts'
 
-interface Row { id: string; title: string; cand: Candidate | null; baseline: boolean; res: EvalResult; rot: string[] }
+interface Row { id: string; title: string; origin: Origin; baseline: boolean; ev: Evaluation | null; reasons: string[]; rot: string[]; group: 'yours' | 'closest' | 'best' }
+const GROUP_TITLE = { closest: 'One change from your rotation', best: 'Best of all rotations that follow the rules' } as const
 
 const HEAD: Record<Criterion['key'], string> = { ks: 'Water need met', wsd: 'Stress days', heat: 'Heat days', bare: 'Bare months' }
 // what "worse" means in words, for the trade-off flag of a row
@@ -31,38 +32,44 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
   const [prio, setPrio] = useState<Priority>('water')
   const soilName = index.soil_params.find((r) => r.soil === soil && r.parameter === 'texture')?.value ?? soil
 
-  const { base, alts, dropped } = useMemo(() => {
-    const base: Row | null = current.length
-      ? { id: 'current', title: 'Your rotation', cand: null, baseline: true, rot: current, res: evaluate(current, index, cell, soil) } : null
-    const seen = new Set(base ? [canonical(current)] : [])
-    const alts: Row[] = []
-    let dropped = 0
-    for (const c of index.candidates) {
-      if (blocked(c.crops)) { dropped++; continue }
-      const key = canonical(c.crops)
-      const dupe = seen.has(key)
-      seen.add(key)
-      alts.push({ id: c.id, title: `${c.name}${dupe && base && canonical(current) === key ? ' (same as yours)' : ''}`, cand: c, baseline: false, rot: c.crops, res: evaluate(c.crops, index, cell, soil) })
-    }
-    return { base, dropped, alts: alts.filter((a) => !(base && canonical(a.rot) === canonical(base.rot))) }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, cell, soil, current, saltOn, analysis?.ece, analysis?.gypsum])
-
-  const baseEv = base?.res.ok ? base.res.ev : null
-  const computable = alts.filter((a) => a.res.ok) as (Row & { res: { ok: true; ev: Evaluation } })[]
-  const ranked = [...computable].sort((a, b) => {
-    const ka = sortKey(a.res.ev, prio), kb = sortKey(b.res.ev, prio)
-    return ka == null ? 1 : kb == null ? -1 : ka - kb
-  })
+  // every rotation that follows the rules, evaluated once per cell and soil (the priority only re-sorts them)
+  const poolAll = useMemo(() => evaluateAll(index, cell, soil), [index, cell, soil])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const pool = useMemo(() => (saltOn ? poolAll.filter((x) => !blocked(x.rot)) : poolAll), [poolAll, saltOn, analysis?.ece, analysis?.gypsum])
   const prioInfo = PRIORITIES.find((p) => p.id === prio)!
-  const all = base ? [base, ...alts] : alts
-  const tableRows = base?.res.ok ? [base, ...ranked] : ranked
+
+  const { base, closest, best } = useMemo(() => {
+    const baseRes = current.length ? evaluate(current, index, cell, soil) : null
+    const base: Row | null = baseRes
+      ? { id: 'current', title: 'Your rotation', origin: { kind: 'yours' }, baseline: true, group: 'yours', rot: current, ev: baseRes.ok ? baseRes.ev : null, reasons: baseRes.ok ? [] : baseRes.reasons }
+      : null
+    // Ks is only counted in crop years, so a fallow year would lift it for free: black fallow is not offered for the two Ks priorities
+    const allowed = (rot: string[]) => prio === 'cover' || !rot.includes('black_fallow')
+    const near: Suggestion[] = []
+    for (const o of oneChange(current, index)) {
+      if (!allowed(o.rot)) continue
+      const r = evaluate(o.rot, index, cell, soil)
+      if (r.ok && !blocked(o.rot)) near.push({ rot: o.rot, ev: r.ev, change: o.change })
+    }
+    const nearTop = pickTop(near, prio, 3, [], 0)
+    const bestTop = pickTop(pool.filter((x) => allowed(x.rot)), prio, 3, [...(current.length ? [current] : []), ...nearTop.map((n) => n.rot)])
+    const row = (s: Suggestion, group: 'closest' | 'best', i: number): Row => ({
+      id: `${group}${i}`, title: group === 'closest' ? s.change! : `Option ${i + 1}`, baseline: false, group, rot: s.rot, ev: s.ev, reasons: [],
+      origin: group === 'closest' ? { kind: 'closest', change: s.change! } : { kind: 'best', priority: prioInfo.label.toLowerCase(), of: pool.length },
+    })
+    return { base, closest: nearTop.map((s, i) => row(s, 'closest', i)), best: bestTop.map((s, i) => row(s, 'best', i)) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, cell, soil, current, pool, prio, prioInfo.label, saltOn, analysis?.ece, analysis?.gypsum])
+
+  const baseEv = base?.ev ?? null
+  const tableRows = [...(base?.ev ? [base] : []), ...closest, ...best]
+  const all = [...(base ? [base] : []), ...closest, ...best]
   const primary = prio === 'cover' ? 'bare' : 'ks'   // the criterion the current priority sorts by
 
   // one scale per criterion, shared by all rows, so the small range bars can be compared down a column
   const scale = (c: Criterion): [number, number] => {
     if (c.key === 'ks') return [0, 1]
-    const hi = Math.max(0, ...tableRows.flatMap((r) => (r.res.ok && r.res.ev.stats[c.key] ? [r.res.ev.stats[c.key]!.p90] : [])))
+    const hi = Math.max(0, ...tableRows.flatMap((r) => (r.ev?.stats[c.key] ? [r.ev.stats[c.key]!.p90] : [])))
     return [0, hi || 1]
   }
   const scales = Object.fromEntries(CRITERIA.map((c) => [c.key, scale(c)])) as Record<Criterion['key'], [number, number]>
@@ -72,7 +79,8 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
     const s = ev.stats[c.key], b = baseEv?.stats[c.key]
     if (!s || !b) return null
     const d = Number(((s.med - b.med) * (c.mult ?? 1)).toFixed(c.digits))
-    return { d, good: d === 0 ? null : (d < 0) === (c.better === 'low') }
+    // heat days follow the sowing date of winter wheat, which follows the previous crop in the model's calendar: shown, not judged
+    return { d, good: d === 0 || c.key === 'heat' ? null : (d < 0) === (c.better === 'low') }
   }
   const cell2 = (ev: Evaluation, c: Criterion, isBase: boolean) => {
     const s = ev.stats[c.key]
@@ -86,7 +94,7 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
       <>
         <b>{f(s.med * mult, c.digits)}{unit}</b>
         {ch && (ch.good == null
-          ? <span className="rot-d rot-d-same">same</span>
+          ? <span className="rot-d rot-d-same">{ch.d === 0 ? 'same' : `${sg(ch.d, c.digits, '')} (not judged)`}</span>
           : <span className={`rot-d ${ch.good ? 'rot-d-good' : 'rot-d-bad'}`}>{sg(ch.d, c.digits, c.key === 'ks' ? ' pts' : '')} {ch.good ? '✓' : '✗'}<span className="sr-only">{ch.good ? ' better' : ' worse'} than yours</span></span>)}
         <span className="rot-rng" aria-hidden="true">
           <i style={{ left: pos(s.p10), width: `calc(${pos(s.p90)} - ${pos(s.p10)})` }} />
@@ -99,8 +107,8 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
   }
   // trade-offs hidden by sorting on one criterion: everything where this option is worse than yours
   const tradeoffs = (r: Row) => {
-    if (r.baseline || !r.res.ok) return []
-    const ev = r.res.ev
+    if (r.baseline || !r.ev) return []
+    const ev = r.ev
     return CRITERIA.flatMap((c) => {
       const ch = change(ev, c)
       return ch && ch.good === false ? [`${WORSE[c.key]} (${sg(ch.d, c.digits, c.key === 'ks' ? ' pts' : '')})`] : []
@@ -112,18 +120,24 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
       <section className="rot-sec" aria-labelledby={`${uid}s`}>
         <h3 id={`${uid}s`}>Suggested options</h3>
         <p className="rot-help">
-          Options to compare, not advice. They are draft rotations written by the project team and not yet approved, built from the crops that can be computed.
+          Options to compare, not advice. Two kinds: rotations one change away from yours, and the best of {pool.length.toLocaleString('en')} rotations that follow the rules below.
           Every number here is a model estimate (see the note at the top of this panel) unless a chip says otherwise.
-          Choose what matters most; the list is sorted by that one criterion only. There is no overall score.
+          Choose what matters most; each group is sorted by that one criterion only. There is no overall score.
         </p>
+        <details className="rot-more">
+          <summary>Rules the options follow</summary>
+          <ul className="rot-nm">{rulesText(index).map((t) => <li key={t}>{t}</li>)}</ul>
+          <p className="rot-help">Return intervals are law <StatusChip status="literature" source="KMU Resolution No. 164, see the return interval lines below" quiet />; the other rules are project choices <StatusChip status={index.suggest.rules.status} source={index.suggest.rules.source} quiet />.</p>
+        </details>
         <div role="group" aria-label="Priority" className="rot-seg">
           {PRIORITIES.map((p) => (
             <button key={p.id} type="button" aria-pressed={prio === p.id} onClick={() => setPrio(p.id)}>{p.label}</button>
           ))}
         </div>
-        <p className="rot-help">{prioInfo.hint}</p>
+        <p className="rot-help">{prioInfo.hint}{prio !== 'cover' && ' Black fallow is not offered for this priority: the water need is only counted in crop years, so a fallow year would raise it without growing anything. Pick Soil cover to see options with fallow.'}</p>
         {!base && <p className="rot-warn">Enter your rotation above to see it as the baseline.</p>}
-        {base && !base.res.ok && <p className="rot-warn">Your rotation: {base.res.reasons.join('; ')}.</p>}
+        {base && !base.ev && <p className="rot-warn">Your rotation: {base.reasons.join('; ')}.</p>}
+        {base?.ev && closest.length === 0 && <p className="rot-help">No rotation one change away from yours follows the rules and has data.</p>}
 
         <p className="rot-help">
           Sorted by the priority above. Each cell: the median (bold), the change against your rotation (&#10003; better, &#10007; worse) and a bar for the range of 80 % of years
@@ -135,35 +149,38 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
             <thead><tr><th scope="col">Option</th>{CRITERIA.map((c) => <th scope="col" key={c.key} title={c.label} className={c.key === primary ? 'rot-prio' : undefined}>{HEAD[c.key]}<small>{c.better === 'high' ? 'higher is better' : 'lower is better'}</small></th>)}{saltOn && <th scope="col" title="Share of normal yield left after salinity, for the weakest crop of the rotation (FAO-61 salt tolerance, ECe entered in the soil analysis)">Salt<small>weakest crop, higher is better</small></th>}</tr></thead>
             <tbody>
               {tableRows.map((r, i) => {
-                const n = base?.res.ok ? i : i + 1   // rank among options; the baseline has no number
                 const t = tradeoffs(r)
+                const head = r.group !== 'yours' && tableRows[i - 1]?.group !== r.group
                 return (
-                  <tr key={r.id} className={r.baseline ? 'rot-base' : ''}>
-                    <th scope="row">
-                      {r.baseline ? <span className="rot-tag">Yours</span> : <span className="rot-num">{n}.</span>} <b>{r.baseline ? 'Your rotation' : r.cand!.name}</b>
-                      <span className="rot-seq">{label(r.rot)}</span>
-                      {t.length > 0 && <span className="rot-trade">Trade-off: {t.join(', ')}</span>}
-                    </th>
-                    {CRITERIA.map((c) => <td key={c.key} className={c.key === primary ? 'rot-prio' : undefined}>{r.res.ok ? cell2(r.res.ev, c, r.baseline) : <span className="rot-na">n/a</span>}</td>)}
-                    {saltOn && (() => {
-                      const sl = salt(r.rot)!
-                      return (
-                        <td>
-                          {sl.worst ? <><b>{f(sl.worst.fSalt! * 100, 0)} %</b> <span className="fs-note">{sl.worst.label}</span></> : <span className="rot-na">n/a</span>}
-                          {sl.lost.length > 0 && <span className="fs-tag fs-tag-bad">Not recommended: {sl.lost.map((c) => c.label).join(', ')}</span>}
-                          {sl.noData.length > 0 && <span className="fs-tag fs-tag-low">No salt data: {sl.noData.map((c) => c.label).join(', ')}</span>}
-                        </td>
-                      )
-                    })()}
-                  </tr>
+                  <Fragment key={r.id}>
+                    {head && <tr className="rot-grp"><th scope="colgroup" colSpan={CRITERIA.length + 1 + (saltOn ? 1 : 0)}>{GROUP_TITLE[r.group as 'closest' | 'best']}</th></tr>}
+                    <tr className={r.baseline ? 'rot-base' : ''}>
+                      <th scope="row">
+                        {r.baseline ? <span className="rot-tag">Yours</span> : null} <b>{r.baseline ? 'Your rotation' : r.title}</b>
+                        <span className="rot-seq">{label(r.rot)}</span>
+                        {t.length > 0 && <span className="rot-trade">Trade-off: {t.join(', ')}</span>}
+                      </th>
+                      {CRITERIA.map((c) => <td key={c.key} className={c.key === primary ? 'rot-prio' : undefined}>{r.ev ? cell2(r.ev, c, r.baseline) : <span className="rot-na">n/a</span>}</td>)}
+                      {saltOn && (() => {
+                        const sl = salt(r.rot)!
+                        return (
+                          <td>
+                            {sl.worst ? <><b>{f(sl.worst.fSalt! * 100, 0)} %</b> <span className="fs-note">{sl.worst.label}</span></> : <span className="rot-na">n/a</span>}
+                            {sl.lost.length > 0 && <span className="fs-tag fs-tag-bad">Not recommended: {sl.lost.map((c) => c.label).join(', ')}</span>}
+                            {sl.noData.length > 0 && <span className="fs-tag fs-tag-low">No salt data: {sl.noData.map((c) => c.label).join(', ')}</span>}
+                          </td>
+                        )
+                      })()}
+                    </tr>
+                  </Fragment>
                 )
               })}
             </tbody>
           </table>
         </div>
-        {saltOn && dropped > 0 && <p className="rot-help" role="status">Salinity (ECe {f(analysis!.ece!, 1)} dS/m) rules out a crop in {dropped} of the draft rotations, so they are not offered here. The Salt column is the share of normal yield left for the weakest crop; it does not change the weather numbers or the sorting.</p>}
+        {saltOn && poolAll.length > pool.length && <p className="rot-help" role="status">Salinity (ECe {f(analysis!.ece!, 1)} dS/m) rules out a crop in {(poolAll.length - pool.length).toLocaleString('en')} rotations, so they are not offered here. The Salt column is the share of normal yield left for the weakest crop; it does not change the weather numbers or the sorting.</p>}
         <p className="rot-help">
-          Water need met is the share of the crop&rsquo;s water need that the soil could supply (100 % = no water stress). Heat days exist for winter wheat only.
+          Water need met is the share of the crop&rsquo;s water need that the soil could supply (100 % = no water stress). Heat days exist for winter wheat only and are shown without a better or worse mark: they depend on when the wheat is sown, which in the model&rsquo;s calendar follows the previous crop (wheat after maize is sown late, so its heat window falls later).
         </p>
       </section>
 
@@ -171,22 +188,21 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
         <h3 id={`${uid}c`}>Comparison, rotation by rotation</h3>
         <p className="rot-help">Each rotation is evaluated for every harvest year and every starting phase. Text below is a fixed template filled from the computed values.</p>
         {all.map((r, i) => {
-          const res = r.res
+          const ev = r.ev
           return (
           <details key={r.id} className="rot-card" open={i === 0}>
-            <summary><b>{r.title}</b> <span className="rot-seq">{label(r.rot)}</span></summary>
-            {r.cand && <p className="rot-help">Draft by the project team, not yet approved.</p>}
-            {!res.ok ? (
+            <summary><b>{r.baseline ? 'Your rotation' : `${r.group === 'closest' ? 'One change' : 'Best'}: ${r.title}`}</b> <span className="rot-seq">{label(r.rot)}</span></summary>
+            {!ev ? (
               <>
                 <p className="rot-warn"><b>Not available yet.</b></p>
-                <ul>{res.reasons.map((x) => <li key={x}>{x}</li>)}</ul>
+                <ul>{r.reasons.map((x) => <li key={x}>{x}</li>)}</ul>
                 <p className="rot-help">No value is estimated for these crops until their data is added.</p>
               </>
             ) : (
               <>
                 <dl className="rot-crit">
                   {CRITERIA.map((c) => {
-                    const s = res.ev.stats[c.key]
+                    const s = ev.stats[c.key]
                     return (
                       <div key={c.key}>
                         <dt>{c.label}</dt>
@@ -195,27 +211,27 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
                       </div>
                     )
                   })}
-                  {res.ev.returns.filter((x) => x.norm != null).map((x) => (
+                  {ev.returns.filter((x) => x.norm != null).map((x) => (
                     <div key={x.crop}>
                       <dt>KMU No. 164, return interval</dt>
                       <dd>{cropName(x.crop)} returns after {x.gap} years (norm: {x.norm}){' '}
                         <StatusChip status="literature" source={index.kmu_164.find((k) => k.crop === x.crop)!.source} /></dd>
                     </div>
                   ))}
-                  {!res.ev.returns.some((x) => x.norm != null) && (
+                  {!ev.returns.some((x) => x.norm != null) && (
                     <div>
                       <dt>KMU No. 164, return interval</dt>
                       <dd><span className="rot-na">No national norm is available yet for these crops (only sunflower has one)</span></dd>
                     </div>
                   )}
                 </dl>
-                <Block title="Why proposed" items={why(res.ev, r.cand, r.baseline ? null : baseEv)} />
+                <Block title="Why proposed" items={why(ev, r.origin, r.baseline ? null : baseEv)} />
                 <details className="rot-more">
                   <summary>Show details</summary>
-                  <Block title="Evidence" items={evidence(res.ev, soilName)} />
+                  <Block title="Evidence" items={evidence(ev, soilName)} />
                 </details>
-                <Block title="Information gaps" items={gaps(res.ev, index)} />
-                <Block title="Risks a local agronomist must check" items={risks(res.ev)} />
+                <Block title="Information gaps" items={gaps(ev, index)} />
+                <Block title="Risks a local agronomist must check" items={risks(ev)} />
               </>
             )}
           </details>

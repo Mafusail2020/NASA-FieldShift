@@ -20,6 +20,7 @@ class Rules:
     max_count: dict[str, int] = field(default_factory=dict)
     min_distinct: int = 1  # fewest different crops in a cycle (project choice, not a legal norm)
     default_max_run: int | None = None  # most consecutive years for crops without their own max_run (project choice)
+    no_adjacent: list[frozenset] = field(default_factory=list)  # crops of one group never follow each other (legumes: project choice)
 
 
 def canonical(rot) -> tuple:
@@ -33,8 +34,14 @@ def primitive(rot) -> bool:
     return not any(n % p == 0 and tuple(rot) == tuple(rot[:p]) * (n // p) for p in range(1, n))
 
 
+def _adjacent_bad(a: str, b: str, rules: Rules) -> bool:
+    return a != b and any(a in g and b in g for g in rules.no_adjacent)
+
+
 def cyclic_ok(rot, rules: Rules) -> bool:
     n = len(rot)
+    if any(_adjacent_bad(rot[i], rot[(i + 1) % n], rules) for i in range(n)):
+        return False
     for c in set(rot):
         pos = [i for i, x in enumerate(rot) if x == c]
         g = rules.min_gap.get(c)
@@ -68,6 +75,8 @@ def enumerate_rotations(crops: list[str], rules: Rules, lengths=range(2, 9)) -> 
             for c in crops:
                 if seq and order[c] < order[seq[0]]:
                     continue  # the cycle starts at its smallest crop: kills n-fold duplicates early
+                if seq and _adjacent_bad(seq[-1], c, rules):
+                    continue
                 g = rules.min_gap.get(c)
                 if g is not None and c in last and i - last[c] < g:
                     continue
@@ -147,3 +156,17 @@ def shortlist(rotations: list[tuple], pairs: dict, priority: str, k: int = 6, mi
 def _distance(a, b) -> int:
     n = len(a)
     return min(sum(x != y for x, y in zip(a, b[i:] + b[:i])) for i in range(n))
+
+
+def rules_from_params(cfg: dict, crops: list[str]) -> Rules:
+    """Rules for suggested rotations from data/params/rotations.yaml (`kmu_164` and `suggest_rules`).
+    Only KMU rows for `crops` are used. Everything in `suggest_rules` is a project choice, not a legal norm."""
+    sr = cfg["suggest_rules"]
+    return Rules(
+        min_gap={k["crop"]: k["min_return_years"] for k in cfg["kmu_164"] if k["crop"] in crops},
+        max_run=dict(sr.get("max_run", {})),
+        max_count=dict(sr.get("max_count", {})),
+        min_distinct=sr.get("min_distinct", 2),
+        default_max_run=sr.get("default_max_run"),
+        no_adjacent=[frozenset(g) for g in sr.get("no_adjacent", [])],
+    )
