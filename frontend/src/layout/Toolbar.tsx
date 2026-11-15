@@ -74,10 +74,6 @@ export default function Toolbar() {
   return (
     <header className="toolbar">
       <NavLink to="/" className="brand" aria-label="Field Shift, home">
-        <svg className="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-          <rect width="32" height="32" rx="9" fill="currentColor" />
-          <path d="M8 17 17 8M8 24 24 8M15 24 24 15" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" />
-        </svg>
         <span className="brand-name">Field <b>Shift</b></span>
       </NavLink>
 

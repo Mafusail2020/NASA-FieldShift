@@ -36,7 +36,7 @@ export function CropFit({ field, cell }: { field: FieldItem; cell: GridCell | nu
   const by = (f: Fit) => rows.filter((r) => r.fit === f)
   const counts = rows.length ? [['suits', 'suits'], ['check', 'check'], ['no', 'not advised']].flatMap(([f, w]) => (by(f as Fit).length ? [`${by(f as Fit).length} ${w}`] : [])).join(' · ') : ''
   const wrap = (body: React.ReactNode, busy = false) => (
-    <details className="cf" aria-busy={busy || undefined}>
+    <details className="cf" open aria-busy={busy || undefined}>
       <summary><span className="cf-title" id={`${uid}h`}>What you can sow on this field</span>{counts && <small>{counts}</small>}</summary>
       <div className="cf-body">{body}</div>
     </details>

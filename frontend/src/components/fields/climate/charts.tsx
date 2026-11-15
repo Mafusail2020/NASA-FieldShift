@@ -1,5 +1,5 @@
 // Small inline-SVG charts (no chart library). Drawn at the measured container width so text stays readable at 360 px.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { MONTH_NAMES, MONTH_START, doyLabel, type FrostEntry } from './types'
 
 // Data colours come from tokens.css: blue = water and frost, terracotta = heat, ochre = dry. None of them is the brand orange.
@@ -61,6 +61,7 @@ export function worstIdx(vals: (number | null | undefined)[], side: 'low' | 'hig
 
 export function TimeChart({ years, series, unit, decimals, label, mean, meanLabel, line, worst, marks }: TimeProps) {
   const [ref, W] = useWidth()
+  const traceId = `trace${useId().replace(/\W/g, '')}`
   const H = marks ? 204 : 190, m = { l: 44, r: 8, t: 20, b: marks ? 36 : 22 }
   const n = years.length
   const hasBars = series.some((s) => s.kind === 'bar')
@@ -129,7 +130,7 @@ export function TimeChart({ years, series, unit, decimals, label, mean, meanLabe
           const base = off != null ? Y(off) : zero ?? Y(y0)
           const top = Y(off != null ? off + v : v)
           const fill = worst && si === 0 && flagged.has(i) ? worst.color : v < 0 && s.negColor ? s.negColor : s.color
-          return <rect key={`${s.name}${yr}`} x={X(i) - w / 2} y={Math.min(top, base)} width={w} height={Math.max(1, Math.abs(top - base))} fill={fill} />
+          return <rect key={`${s.name}${yr}`} x={X(i) - w / 2} y={Math.min(top, base)} width={w} height={Math.max(1, Math.abs(top - base))} fill={fill} style={{ '--n': i } as CSSProperties} />
         })))}
         {mean != null && <line x1={m.l} x2={W - m.r} y1={Y(mean)} y2={Y(mean)} className="fc-mean" />}
         {mean != null && <text x={line ? m.l + 3 : W - m.r - 2} y={Y(mean) - 4} textAnchor={line ? 'start' : 'end'} className="fc-lbl">{meanLabel ?? 'mean'} {fmt(mean, decimals)}</text>}
@@ -139,13 +140,17 @@ export function TimeChart({ years, series, unit, decimals, label, mean, meanLabe
           return (
             <g key={s.name}>
               {segs.filter((p) => p.length > 1).map((p, k) => <polyline key={k} points={p.join(' ')} fill="none" stroke={s.color} strokeWidth="1.5" />)}
-              {s.vals.map((v, i) => (v == null ? null : <circle key={i} cx={X(i)} cy={Y(v)} r="2.6" fill={s.color} />))}
+              {s.vals.map((v, i) => (v == null ? null : <circle key={i} cx={X(i)} cy={Y(v)} r="2.6" fill={s.color} style={{ '--n': i } as CSSProperties} />))}
             </g>
           )
         })}
         {line && (
           <g>
-            <line x1={X(0)} x2={X(n - 1)} y1={Y(line[0])} y2={Y(line[1])} className="fc-trend" />
+            {/* the dashed trend line is revealed by a mask whose line is drawn along its length (see FieldsMotion.css) */}
+            <mask id={traceId} maskUnits="userSpaceOnUse" x={0} y={0} width={W} height={H}>
+              <line x1={X(0)} x2={X(n - 1)} y1={Y(line[0])} y2={Y(line[1])} pathLength={1} className="fc-trace" />
+            </mask>
+            <line x1={X(0)} x2={X(n - 1)} y1={Y(line[0])} y2={Y(line[1])} className="fc-trend" mask={`url(#${traceId})`} />
             <text x={X(0)} y={Y(line[0]) - 7} className="fc-lbl fc-lbl-strong">{fmt(line[0], decimals)}</text>
             <text x={X(n - 1)} y={Y(line[1]) - 7} textAnchor="end" className="fc-lbl fc-lbl-strong">{fmt(line[1], decimals)}</text>
           </g>

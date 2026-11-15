@@ -19,6 +19,7 @@
 @keyframes fm-scan { 0% { background-size: 0 3px; background-position: 0 100%; } 50% { background-size: 100% 3px; background-position: 0 100%; } 100% { background-size: 0 3px; background-position: 100% 100%; } }
 @keyframes fm-deal { from { opacity: 0; transform: translate(-26px, 34px) rotate(-5deg) scale(0.93); } }
 @keyframes fm-bar-up { from { transform: scaleY(0); } }
+@keyframes fm-trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes fm-draw { from { stroke-dashoffset: 4000; } to { stroke-dashoffset: 0; } }
 @keyframes fm-dot { from { opacity: 0; transform: scale(0); } }
 @keyframes fm-soft { from { opacity: 0; transform: translateY(18px); } }
@@ -37,6 +38,9 @@
 .fp .fd-top .cp-mini[data-fm] { animation: fm-iris 1s var(--ease) var(--fm-base, 0ms) backwards; }
 .fp .fr-meta[data-fm] .fr-btn { animation: fm-pop 0.55s var(--ease) var(--fm-base, 0ms) backwards; }
 .fp .fr-meta[data-fm] .fr-btn:nth-child(2) { animation-delay: calc(var(--fm-base, 0ms) + 90ms); }
+/* block headers: slide in from the left, icon pops */
+.fp .sec-head[data-fm] { animation: fm-slide-left 0.7s var(--ease) var(--fm-base, 0ms) backwards; }
+.fp .sec-head[data-fm] .sec-icon { animation: fm-pop 0.6s var(--ease) calc(var(--fm-base, 0ms) + 0.15s) backwards; }
 /* 6 rise and de-blur, staggered */
 .fp .fr-inputs[data-fm] .fr-f { animation: fm-rise-blur 0.65s var(--ease) calc(var(--fm-base, 0ms) + var(--k, 0) * 80ms) backwards; }
   .fp .fr-inputs[data-fm] .fr-f:nth-child(1) { --k: 0; }
@@ -81,7 +85,8 @@
 .fp .fc-card[data-fm] .fc-chart svg > rect { transform-box: fill-box; transform-origin: 50% 100%; animation: fm-bar-up 0.6s var(--ease) calc(var(--fm-base, 0ms) + 0.3s + var(--n, 0) * 18ms) backwards; }
 .fp .fc-card[data-fm] .fc-chart polyline { stroke-dasharray: 4000; animation: fm-draw 1.4s var(--ease) calc(var(--fm-base, 0ms) + 0.4s) backwards; }
 .fp .fc-card[data-fm] .fc-chart circle { transform-box: fill-box; transform-origin: 50% 50%; animation: fm-dot 0.4s var(--ease) calc(var(--fm-base, 0ms) + 0.6s + var(--n, 0) * 14ms) backwards; }
-.fp .fc-card[data-fm] :is(.fc-trend, .fc-mean) { transform-box: fill-box; transform-origin: 0 50%; animation: fm-grow-x 0.9s var(--ease) calc(var(--fm-base, 0ms) + 0.9s) backwards; }
+.fp .fc-card[data-fm] .fc-trace { animation: fm-trace 1.4s var(--ease) calc(var(--fm-base, 0ms) + 0.9s) backwards; }
+.fp .fc-card[data-fm] .fc-mean { transform-box: fill-box; transform-origin: 0 50%; animation: fm-grow-x 0.9s var(--ease) calc(var(--fm-base, 0ms) + 0.9s) backwards; }
   .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(1) { --n: 1; }
   .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(2) { --n: 2; }
   .fp .fc-card[data-fm] .fc-chart svg > rect:nth-child(3) { --n: 3; }

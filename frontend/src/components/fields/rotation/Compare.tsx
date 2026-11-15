@@ -97,7 +97,7 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
         {ch && (ch.good == null
           ? <span className="rot-d rot-d-same">{ch.d === 0 ? 'same' : `${sg(ch.d, c.digits, '')} (not judged)`}</span>
           : <span className={`rot-d ${ch.good ? 'rot-d-good' : 'rot-d-bad'}`}>{sg(ch.d, c.digits, c.key === 'ks' ? ' pts' : '')} {ch.good ? '✓' : '✗'}<span className="sr-only">{ch.good ? ' better' : ' worse'} than yours</span></span>)}
-        <span className="rot-rng" aria-hidden="true">
+        <span className={`rot-rng${ch?.good === true ? ' rot-rng-good' : ch?.good === false ? ' rot-rng-bad' : ''}`} aria-hidden="true">
           <i style={{ left: pos(s.p10), width: `calc(${pos(s.p90)} - ${pos(s.p10)})` }} />
           <b style={{ left: pos(s.med) }} />
           {bm != null && <u style={{ left: pos(bm) }} />}
@@ -120,11 +120,6 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
     <>
       <section className="rot-sec" aria-labelledby={`${uid}s`}>
         <h3 id={`${uid}s`}>Suggested options</h3>
-        <p className="rot-help">
-          Options to compare, not advice. Two kinds: rotations one change away from yours, and the best of {pool.length.toLocaleString('en')} rotations that follow the rules below.
-          Every number here is a model estimate (see the note at the top of this panel) unless a chip says otherwise.
-          Choose what matters most; each group is sorted by that one criterion only. There is no overall score.
-        </p>
         <details className="rot-more">
           <summary>Rules the options follow</summary>
           <ul className="rot-nm">{rulesText(index).map((t) => <li key={t}>{t}</li>)}</ul>
@@ -135,15 +130,10 @@ export function Compare({ index, cell, soil, current, analysis }: { index: RotIn
             <button key={p.id} type="button" aria-pressed={prio === p.id} onClick={() => setPrio(p.id)}>{p.label}</button>
           ))}
         </div>
-        <p className="rot-help">{prioInfo.hint}{prio !== 'cover' && ' Black fallow is not offered for this priority: the water need is only counted in crop years, so a fallow year would raise it without growing anything. Pick Soil cover to see options with fallow.'}</p>
         {!base && <p className="rot-warn">Enter your rotation above to see it as the baseline.</p>}
         {base && !base.ev && <p className="rot-warn">Your rotation: {base.reasons.join('; ')}.</p>}
         {base?.ev && closest.length === 0 && <p className="rot-help">No rotation one change away from yours follows the rules and has data.</p>}
 
-        <p className="rot-help">
-          Sorted by the priority above. Each cell: the median (bold), the change against your rotation (&#10003; better, &#10007; worse) and a bar for the range of 80 % of years
-          (dark mark: median, dotted line: your rotation).
-        </p>
         <div className="rot-tablewrap" tabIndex={0} role="region" aria-label="Trade-offs table">
           <table className="rot-table">
             <caption className="sr-only">Trade-offs between rotations, sorted by the chosen priority</caption>

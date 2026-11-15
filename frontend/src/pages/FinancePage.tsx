@@ -303,15 +303,6 @@ function FinanceInner() {
     if (T.ok.some((r) => r.calc!.costDefault)) actions.push({ tone: 'warn', text: 'Enter your own costs', href: '#fin-crops' })
   }
 
-  const flags = (
-    <>
-      <span className="fin-flag">Estimate, not a promise</span>
-      <span className="fin-flag">Prices to {defaults?.priceYear ?? 2023}, nominal</span>
-      {(wYears || farmW) && <span className="fin-flag">Weather {(wYears ?? farmW!.years)[0]}-{(wYears ?? farmW!.years)[1]}</span>}
-      {(scope === 'one' ? costIsDefault : T.ok.some((r) => r.calc!.costDefault)) && <span className="fin-flag">Costs: sample</span>}
-    </>
-  )
-
   return (
     <div className="fin">
       <header className="fin-head reveal" style={idx(0)}>
@@ -336,7 +327,7 @@ function FinanceInner() {
             rateStr={rateStr} rateErr={rateErr} setRateStr={setRateStr}
             onPrint={() => window.print()} onCsv={exportCsv} canExport={canExport} />
 
-          {scope === 'all' && <Farm cur={cur} data={data} rows={farmRows} T={T} S={S} setS={setS} onOpen={(id) => setSelId(id)} flags={flags} W={farmW} actions={actions} />}
+          {scope === 'all' && <Farm cur={cur} data={data} rows={farmRows} T={T} S={S} setS={setS} onOpen={(id) => setSelId(id)} W={farmW} actions={actions} />}
 
           {scope === 'one' && (<>
             {c && defaults && res && rng && area != null ? (<>
@@ -345,8 +336,7 @@ function FinanceInner() {
                 value={fmtMoney(hasM ? res.margin! : res.revenue)} cur={cur}
                 range={hasM ? (wsum ? cmp(wsum.p10 * area, wsum.p90 * area) : cmp(rng.marginPerHa!.low * area, rng.marginPerHa!.high * area)) : cmp(rng.revenuePerHa.low * area, rng.revenuePerHa.high * area)}
                 tone={!hasM ? 'todo' : res.margin! < 0 ? 'loss' : loss && loss.losing > 0 ? 'warn' : 'ok'}
-                take={!hasM ? <a href="#fin-cost">Add cost for margin</a> : loss ? (loss.losing === 0 ? `Profit in all ${loss.total} years` : `Loss in ${loss.losing} of ${loss.total} years`) : ''}
-                flags={flags} />
+                take={!hasM ? <a href="#fin-cost">Add cost for margin</a> : loss ? (loss.losing === 0 ? `Profit in all ${loss.total} years` : `Loss in ${loss.losing} of ${loss.total} years`) : ''} />
               <Actions items={actions} />
               <Kpis>
                 <Kpi label="Gross margin per ha" info="Revenue minus variable cost (seed, fertilizer, protection, fuel, labour). Uses the sample cost split; a typed cost keeps the same split."
@@ -548,10 +538,10 @@ function Rotation({ cur, name, data, rotation, kOn, yieldStr, priceStr, costStr,
   )
 }
 
-interface FarmProps { cur: Currency; data: FinanceInputs; rows: FieldRow[]; T: ReturnType<typeof farmTotals>; S: FinSettings; setS: (p: Partial<FinSettings>) => void; onOpen: (id: string) => void; flags: React.ReactNode; W: FarmW | null; actions: Action[] }
+interface FarmProps { cur: Currency; data: FinanceInputs; rows: FieldRow[]; T: ReturnType<typeof farmTotals>; S: FinSettings; setS: (p: Partial<FinSettings>) => void; onOpen: (id: string) => void; W: FarmW | null; actions: Action[] }
 
 // One row per field. Inputs are per crop (shared). k is not applied here: it depends on the previous crop of each field.
-function Farm({ cur, data, rows, T, S, setS, onOpen, flags, W, actions }: FarmProps) {
+function Farm({ cur, data, rows, T, S, setS, onOpen, W, actions }: FarmProps) {
   const skipped = T.total - T.counted
   const usedCrops = [...new Set(rows.filter((r) => r.cropId && data.crops[r.cropId]).map((r) => r.cropId))]
   const set = (key: 'yieldStr' | 'priceStr' | 'costStr', id: string, v: string) => setS({ [key]: { ...S[key], [id]: v } })
@@ -570,8 +560,7 @@ function Farm({ cur, data, rows, T, S, setS, onOpen, flags, W, actions }: FarmPr
         <Verdict
           label={hasM ? 'Margin, farm' : 'Revenue, farm'} value={fmtMoney(hasM ? T.mar!.mid : T.rev.mid)} cur={cur}
           range={hasM ? (W ? cmp(W.total.p10, W.total.p90) : cmp(T.mar!.low, T.mar!.high)) : cmp(T.rev.low, T.rev.high)} tone={tone}
-          take={!hasM ? <a href="#fin-crops">Add costs for margin</a> : W ? (W.total.losing === 0 ? `Profit in all ${W.total.n} years` : `Loss in ${W.total.losing} of ${W.total.n} years`) : T.mar!.mid < 0 ? 'Loss at central yield' : T.mar!.low < 0 ? 'Loss possible at low yield' : 'Profit across the range'}
-          flags={flags} />
+          take={!hasM ? <a href="#fin-crops">Add costs for margin</a> : W ? (W.total.losing === 0 ? `Profit in all ${W.total.n} years` : `Loss in ${W.total.losing} of ${W.total.n} years`) : T.mar!.mid < 0 ? 'Loss at central yield' : T.mar!.low < 0 ? 'Loss possible at low yield' : 'Profit across the range'} />
         <Actions items={actions} />
         <Kpis>
           <Kpi label="Margin per ha" value={hasM ? `${fmtMoney(T.mar!.mid / T.area)} ${cur}` : '-'} tone={!hasM ? 'todo' : T.mar!.mid < 0 ? 'loss' : 'ok'} sub={hasM ? (W ? cmp(W.total.p10 / T.area, W.total.p90 / T.area) : cmp(T.mar!.low / T.area, T.mar!.high / T.area)) : 'No cost'}

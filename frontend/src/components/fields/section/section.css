@@ -1,0 +1,77 @@
+/* Numbered blocks of the field page. Three surfaces alternate (open, wash, lift); the accent comes from the existing chart tokens
+   (water, heat, dry) so a colour keeps its meaning. The accent fills rails and icons; text uses the darker --sec-ink (AA on white). */
+.fd { counter-reset: sec; }
+.sec { --sec-accent: var(--color-primary); --sec-ink: var(--color-primary-strong); position: relative; min-width: 0; display: grid; gap: var(--space-3); align-content: start; padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + var(--space-2)); border-radius: var(--radius-lg); }
+.sec::before { content: ''; position: absolute; left: 0; top: var(--space-3); bottom: var(--space-3); width: 4px; border-radius: var(--radius-pill); background: var(--sec-accent); }
+.sec-water { --sec-accent: var(--chart-water); --sec-ink: var(--chart-water-deep); }
+.sec-heat { --sec-accent: var(--chart-heat); --sec-ink: var(--chart-heat); }
+.sec-dry { --sec-accent: var(--chart-dry); --sec-ink: var(--chart-dry-strong); }
+.sec-good { --sec-accent: var(--color-success); --sec-ink: var(--color-success); }
+
+/* open: hairline only */
+.sec-open { padding-left: calc(var(--space-2) + var(--space-3)); border-radius: 0; }
+/* wash: tinted, with contour lines running out of the top-right corner */
+.sec-wash {
+  background:
+    repeating-radial-gradient(circle at 108% -18%, transparent 0 26px, color-mix(in srgb, var(--sec-accent) 11%, transparent) 26px 27px),
+    color-mix(in srgb, var(--sec-accent) 6%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--sec-accent) 22%, var(--color-surface));
+}
+/* lift: white card, soft warm shadow */
+.sec-lift { background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow-md); }
+
+.sec-head { display: flex; align-items: flex-start; gap: var(--space-3); }
+.sec-icon { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--radius-pill); color: var(--sec-ink); background: color-mix(in srgb, var(--sec-accent) 16%, var(--color-surface)); }
+.sec-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sec-titles { display: grid; gap: 2px; min-width: 0; }
+.sec-kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sec-ink); }
+.sec-kicker::before { counter-increment: sec; content: counter(sec, decimal-leading-zero) '\00a0·\00a0'; font-variant-numeric: tabular-nums; }
+.sec .sec-title { margin: 0; font-size: clamp(24px, 3.2vw, 32px); line-height: 1.1; letter-spacing: -0.03em; }
+.sec-q { margin: 2px 0 0; font-size: 14.5px; color: var(--color-muted); line-height: 1.4; }
+.sec-body { display: grid; gap: var(--space-3); min-width: 0; }
+
+/* variants */
+.sec-norail { padding-left: 0; }
+.sec-norail::before { display: none; }
+.sec-flat { background: color-mix(in srgb, var(--sec-accent) 6%, var(--color-surface)); }
+
+/* folded blocks: the header is the toggle (no arrow), the body opens with a height animation */
+.sec-head { position: relative; }
+.sec-toggle { font: inherit; letter-spacing: inherit; color: inherit; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+.sec-toggle::after { content: ''; position: absolute; inset: calc(-1 * var(--space-2)); border-radius: var(--radius-md); }
+.sec-toggle:focus-visible { outline: none; }
+.sec-toggle:focus-visible::after { outline: 3px solid var(--color-primary); outline-offset: 0; }
+.sec-foldable .sec-head:hover .sec-icon { background: color-mix(in srgb, var(--sec-accent) 28%, var(--color-surface)); }
+.sec-state { margin-left: auto; align-self: center; font-size: 13px; font-weight: 600; color: var(--sec-ink); padding: 4px 12px; border: 1px solid color-mix(in srgb, var(--sec-accent) 40%, var(--color-surface)); border-radius: var(--radius-pill); }
+.sec-fold { display: grid; grid-template-rows: 1fr; transition: grid-template-rows 0.5s var(--ease); }
+.sec-fold-in { min-height: 0; overflow: hidden; transition: opacity 0.35s var(--ease); }
+.sec-folded { gap: 0; }
+.sec-folded .sec-fold { grid-template-rows: 0fr; }
+.sec-folded .sec-fold-in { opacity: 0; }
+/* inside a folded block the old per-block disclosure is redundant */
+.sec-foldable .fs > summary, .sec-foldable .cf > summary { display: none; }
+@media (prefers-reduced-motion: reduce) { .sec-fold, .sec-fold-in { transition: none; } }
+
+/* the block's old own heading would repeat the new title: hidden here, still the accessible name of its inner region */
+.sec .fc-head, .sec .rot > h2, .sec .ft-head h3, .sec .pass-head h3 { display: none; }
+.sec .ft-head:not(:has(*:not(h3))) { display: none; }
+.sec .fc, .sec .rot, .sec .ft, .sec .pass { margin: 0; }
+
+/* collapsible blocks (soil, crop fit): the title is the block header, the summary is just the toggle row */
+.sec .fs, .sec .cf { border: 0; box-shadow: none; background: transparent; border-radius: 0; }
+.main .sec .fs > summary { font-size: 14px; font-weight: 600; padding: var(--space-1) 0; color: var(--sec-ink); }
+.sec .fs > summary small { color: var(--color-muted); }
+.sec .cf > summary { padding: var(--space-1) 0; }
+.sec .cf-title { font-size: 14px; color: var(--sec-ink); }
+.sec .fs-body, .sec .cf-body { padding-inline: 0; }
+.sec .fs > summary::before, .sec .cf > summary::before { border-color: var(--sec-ink); }
+
+/* money: the one-line finance summary gets a rail only (it has its own heading) */
+.fr-fin:not(:empty) { padding: var(--space-1) 0 var(--space-1) var(--space-3); border-left: 4px solid var(--chart-money); }
+
+@media (max-width: 520px) {
+  .sec { padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); }
+  .sec-open { padding-left: var(--space-3); }
+  .sec-icon { width: 36px; height: 36px; }
+  .sec-icon svg { width: 20px; height: 20px; }
+}

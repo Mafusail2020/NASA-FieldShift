@@ -7,7 +7,7 @@ import { useLayoutEffect } from 'react'
 
 // Every block that gets a scroll-triggered animation. A block can be a "scene": its children are animated, the block only triggers them.
 const TARGETS = [
-  '.fp-side-top h1', '.fp-add', '.fp-sum',
+  '.fp-side-top h1', '.sec-head', '.fp-add', '.fp-sum',
   '.fd-name', '.fd-top .cp-mini', '.fr-inputs', '.fr-meta', '.fr-fin', '.fg-verdict', '.pass-group',
   '.fc-head h3', '.pass-head h3', '.rot h2', '.rot h3:not(.coll-h)', '.ft-head h3',
   '.fc-card', '.ft-card', '.rot-years', '.rot-seg', '.fc-seg', '.rot-tablewrap', '.cf-wrap', '.fs-tablewrap',

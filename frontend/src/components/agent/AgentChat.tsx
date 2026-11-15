@@ -230,6 +230,19 @@ export default function AgentChat({ variant = 'window' }: { variant?: 'page' | '
               {model}{tier && <span className="ag-tier">{tier}</span>}
             </button>
           </div>
+          {empty && (
+            <div className="ag-hints">
+              <p>You can ask me to:</p>
+              <ul>
+                <li>Compare my current rotation with alternatives on a field</li>
+                <li>Show how dry, hot or frosty the last years were against the 1991–2025 normal</li>
+                <li>Plot monthly rain or temperature for a year against the normal</li>
+                <li>Find the past seasons that look most like this one so far</li>
+                <li>Check which crops suit a field's soil, salt and pH</li>
+                <li>Explain how a number in the app is computed, or where its data comes from</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -56,6 +56,9 @@
 .ag-is-empty .ag-log { flex: 0 0 auto; overflow: visible; padding: 0 0 var(--space-5); }
 
 .ag-hello { display: flex; align-items: center; justify-content: center; gap: var(--space-3); }
+.ag-hints { height: 0; margin: 0; position: relative; top: var(--space-3); max-width: 100%; color: var(--color-hint); font-size: 14px; line-height: 1.45; }
+.ag-hints p { margin: 0 0 var(--space-2); font-weight: 500; }
+.ag-hints ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-1); }
 .ag-hello h2 { margin: 0; font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -0.025em; color: var(--color-text); }
 .ag-logo { width: 42px; height: 42px; flex: none; fill: none; stroke: var(--color-primary); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -97,6 +100,7 @@
 .ag-composer { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4) var(--space-4) var(--space-3) var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: 20px; box-shadow: var(--shadow-md); transition: border-color 0.2s, box-shadow 0.2s; }
 .ag-composer:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-tint), var(--shadow-md); }
 .ag-composer textarea { font: inherit; font-size: 16px; line-height: 1.5; resize: none; border: 0; outline: 0; background: transparent; color: var(--color-text); min-height: 48px; max-height: 200px; padding: 0; }
+.ag .ag-composer textarea:focus-visible { outline: 0; }
 .ag-composer textarea::placeholder { color: var(--color-muted); }
 .ag-bar { display: flex; align-items: center; justify-content: space-between; }
 .ag-bar-end { display: flex; align-items: center; gap: 2px; }

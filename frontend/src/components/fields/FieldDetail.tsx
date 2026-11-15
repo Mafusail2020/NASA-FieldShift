@@ -10,6 +10,7 @@ import { FieldRotation } from './FieldRotation'
 import { FieldSoil } from './FieldSoil'
 import { FieldTwin } from './FieldTwin'
 import MiniMap from './MiniMap'
+import { Section } from './section/Section'
 import { LAT_RANGE, LON_RANGE, num, parsePair } from './coords'
 
 const CROPS: { id: CropId; label: string }[] = [
@@ -148,13 +149,26 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
       </div>
       <div className="fr-fin"><FieldFinanceSummary field={field} /></div>
 
-      <section className="fr-glance" aria-label="Field passport"><FieldPassport field={field} cell={cell} /></section>
+      <Section tone="primary" surface="open" icon="passport" kicker="Field passport" title="This field at a glance" rail={false} question="What is this place like, and what should I check first?">
+        <div className="fr-glance"><FieldPassport field={field} cell={cell} /></div>
+      </Section>
 
       <div className="fr-body">
-        <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /><div className="fr-cropfit"><CropFit field={field} cell={cell} /></div></section>
-        <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
-        <section className="fr-sec fr-wide" aria-label="Season twins"><FieldTwin field={field} onUpdate={onUpdate} /></section>
-        <section className="fr-sec fr-wide" aria-label="Soil analysis"><FieldSoil field={field} cellId={cell?.id ?? null} onUpdate={onUpdate} /></section>
+        <Section tone="water" surface="wash" icon="climate" kicker="NASA POWER · 1991–2025" title="Climate and risks" flat question="Will the crop get enough water, and survive heat and frost?">
+          <FieldClimate cell={cell} />
+        </Section>
+        <Section tone="primary" surface="lift" icon="rotation" kicker="Rotation analysis" title="Rotation" question="Is there a better rotation for this weather?">
+          <FieldRotation field={field} cell={cell} />
+        </Section>
+        <Section tone="good" surface="open" icon="cropfit" kicker="Crop fit" title="What you can sow" fold question="Which crops suit this place?" wide>
+          <CropFit field={field} cell={cell} />
+        </Section>
+        <Section tone="heat" surface="wash" icon="twins" kicker="Season twins" title="Past seasons like this one" fold question="Which earlier years had the same weather so far?" wide>
+          <FieldTwin field={field} onUpdate={onUpdate} />
+        </Section>
+        <Section tone="dry" surface="lift" icon="soil" kicker="Soil · optional" title="Soil analysis" fold question="Do salt, pH or humus change what grows here?" wide>
+          <FieldSoil field={field} cellId={cell?.id ?? null} onUpdate={onUpdate} />
+        </Section>
       </div>
     </article>
   )

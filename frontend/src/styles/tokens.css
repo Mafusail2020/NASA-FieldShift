@@ -11,6 +11,7 @@
   --color-bg: #fffaf4;
   --color-text: #2b1d12; /* dark warm neutral */
   --color-muted: #6b5b4e; /* AA on white and bg */
+  --color-hint: #a69a8f; /* light grey for placeholder-style hints, decorative: not for required reading */
   --color-border: #f0e0d0;
   --color-border-strong: #e3c9ae;
   --color-danger: #a12a12;

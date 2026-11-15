@@ -3,7 +3,7 @@
 .pass-head h3 { margin: 0; font-size: 18px; }
 .pass-meta { margin: 0; font-size: 13px; color: var(--color-muted); }
 .pass-group { display: grid; gap: var(--space-2); }
-.pass-group h4 { margin: 0; font-size: 13px; font-weight: 700; color: var(--color-primary-strong); text-transform: uppercase; letter-spacing: 0.04em; }
+.pass-group h4 { margin: 0; font-size: 18px; font-weight: 700; color: var(--color-primary-strong); text-transform: uppercase; letter-spacing: 0.04em; }
 .pass .fg-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 760px) { .pass .fg-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 360px) { .pass .fg-tiles { grid-template-columns: minmax(0, 1fr); } }
