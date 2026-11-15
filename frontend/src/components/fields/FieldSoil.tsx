@@ -11,6 +11,10 @@ import { useRotIndex, type Candidate } from './rotation/model'
 import './soil/soil.css'
 
 const parse = (s: string) => { const v = Number(s.replace(',', '.')); return s.trim() === '' || !Number.isFinite(v) ? null : v }
+// Colour of a number: good green, bad red, caution orange. Salt: below the exclusion share is bad, under 95% a caution. pH factor below 1 only warns.
+const saltTone = (f: number | null, bad: number) => (f == null ? '' : f < bad ? 'fs-t-bad' : f < 0.95 ? 'fs-t-warn' : 'fs-t-good')
+const phTone = (f: number | null) => (f == null ? '' : f < 1 ? 'fs-t-warn' : 'fs-t-good')
+const balTone = (v: number | null) => (v == null ? '' : v < 0 ? 'fs-t-bad' : 'fs-t-good')
 const sgn = (v: number, d = 2) => `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmt(Math.abs(v), d)}`
 
 function Num({ id, label, unit, value, min, max, hint, onChange }: {
@@ -47,7 +51,7 @@ export function FieldSoil({ field, cellId, onUpdate }: { field: FieldItem; cellI
   const id = (s: string) => `${uid}${s}`
 
   return (
-    <details className="fs" open={entered || undefined}>
+    <details className="fs" open>
       <summary>Soil analysis <small>optional: salinity, pH, humus</small></summary>
       <div className="fs-body">
         <p className="fs-help">
@@ -129,9 +133,9 @@ function Results({ doc, crops, rotation, a, dflt }: { doc: SoilDoc; crops: strin
               {rows.map((r) => (
                 <tr key={r.crop} className={r.excluded ? 'fs-red' : undefined}>
                   <td><b>{r.label}</b></td>
-                  <td className="n">{r.fSalt == null ? '–' : fmt(r.fSalt, 2)} {r.salt && <StatusChip status={r.salt.status} source={r.salt.source} quiet />}</td>
-                  <td className="n">{r.fPh == null ? '–' : fmt(r.fPh, 2)} {r.ph && <StatusChip status={r.ph.status} source={r.ph.source} quiet />}</td>
-                  <td className="n"><b>{r.fSalt == null ? '–' : `${fmt(r.factor * 100, 0)}%`}</b></td>
+                  <td className={`n ${saltTone(r.fSalt, doc.model.salt_exclude_below)}`}>{r.fSalt == null ? '–' : fmt(r.fSalt, 2)} {r.salt && <StatusChip status={r.salt.status} source={r.salt.source} quiet />}</td>
+                  <td className={`n ${phTone(r.fPh)}`}>{r.fPh == null ? '–' : fmt(r.fPh, 2)} {r.ph && <StatusChip status={r.ph.status} source={r.ph.source} quiet />}</td>
+                  <td className={`n ${saltTone(r.fSalt, doc.model.salt_exclude_below)}`}><b>{r.fSalt == null ? '–' : `${fmt(r.factor * 100, 0)}%`}</b></td>
                   <td>
                     {r.excluded && <span className="fs-tag fs-tag-bad">Not recommended: salt</span>}
                     {r.phWarning && <span className="fs-tag fs-tag-warn">pH warning</span>}
@@ -166,7 +170,7 @@ function Results({ doc, crops, rotation, a, dflt }: { doc: SoilDoc; crops: strin
                   {h.years.map((y) => (
                     <tr key={y.year}>
                       <td>{y.year}</td><td>{y.label} <StatusChip status={y.status} source={y.source} quiet /></td>
-                      <td className="n">{fmt(y.p1, 2)}</td><td className="n">{fmt(y.p2, 2)}</td><td className="n">{fmt(y.p3, 2)}</td><td className="n">−{fmt(y.p, 2)}</td><td className="n"><b>{sgn(y.balance)}</b></td>
+                      <td className="n">{fmt(y.p1, 2)}</td><td className="n">{fmt(y.p2, 2)}</td><td className="n">{fmt(y.p3, 2)}</td><td className="n">−{fmt(y.p, 2)}</td><td className={`n ${balTone(y.balance)}`}><b>{sgn(y.balance)}</b></td>
                     </tr>
                   ))}
                 </tbody>
@@ -213,10 +217,10 @@ function Alternatives({ doc, a, dflt, rotLen }: { doc: SoilDoc; a: SoilAnalysis;
                 <td><b>{c.name}</b><br /><span className="fs-note">{c.crops.map((x) => doc.species[x]?.label ?? x).join(' → ')}</span></td>
                 <td>
                   {a.ece == null ? <span className="fs-note">ECe not entered</span>
-                    : lost.length ? <span className="fs-tag fs-tag-bad">Not recommended: {lost.join(', ')}</span> : <span className="fs-note">No crop ruled out</span>}
+                    : lost.length ? <span className="fs-tag fs-tag-bad">Not recommended: {lost.join(', ')}</span> : <span className="fs-note fs-t-good">No crop ruled out</span>}
                   {noData > 0 && a.ece != null && <span className="fs-tag fs-tag-low">{noData} crop{noData > 1 ? 's' : ''} without salt data</span>}
                 </td>
-                <td className="n">{h.meanBalance == null ? <span className="fs-note">no data</span> : <b>{sgn(h.meanBalance)} t/ha</b>}
+                <td className={`n ${balTone(h.meanBalance)}`}>{h.meanBalance == null ? <span className="fs-note">no data</span> : <b>{sgn(h.meanBalance)} t/ha</b>}
                   {h.missing.length > 0 && h.meanBalance != null && <><br /><span className="fs-note">without {h.missing.map((x) => doc.species[x]?.label ?? x).join(', ')}</span></>}</td>
               </tr>
             ))}

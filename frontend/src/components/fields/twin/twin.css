@@ -19,13 +19,21 @@
 .ft-card dd { margin: 0; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
 .ft-card dd small { font-weight: 400; color: var(--color-muted); }
 .ft-tags { margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+.ft-out { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.ft-out-label { font-size: 13px; color: var(--color-muted); }
+.ft-out .ft-tag { font-size: 16px; padding: 0; background: none; }
 .ft-tag { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--color-danger-tint); color: var(--color-danger); }
-.ft-tag-ok { background: var(--color-neutral-tint); color: var(--color-muted); }
+.ft-tag-good { background: var(--color-success-tint); color: var(--color-success); }
+.ft-card dl .ft-bad { background: var(--color-danger-tint); border-radius: var(--radius-sm); padding: 3px 6px; }
+.ft-card dl .ft-bad dd { color: var(--color-danger); }
+.ft-card dl .ft-good { background: var(--color-success-tint); border-radius: var(--radius-sm); padding: 3px 6px; }
+.ft-card dl .ft-good dd { color: var(--color-success); }
 .ft-fig { margin: 0; display: grid; gap: var(--space-2); }
 .ft-figtop { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-2); }
-.ft-figtop figcaption { font-weight: 700; font-size: 14px; }
+.ft-figtop figcaption { font-weight: 700; font-size: 18px; }
 .ft-fig svg { display: block; max-width: 100%; }
 .ft-legend { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); font-size: 12.5px; color: var(--color-muted); }
 .ft-legend i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
 .ft-notes { margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--color-muted); display: grid; gap: 2px; }
 .ft-src { margin: 0; font-size: 12px; color: var(--color-muted); }
+.ft-verdict { color: var(--color-primary-strong); }

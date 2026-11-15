@@ -45,3 +45,7 @@
 .fs-tablewrap table { min-width: 460px; }
 .fs-suggest { margin: 0; padding: var(--space-3); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-primary-wash); font-size: 14px; line-height: 1.6; }
 .fs-suggest .fr-btn { min-height: 32px; padding: 4px 10px; font-size: 13px; }
+td.fs-t-good, .fs-note.fs-t-good { color: var(--color-success); }
+td.fs-t-bad { color: var(--color-danger); }
+td.fs-t-warn { color: var(--color-primary-strong); }
+td.fs-t-good b, td.fs-t-bad b, td.fs-t-warn b { color: inherit; }

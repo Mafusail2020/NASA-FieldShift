@@ -43,13 +43,12 @@ export function FieldTwin({ field, onUpdate }: { field: FieldItem; onUpdate(patc
           {t.saved && <p className="ft-msg ft-warn" role="status">The server did not answer. This is a saved example for a maize field near Lviv, not your field.</p>}
           <p className="ft-lead">
             {done ? 'This season is complete.' : `Day ${r.days_since_sowing} of about ${r.cycle_d}.`} The seasons most like it up to {dm(r.as_of)}: <b>{r.twins.map((x) => x.year).join(', ')}</b>.
-            {' '}{verdict ? <>{verdict[0].toUpperCase() + verdict.slice(1)}.</> : <>None of them ended with a late drought or grain-fill heat.</>}
+            {' '}{verdict ? <b className="ft-verdict">{verdict[0].toUpperCase() + verdict.slice(1)}.</b> : <>None of them ended with a late drought or grain-fill heat.</>}
           </p>
           <div className="ft-cards">
             {r.twins.map((x, i) => <TwinCard key={x.year} t={x} color={COLORS[i]} done={done} ref0={r.reference} winter={r.crop === 'winter_wheat'} />)}
           </div>
           <Chart s={r.series} twins={r.twins} nowDay={r.days_since_sowing} />
-          <ul className="ft-notes">{[...r.notes, r.note].map((n) => <li key={n}>{n}</li>)}</ul>
           <p className="ft-src">Weather up to {dm(r.data_last_day)} (cell {r.cell}); {r.years_compared} past seasons compared.</p>
         </>
       )
@@ -76,19 +75,23 @@ export function FieldTwin({ field, onUpdate }: { field: FieldItem; onUpdate(patc
 }
 
 function TwinCard({ t, color, done, ref0, winter }: { t: Twin; color: string; done: boolean; winter: boolean; ref0: { late_rain_mm_median: number; heat_days_median: number } }) {
+  const drought = t.flags.includes('late drought'), heat = t.flags.includes('heat in grain fill'), wet = t.flags.includes('wet finish')
   return (
     <article className="ft-card" style={{ borderTopColor: color }}>
-      <h4>{t.year} <small>{strength(t.distance)} · distance {t.distance.toFixed(2)}</small></h4>
-      <p className="ft-diff">Against this season so far: rain {t.diff.rain_mm >= 0 ? '+' : '−'}{Math.abs(t.diff.rain_mm)} mm, warmth {t.diff.gdd >= 0 ? '+' : '−'}{Math.abs(t.diff.gdd)} degree-days, Tmax {t.diff.tmax_c >= 0 ? '+' : '−'}{Math.abs(t.diff.tmax_c)} °C.</p>
+      <h4>{t.year} <small>{strength(t.distance)}</small></h4>
+      <p className="ft-out" aria-label="How that season ended">
+        <span className="ft-out-label">Result:</span>
+        {t.flags.length ? t.flags.map((f) => <span key={f} className={`ft-tag${f === 'wet finish' ? ' ft-tag-good' : ''}`}>{f}</span>) : <span className="ft-tag ft-tag-good">no late drought or heat</span>}
+      </p>
       <dl>
-        <div><dt>Ripe about</dt><dd>{dm(t.harvest_date)}</dd></div>
-        <div><dt>Rain in the late stages</dt><dd>{t.late_rain_mm} mm <small>(usual {ref0.late_rain_mm_median})</small></dd></div>
-        <div><dt>Longest dry spell then</dt><dd>{t.late_dry_spell_days} days</dd></div>
-        <div><dt>Hot days in the grain-fill window</dt><dd>{t.heat_days} <small>(usual {ref0.heat_days_median})</small></dd></div>
+        <div className={drought ? 'ft-bad' : wet ? 'ft-good' : ''}><dt>Rain in the late stages</dt><dd>{t.late_rain_mm} mm <small>(usual {ref0.late_rain_mm_median})</small></dd></div>
+        <div className={drought ? 'ft-bad' : ''}><dt>Longest dry spell then</dt><dd>{t.late_dry_spell_days} days</dd></div>
+        <div className={heat ? 'ft-bad' : ''}><dt>Hot days in the grain-fill window</dt><dd>{t.heat_days} <small>(usual {ref0.heat_days_median})</small></dd></div>
         <div><dt>{winter ? 'Frost days after winter' : 'Frost days in the season'}</dt><dd>{t.frost_days}</dd></div>
+        <div><dt>Ripe about</dt><dd>{dm(t.harvest_date)}</dd></div>
         {!done && t.next30_rain_mm != null && <div><dt>Next 30 days after this point</dt><dd>{t.next30_rain_mm} mm rain, {t.next30_heat_days} hot days</dd></div>}
       </dl>
-      <p className="ft-tags">{t.flags.length ? t.flags.map((f) => <span key={f} className={`ft-tag${f === 'wet finish' ? ' ft-tag-ok' : ''}`}>{f}</span>) : <span className="ft-tag ft-tag-ok">no late drought or heat</span>}</p>
+      <p className="ft-diff">Why it matches: rain {t.diff.rain_mm >= 0 ? '+' : '−'}{Math.abs(t.diff.rain_mm)} mm, warmth {t.diff.gdd >= 0 ? '+' : '−'}{Math.abs(t.diff.gdd)} degree-days, Tmax {t.diff.tmax_c >= 0 ? '+' : '−'}{Math.abs(t.diff.tmax_c)} °C against this season so far.</p>
     </article>
   )
 }
