@@ -5,5 +5,8 @@
 .srcfold-grp { padding: 0 var(--space-4) var(--space-3); }
 .srcfold-grp h3 { margin: 0 0 var(--space-1); font-size: 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); }
 .srcfold-grp h3 small { font-weight: 400; color: var(--color-muted); font-size: 12.5px; }
+.srcfold-note { border-top: 1px solid var(--color-border); padding-top: var(--space-3); }
+.srcfold-note h3 { font-size: 16px; }
+.srcfold-foot { margin: var(--space-2) 0 0; font-size: 12.5px; line-height: 1.5; color: var(--color-muted); }
 .srcfold-grp ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 12.5px; line-height: 1.45; color: var(--color-text); overflow-wrap: anywhere; }
 @media (max-width: 640px) { .srcfold { margin-bottom: 84px; } }  /* clear the bottom tab bar */

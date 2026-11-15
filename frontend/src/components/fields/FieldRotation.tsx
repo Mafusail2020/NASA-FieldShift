@@ -7,7 +7,10 @@ import StatusChip from '../StatusChip'
 import { Compare } from './rotation/Compare'
 import { Editor } from './rotation/Editor'
 import { useCellRot, useGridSoil, useRotIndex, type Soil } from './rotation/model'
+import { FoldNote } from '../SourcesFold'
 import { NOT_MODELLED } from './rotation/texts'
+
+const NOT_MODELLED_FOOTER = 'Modelled: daily soil water bucket (FAO-56), water-stress days and Ks, heat days where a threshold exists, bare-soil months, KMU No. 164 return interval. Snow comes from a temperature-based degree-day store, not measured snow depth. Predecessor yield coefficients (k) affect money only, on the Finance page, never this panel.'
 import './rotation/rotation.css'
 
 const SOILS: Soil[] = ['light', 'medium', 'heavy']
@@ -93,14 +96,8 @@ function Inner({ field, cell }: { field: FieldItem; cell: GridCell | null }) {
           {!missing && data.state === 'ready' && <Compare index={index} cell={data.data} soil={soil} current={current} analysis={field.analysis} />}
 
           </div>
-          <section className="rot-sec rot-full" aria-labelledby={`${uid}nm`}>
-            <h3 id={`${uid}nm`}>What this does not model</h3>
-            <ul className="rot-nm">{NOT_MODELLED.map((t) => <li key={t}>{t}</li>)}</ul>
-            <p className="rot-help">
-              Modelled: daily soil water bucket (FAO-56), water-stress days and Ks, heat days where a threshold exists, bare-soil months, KMU No. 164 return interval.
-              Snow comes from a temperature-based degree-day store, not measured snow depth. Predecessor yield coefficients (k) affect money only, on the Finance page, never this panel.
-            </p>
-          </section>
+          {/* the list of what is not modelled lives in the "Sources and status" block at the bottom of the page */}
+          <FoldNote id="rotation-not-modelled" title="What the rotation analysis does not model" items={NOT_MODELLED} footer={NOT_MODELLED_FOOTER} />
         </div>
       )}
     </section>

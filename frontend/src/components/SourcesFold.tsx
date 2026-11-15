@@ -1,6 +1,7 @@
 // "Sources and status": every source and status label of the numbers on the current page, collapsed at the bottom.
 import { STATUS_LABEL } from './StatusChip'
-import { useSources } from '../lib/sources'
+import { useEffect } from 'react'
+import { registerNote, useNotes, useSources, type NoteEntry } from '../lib/sources'
 import type { Status } from '../types'
 import './SourcesFold.css'
 
@@ -13,9 +14,16 @@ const MEANING: Record<Status, string> = {
   todo: 'Not available yet; the page shows "no data" instead of a guess.',
 }
 
+/** Renders nothing in place: hands a note to the "Sources and status" block at the bottom of the page. */
+export function FoldNote({ id, title, items, footer }: NoteEntry) {
+  useEffect(() => registerNote({ id, title, items, footer }), [id, title, items, footer])
+  return null
+}
+
 export default function SourcesFold() {
   const all = useSources()
-  if (all.length === 0) return null
+  const notes = useNotes()
+  if (all.length === 0 && notes.length === 0) return null
   return (
     <details className="srcfold">
       <summary>Sources and status <span className="srcfold-n">{all.length}</span></summary>
@@ -30,6 +38,13 @@ export default function SourcesFold() {
           </section>
         )
       })}
+      {notes.map((n) => (
+        <section key={n.id} className="srcfold-grp srcfold-note" aria-label={n.title}>
+          <h3>{n.title}</h3>
+          <ul>{n.items.map((t) => <li key={t}>{t}</li>)}</ul>
+          {n.footer && <p className="srcfold-foot">{n.footer}</p>}
+        </section>
+      ))}
     </details>
   )
 }

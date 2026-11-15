@@ -31,5 +31,23 @@ export function registerSource(status: Status, source: string): () => void {
   }
 }
 
+// Notes: short lists (for example "What this does not model") that a component hands to the same bottom block. One entry per id.
+export interface NoteEntry { id: string; title: string; items: string[]; footer?: string }
+const notes = new Map<string, NoteEntry>()
+let noteSnap: NoteEntry[] = []
+const noteSubs = new Set<() => void>()
+let noteQueued = false
+
+export function registerNote(n: NoteEntry): () => void {
+  notes.set(n.id, n)
+  if (!noteQueued) { noteQueued = true; queueMicrotask(() => { noteQueued = false; noteSnap = [...notes.values()]; noteSubs.forEach((f) => f()) }) }
+  return () => {
+    if (notes.get(n.id) === n) notes.delete(n.id)
+    if (!noteQueued) { noteQueued = true; queueMicrotask(() => { noteQueued = false; noteSnap = [...notes.values()]; noteSubs.forEach((f) => f()) }) }
+  }
+}
+export const useNotes = (): NoteEntry[] =>
+  useSyncExternalStore((f) => { noteSubs.add(f); return () => { noteSubs.delete(f) } }, () => noteSnap)
+
 export const useSources = (): SourceEntry[] =>
   useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f) } }, () => snap)
