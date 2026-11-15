@@ -66,7 +66,7 @@
 .fin .fin-scen tfoot th, .fin .fin-scen tfoot td { border-top: 2px solid var(--color-border-strong); }
 .fin .fin-gridt th, .fin .fin-gridt td { padding: 8px 10px; }
 .fin .fin-gridt .fin-corner { font-size: 11px; text-transform: none; letter-spacing: 0; }
-.fin .fin-gridt .fin-mid { outline: 2px solid var(--color-primary); outline-offset: -2px; font-weight: 700; }
+.fin .fin-gridt .fin-mid { outline: 2px solid var(--chart-money-strong); outline-offset: -2px; font-weight: 700; }
 .fin-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); align-items: start; }
 .fin-pair > .fin-card { min-width: 0; }
 
@@ -74,7 +74,7 @@
 .fin-torn li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 2px var(--space-3); align-items: center; font-size: 13px; }
 .fin-torn-name { font-weight: 700; }
 .fin-torn-track { position: relative; height: 14px; background: var(--color-neutral-tint); border-radius: var(--radius-pill); }
-.fin-torn-bar { position: absolute; top: 0; bottom: 0; background: var(--color-primary); border-radius: var(--radius-pill); }
+.fin-torn-bar { position: absolute; top: 0; bottom: 0; background: var(--chart-money); border-radius: var(--radius-pill); }
 .fin-torn-base { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--color-text); }
 .fin-torn-val { grid-column: 2; font-size: 12px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
 
@@ -94,7 +94,7 @@
 @media (max-width: 640px) { .fin-kpis, .fin-kpis-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fin-kpi { padding: var(--space-3); } }
 
 /* Stage 3: distribution, rotation comparison, actions, farm charts */
-.fin-bar-ok { fill: var(--color-primary); }
+.fin-bar-ok { fill: var(--chart-money); }
 .fin-bar-loss { fill: var(--color-danger); }
 .fin-zero { stroke: var(--color-text); stroke-width: 1.5; }
 .fin-tick { stroke: var(--color-text); stroke-width: 2; }
@@ -113,7 +113,7 @@
 .fin-share li { display: grid; grid-template-columns: minmax(70px, 110px) minmax(0, 1fr) 40px; gap: var(--space-3); align-items: center; font-size: 13px; }
 .fin-share-name { font-weight: 700; }
 .fin-share-track { height: 14px; background: var(--color-neutral-tint); border-radius: var(--radius-pill); overflow: hidden; }
-.fin-share-track span { display: block; height: 100%; background: var(--color-primary-strong); }
+.fin-share-track span { display: block; height: 100%; background: var(--chart-money-strong); }
 .fin-share-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--color-muted); }
 .fin-torn-zero { position: absolute; top: -3px; bottom: -3px; width: 0; border-left: 2px dashed var(--color-danger); }
 .fin-torn li { grid-template-columns: minmax(52px, 90px) minmax(0, 1fr); }

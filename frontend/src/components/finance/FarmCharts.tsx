@@ -5,7 +5,7 @@ import './FinanceReport.css'
 
 export interface FieldBar { name: string; low: number; mid: number; high: number }
 
-const SLICE = ['--color-primary-strong', '--chart-water', '--color-primary', '--chart-dry', '--chart-heat', '--chart-water-soft', '--color-border-strong']
+const SLICE = ['--chart-money-strong', '--chart-money', '--chart-money-teal', '--chart-money-soft', '--chart-money-olive', '--chart-money-mint', '--color-border-strong']
 const polar = (cx: number, cy: number, r: number, deg: number) => [cx + r * Math.sin((deg * Math.PI) / 180), cy - r * Math.cos((deg * Math.PI) / 180)]
 // Arc from deg a to b (clockwise from 12 o'clock) on radius r.
 const arc = (cx: number, cy: number, r: number, a: number, b: number) => {
@@ -63,7 +63,7 @@ function RadialRanges({ fields, cur }: { fields: FieldBar[]; cur: string }) {
           return (
             <g key={f.name + i}>
               <path d={arc(100, 100, r, 0, SWEEP)} fill="none" stroke="var(--color-neutral-tint)" strokeWidth={t} strokeLinecap="round" />
-              <path d={arc(100, 100, r, a1, a2)} fill="none" stroke="var(--color-primary)" strokeWidth={t} strokeLinecap="round"><title>{`${f.name}: ${fmtMoney(f.low)} to ${fmtMoney(f.high)} ${cur}`}</title></path>
+              <path d={arc(100, 100, r, a1, a2)} fill="none" stroke="var(--chart-money)" strokeWidth={t} strokeLinecap="round"><title>{`${f.name}: ${fmtMoney(f.low)} to ${fmtMoney(f.high)} ${cur}`}</title></path>
               <line x1={mx1} y1={my1} x2={mx2} y2={my2} stroke="var(--color-text)" strokeWidth="2" />
               {lo < 0 && <line x1={zx1} y1={zy1} x2={zx2} y2={zy2} stroke="var(--color-danger)" strokeWidth="1.5" strokeDasharray="2 2" />}
               <text x="94" y={100 - r + 3} textAnchor="end" className="fin-radial-lbl">{f.name.length > 11 ? `${f.name.slice(0, 10)}…` : f.name}</text>

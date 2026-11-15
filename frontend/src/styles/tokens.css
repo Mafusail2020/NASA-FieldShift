@@ -29,6 +29,14 @@
   --chart-heat-strong: #5c1a08;
   --chart-dry: #b7893a;
   --chart-dry-strong: #6f4a0f;
+  /* Money charts (revenue and margin) are green; a loss stays --color-danger. Slices of the revenue donut need more than one green. */
+  --chart-money: #2e8b57;
+  --chart-money-strong: #1f6b3c;
+  --chart-money-soft: #9ccfb0;
+  --chart-money-tint: #e3f1e8;
+  --chart-money-teal: #2a7f7a;
+  --chart-money-olive: #7a9a3a;
+  --chart-money-mint: #c6e5d0;
 
   --radius-sm: 4px;
   --radius-md: 8px;
