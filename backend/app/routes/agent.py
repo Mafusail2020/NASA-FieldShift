@@ -23,6 +23,7 @@ class Msg(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[Msg] = Field(min_length=1, max_length=30)
     fields: list[dict] = Field(default_factory=list, max_length=40)
+    web_search: bool = True  # let Claude use Anthropic's web search (ignored by the local model)
 
 
 def _limit(ip: str) -> None:
@@ -45,7 +46,7 @@ def chat(req: ChatRequest, request: Request, x_anthropic_key: str | None = Heade
     _limit(request.client.host if request.client else "?")
     if req.messages[-1].role != "user":
         raise HTTPException(422, "last message must be from the user")
-    agent = Agent(LLMRouter.from_request(x_anthropic_key))
+    agent = Agent(LLMRouter.from_request(x_anthropic_key, req.web_search))
     history = [m.model_dump() for m in req.messages]
 
     def stream():

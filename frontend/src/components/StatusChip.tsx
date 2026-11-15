@@ -3,7 +3,7 @@ import { registerSource } from '../lib/sources'
 import type { Status } from '../types'
 import './StatusChip.css'
 
-const LABEL: Record<Status, string> = { data: 'Data', literature: 'Literature', estimate: 'Estimate', sample: 'Sample', todo: 'To do' }
+const LABEL: Record<Status, string> = { data: 'Data', literature: 'Literature', estimate: 'Estimate', sample: 'Sample', todo: 'To do', web: 'Web' }
 
 export const STATUS_LABEL = LABEL
 

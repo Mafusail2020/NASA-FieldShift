@@ -9,3 +9,5 @@
 .status-estimate { border-style: dashed; }
 .status-todo { background: var(--color-bg); border-style: dotted; }
 .status-sample { border-style: dashed; background: var(--color-primary-wash); color: var(--color-primary-strong); }
+/* unverified: found on the web by the assistant, not project data */
+.status-web { border-style: dotted; background: var(--color-surface); color: var(--color-muted); }

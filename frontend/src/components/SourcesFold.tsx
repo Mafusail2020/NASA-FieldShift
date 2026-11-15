@@ -12,6 +12,7 @@ const MEANING: Record<Status, string> = {
   estimate: 'Our choice, assumption or model result. Treat it as a rough number, not a fact.',
   sample: 'Example numbers, not real data.',
   todo: 'Not available yet; the page shows "no data" instead of a guess.',
+  web: 'Found on the web by the assistant: unverified, not project data.',
 }
 
 /** Renders nothing in place: hands a note to the "Sources and status" block at the bottom of the page. */

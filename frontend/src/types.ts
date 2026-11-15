@@ -1,4 +1,4 @@
-export type Status = 'data' | 'literature' | 'estimate' | 'sample' | 'todo'
+export type Status = 'data' | 'literature' | 'estimate' | 'sample' | 'todo' | 'web'
 
 export interface Region { id: string; name_en: string; name_uk: string }
 export interface Criterion {

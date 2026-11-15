@@ -122,6 +122,9 @@
 .ag-tier { color: var(--color-muted); }
 .ag-key { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); font-size: 13px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .ag-key input { font: inherit; padding: var(--space-2); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-bg); color: var(--color-text); }
+.ag-check { display: flex; align-items: flex-start; gap: var(--space-2); font-size: 13px; color: var(--color-text); cursor: pointer; }
+.ag-check input { margin-top: 2px; accent-color: var(--color-primary-strong); }
+.ag-sources a { color: var(--color-primary-strong); }
 .ag-hint { margin: 0; font-size: 12.5px; color: var(--color-muted); }
 .ag-row { display: flex; gap: var(--space-2); }
 .ag-btn { font: inherit; font-weight: 700; font-size: 14px; padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); border: 1px solid var(--color-primary); background: var(--color-primary); color: var(--color-text); cursor: pointer; transition: background-color 0.2s; }

@@ -7,15 +7,16 @@ import type { Status } from '../types'
 const API = (import.meta.env.VITE_API_URL as string | undefined) ?? ''
 const KEY_STORE = 'fieldshift.anthropicKey'
 const LAYOUT_STORE = 'fieldshift.agent.layout.v1'
+const WEB_STORE = 'fieldshift.agent.web.v1'
 const CHATS_STORE = 'fieldshift.agent.chats.v1'
 const MAX_CHATS = 30
 const MIN_W = 320, MIN_H = 360, TOP = 60
 const SNAP_MS = 120
 export const EXIT_MS = 380  // the window shrinks back into the tab slot over this long
 
-export interface Step { name: string; ok?: boolean; error?: string | null; status?: string | null }
+export interface Step { name: string; detail?: string; ok?: boolean; error?: string | null; status?: string | null }
 export interface ChartSpec { kind: 'line' | 'bar'; title: string; x: (string | number)[]; series: { name: string; values: number[] }[] }
-export interface SourceRef { tool: string; source: string; status: Status | '' }
+export interface SourceRef { tool: string; source: string; status: Status | ''; url?: string }
 export interface ChatMsg {
   id: string; role: 'user' | 'assistant'; text: string
   steps: Step[]; charts: ChartSpec[]; sources: SourceRef[]
@@ -40,6 +41,8 @@ interface Ctx {
   pinChat(id: string): void
   providers: ProviderInfo[] | null
   apiKey: string
+  webSearch: boolean          // let Claude search the web (Anthropic's server-side tool); the local model ignores it
+  setWebSearch(on: boolean): void
   setApiKey(k: string): void
   dock: Dock
   rect: Rect
@@ -81,6 +84,7 @@ function loadRect(): Rect {
 export function AgentProvider({ children }: { children: ReactNode }) {
   const { fields } = useField()
   const [chats, setChats] = useState<Chat[]>(loadChats)
+  const [webSearch, setWeb] = useState(() => read(WEB_STORE) !== 'off')
   const [activeId, setActiveId] = useState('')
   const messages = useMemo(() => chats.find((c) => c.id === activeId)?.messages ?? [], [chats, activeId])
   const [busy, setBusy] = useState(false)
@@ -107,6 +111,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
     return () => { live = false; clearTimeout(t) }
   }, [apiKey, headers])
 
+  const setWebSearch = useCallback((on: boolean) => { setWeb(on); write(WEB_STORE, on ? '' : 'off') }, [])
   const setApiKey = useCallback((k: string) => { const v = k.trim(); setKey(v); write(KEY_STORE, v) }, [])
   const patchIn = (cid: string, id: string, f: (m: ChatMsg) => ChatMsg) =>
     setChats((cs) => cs.map((c) => (c.id === cid ? { ...c, messages: c.messages.map((m) => (m.id === id ? f(m) : m)) } : c)))
@@ -143,12 +148,13 @@ export function AgentProvider({ children }: { children: ReactNode }) {
       try {
         const r = await fetch(`${API}/api/agent/chat`, {
           method: 'POST', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', ...headers() },
-          body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.text })), fields }),
+          body: JSON.stringify({ messages: history.map((m) => ({ role: m.role, content: m.text })), fields, web_search: webSearch }),
         })
         if (!r.ok || !r.body) {
           let d = ''
           try { d = (await r.json()).detail ?? '' } catch { /* not JSON */ }
-          throw new Error(d || `The assistant is not available (${r.status}). Start the backend.`)
+          // 500-504 without a message = the dev proxy or gateway cannot reach the backend
+          throw new Error(d || (r.status >= 500 ? 'Cannot reach the assistant server. Start the backend (make backend) and try again.' : `The assistant answered ${r.status}.`))
         }
         const reader = r.body.getReader()
         const dec = new TextDecoder()
@@ -164,11 +170,11 @@ export function AgentProvider({ children }: { children: ReactNode }) {
             if (!line.startsWith('data:')) continue
             const ev = JSON.parse(line.slice(5))
             if (ev.type === 'provider') patch(aid, (m) => ({ ...m, provider: ev.name }))
-            else if (ev.type === 'tool_start') patch(aid, (m) => ({ ...m, steps: [...m.steps, { name: ev.name }] }))
+            else if (ev.type === 'tool_start') patch(aid, (m) => ({ ...m, steps: [...m.steps, { name: ev.name, detail: typeof ev.input?.query === 'string' ? ev.input.query : undefined }] }))
             else if (ev.type === 'tool_end') patch(aid, (m) => {
               const steps = [...m.steps]
               const k = steps.map((s) => s.name).lastIndexOf(ev.name)
-              if (k >= 0) steps[k] = { name: ev.name, ok: ev.ok, error: ev.error, status: ev.status }
+              if (k >= 0) steps[k] = { ...steps[k], ok: ev.ok, error: ev.error, status: ev.status }
               return { ...m, steps }
             })
             else if (ev.type === 'chart') patch(aid, (m) => ({ ...m, charts: [...m.charts, ev as ChartSpec] }))
@@ -182,13 +188,14 @@ export function AgentProvider({ children }: { children: ReactNode }) {
         patch(aid, (m) => ({ ...m, pending: false }))
       } catch (e) {
         const aborted = (e as Error).name === 'AbortError'
-        patch(aid, (m) => ({ ...m, pending: false, error: aborted ? 'Stopped.' : (e as Error).message }))
+        const net = e instanceof TypeError  // fetch failed: no network or server down
+        patch(aid, (m) => ({ ...m, pending: false, error: aborted ? 'Stopped.' : net ? 'Cannot reach the assistant server. Start the backend (make backend) and try again.' : (e as Error).message }))
       } finally {
         setBusy(false)
         abort.current = null
       }
     })()
-  }, [busy, messages, activeId, fields, headers])
+  }, [busy, messages, activeId, fields, webSearch, headers])
 
   const stop = useCallback(() => abort.current?.abort(), [])
   const newChat = useCallback(() => { abort.current?.abort(); setActiveId('') }, [])
@@ -251,9 +258,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   }, [commit])
 
   const value = useMemo<Ctx>(() => ({
-    messages, busy, send, stop, chats: list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
+    messages, busy, send, stop, chats: list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, webSearch, setWebSearch, dock, rect, canFloat: !small(), popOut, dockBack, startMove, startResize,
     moving, overDock, closing, anchor,
-  }), [messages, busy, send, stop, list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
+  }), [messages, busy, send, stop, list, activeId, newChat, openChat, deleteChat, pinChat, providers, apiKey, setApiKey, webSearch, setWebSearch, dock, rect, popOut, dockBack, startMove, startResize, moving, overDock, closing, anchor])
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 
