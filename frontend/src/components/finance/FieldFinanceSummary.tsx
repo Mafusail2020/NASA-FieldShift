@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom'
 import type { FieldItem } from '../../lib/field'
 import { fmt } from '../../lib/format'
 import { fieldRow, fmtMoney, inCurrency, useFinanceInputs, useFinSettings } from '../../lib/finance'
+import { useSoilDoc } from '../../lib/soil'
 import { RangeBar, fmtShort } from './RangeBar'
 import './FinanceSummary.css'
 
 export function FieldFinanceSummary({ field }: { field: FieldItem }) {
   const load = useFinanceInputs()
   const [S] = useFinSettings()
+  const soil = useSoilDoc()
   const link = <Link className="fsum-link" to={`/finance?field=${encodeURIComponent(field.id)}`}>Finance for this field</Link>
   if (load.state !== 'ready') return <p className="fsum">{load.state === 'loading' ? 'Finance: loading…' : <span className="fsum-warn">Finance inputs unavailable</span>} {link}</p>
-  const r = fieldRow(inCurrency(load.data, S.cur), field, S)
+  const r = fieldRow(inCurrency(load.data, S.cur), field, S, soil.state === 'ready' ? soil.data : null)
   const c = r.calc
   const perHa = c && !c.invalid && r.area ? { lo: c.revLow / r.area, hi: c.revHigh / r.area } : null
   return (

@@ -1,0 +1,91 @@
+species,parameter,value,unit,source,status
+winter_wheat,res_a,0.23,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_wheat,res_b,13.5,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_wheat,root_c,0.71,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_wheat,root_d,10,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_wheat,k_humif,0.2,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_wheat,mineral_t_ha,1.35,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+spring_wheat,res_a,0.23,c/ha per c/ha,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+spring_wheat,res_b,13.5,c/ha,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+spring_wheat,root_c,0.71,c/ha per c/ha,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+spring_wheat,root_d,10,c/ha,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+spring_wheat,k_humif,0.2,ratio,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+spring_wheat,mineral_t_ha,1.35,t/ha per year,"Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high",estimate
+winter_barley,res_a,0.29,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_barley,res_b,6.8,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_barley,root_c,0.54,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_barley,root_d,9.3,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_barley,k_humif,0.22,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+winter_barley,mineral_t_ha,1.23,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+spring_barley,res_a,0.29,c/ha per c/ha,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+spring_barley,res_b,6.8,c/ha,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+spring_barley,root_c,0.54,c/ha per c/ha,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+spring_barley,root_d,9.3,c/ha,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+spring_barley,k_humif,0.22,ratio,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+spring_barley,mineral_t_ha,1.23,t/ha per year,The method gives these equations for barley with clover undersowing; winter barley values reused,estimate
+maize,res_a,0.2,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+maize,res_b,1.6,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+maize,root_c,0.83,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+maize,root_d,7.2,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+maize,k_humif,0.2,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+maize,mineral_t_ha,1.56,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain",literature
+sunflower,res_a,0.41,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sunflower,res_b,3.2,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sunflower,root_c,0.16,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sunflower,root_d,4.9,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sunflower,k_humif,0.14,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sunflower,mineral_t_ha,1.39,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,res_a,0.005,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,res_b,2.8,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,root_c,0.06,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,root_d,5.7,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,k_humif,0.1,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+sugar_beet,mineral_t_ha,1.59,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,res_a,0.5,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,res_b,7.4,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,root_c,0.57,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,root_d,12.6,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,k_humif,0.22,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+millet,mineral_t_ha,1.1,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4",literature
+soybean,res_a,0.12,c/ha per c/ha,Not in the method: pea values used for now (also a grain legume),estimate
+soybean,res_b,4.5,c/ha,Not in the method: pea values used for now (also a grain legume),estimate
+soybean,root_c,0.36,c/ha per c/ha,Not in the method: pea values used for now (also a grain legume),estimate
+soybean,root_d,8.9,c/ha,Not in the method: pea values used for now (also a grain legume),estimate
+soybean,k_humif,0.23,ratio,Not in the method: pea values used for now (also a grain legume),estimate
+soybean,mineral_t_ha,1.5,t/ha per year,Not in the method: pea values used for now (also a grain legume),estimate
+pea,res_a,0.12,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+pea,res_b,4.5,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+pea,root_c,0.36,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+pea,root_d,8.9,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+pea,k_humif,0.23,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+pea,mineral_t_ha,1.5,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain",literature
+oats,res_a,0.19,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+oats,res_b,14.8,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+oats,root_c,0.42,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+oats,root_d,8.4,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+oats,k_humif,0.22,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+oats,mineral_t_ha,1.2,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain",literature
+red_clover,res_a,0.12,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+red_clover,res_b,6.8,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+red_clover,root_c,0.5,c/ha per c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+red_clover,root_d,13.3,c/ha,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+red_clover,k_humif,0.25,ratio,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+red_clover,mineral_t_ha,0.6,t/ha per year,"Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop",literature
+black_fallow,res_a,0,c/ha per c/ha,"No crop, no residues (Field_Shift soil-parameters doc Table 4)",literature
+black_fallow,res_b,0,c/ha,"No crop, no residues (Field_Shift soil-parameters doc Table 4)",literature
+black_fallow,root_c,0,c/ha per c/ha,"No crop, no residues (Field_Shift soil-parameters doc Table 4)",literature
+black_fallow,root_d,0,c/ha,"No crop, no residues (Field_Shift soil-parameters doc Table 4)",literature
+black_fallow,k_humif,0,ratio,Not applicable: no residues (doc gives '-'),estimate
+black_fallow,mineral_t_ha,,t/ha per year,Highest under fallow; take from zonal norms (doc Table 4),todo
+winter_rapeseed,res_a,,c/ha per c/ha,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,res_a,,c/ha per c/ha,Not in the method or the soil-parameters doc; a source is needed,todo
+winter_rapeseed,res_b,,c/ha,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,res_b,,c/ha,Not in the method or the soil-parameters doc; a source is needed,todo
+winter_rapeseed,root_c,,c/ha per c/ha,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,root_c,,c/ha per c/ha,Not in the method or the soil-parameters doc; a source is needed,todo
+winter_rapeseed,root_d,,c/ha,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,root_d,,c/ha,Not in the method or the soil-parameters doc; a source is needed,todo
+winter_rapeseed,k_humif,,ratio,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,k_humif,,ratio,Not in the method or the soil-parameters doc; a source is needed,todo
+winter_rapeseed,mineral_t_ha,,t/ha per year,Not in the method; a source is needed (doc Table 4),todo
+buckwheat,mineral_t_ha,,t/ha per year,Not in the method or the soil-parameters doc; a source is needed,todo

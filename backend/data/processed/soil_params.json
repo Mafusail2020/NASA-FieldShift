@@ -1,0 +1,775 @@
+{
+ "generated": "2026-11-15",
+ "source": "Field Shift soil-parameters doc: FAO Irrigation and Drainage Paper 61 Annex 1 (salt), ECOCROP via Recocrop (pH), Chesnul humus-balance method; params/salinity.csv, ph.csv, humus.csv",
+ "status": "estimate",
+ "model": {
+  "salt_exclude_below": 0.5,
+  "gypsum_shift_dsm": 2.0,
+  "manure_coef": 0.058,
+  "green_manure_coef": 0.029,
+  "plough_layer_mass_t_ha": 3900.0
+ },
+ "notes": [
+  "ECe must be the saturated-paste extract (dS/m). EC of a 1:5 water extract or salt % needs a conversion that depends on texture.",
+  "pH must be water pH. Salt (KCl) pH is usually lower and cannot be used as is.",
+  "FAO salt tables are for chloride soils; on gypsum soils crops tolerate about 2 dS/m more.",
+  "pH only warns: ECOCROP limits are expert estimates for the whole world and are probably too narrow for alkaline southern soils.",
+  "FAO salt data come mostly from pot and lysimeter trials; in a field the threshold can differ.",
+  "Mineralisation norms are not tied to a zone; for southern chernozems check them against zonal norms."
+ ],
+ "species": {
+  "black_fallow": {
+   "label": "Black fallow",
+   "salt": null,
+   "ph": null,
+   "humus": null,
+   "gaps": [
+    "humus:mineral_t_ha"
+   ]
+  },
+  "buckwheat": {
+   "label": "Buckwheat",
+   "salt": null,
+   "ph": null,
+   "humus": null,
+   "gaps": [
+    "humus:k_humif",
+    "humus:mineral_t_ha",
+    "humus:res_a",
+    "humus:res_b",
+    "humus:root_c",
+    "humus:root_d",
+    "ph:ph_max",
+    "ph:ph_min",
+    "ph:ph_opt_high",
+    "ph:ph_opt_low",
+    "salt:a",
+    "salt:b"
+   ]
+  },
+  "hairy_vetch": {
+   "label": "Hairy vetch",
+   "salt": {
+    "a": 3.0,
+    "b": 11.0,
+    "low_confidence": false,
+    "status": "estimate",
+    "source": "Value for spring vetch used as a substitute (FAO-61 Annex 1 via doc Table 2)"
+   },
+   "ph": {
+    "limits": [
+     4.9,
+     6.0,
+     7.0,
+     8.2
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": []
+  },
+  "maize": {
+   "label": "Maize",
+   "salt": {
+    "a": 1.7,
+    "b": 12.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, maize Zea mays (ear weight)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     5.0,
+     7.0,
+     8.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.2,
+    "res_b": 1.6,
+    "root_c": 0.83,
+    "root_d": 7.2,
+    "k_humif": 0.2,
+    "mineral_t_ha": 1.56,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, maize for grain"
+   },
+   "gaps": []
+  },
+  "millet": {
+   "label": "Millet",
+   "salt": null,
+   "ph": {
+    "limits": [
+     5.2,
+     6.0,
+     6.5,
+     8.2
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.5,
+    "res_b": 7.4,
+    "root_c": 0.57,
+    "root_d": 12.6,
+    "k_humif": 0.22,
+    "mineral_t_ha": 1.1,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4"
+   },
+   "gaps": [
+    "salt:a",
+    "salt:b"
+   ]
+  },
+  "narrow_leaf_lupin": {
+   "label": "Narrow-leaf lupin",
+   "salt": null,
+   "ph": {
+    "limits": [
+     4.5,
+     5.5,
+     6.5,
+     7.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Not suitable for carbonate soils. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": [
+    "salt:a",
+    "salt:b"
+   ]
+  },
+  "oats": {
+   "label": "Oats",
+   "salt": {
+    "a": 6.0,
+    "b": 10.0,
+    "low_confidence": true,
+    "status": "estimate",
+    "source": "FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; FAO: tolerant)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     5.0,
+     6.0,
+     7.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.19,
+    "res_b": 14.8,
+    "root_c": 0.42,
+    "root_d": 8.4,
+    "k_humif": 0.22,
+    "mineral_t_ha": 1.2,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, oats for grain"
+   },
+   "gaps": []
+  },
+  "oilseed_radish": {
+   "label": "Oilseed radish",
+   "salt": {
+    "a": 1.2,
+    "b": 13.0,
+    "low_confidence": false,
+    "status": "estimate",
+    "source": "Value for table radish used as a substitute (FAO-61 Annex 1 via doc Table 2)"
+   },
+   "ph": {
+    "limits": [
+     5.2,
+     6.0,
+     7.0,
+     8.3
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; ECOCROP record 'Radish, Western' (no separate record for the oilseed form). Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": []
+  },
+  "pea": {
+   "label": "Pea",
+   "salt": {
+    "a": 3.4,
+    "b": 10.6,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, pea Pisum sativum (seed)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     5.5,
+     7.0,
+     8.3
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.12,
+    "res_b": 4.5,
+    "root_c": 0.36,
+    "root_d": 8.9,
+    "k_humif": 0.23,
+    "mineral_t_ha": 1.5,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, pea for grain"
+   },
+   "gaps": []
+  },
+  "red_clover": {
+   "label": "Red clover",
+   "salt": {
+    "a": 1.5,
+    "b": 12.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, red clover Trifolium pratense (shoot dry matter)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     6.0,
+     6.5,
+     8.2
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.12,
+    "res_b": 6.8,
+    "root_c": 0.5,
+    "root_d": 13.3,
+    "k_humif": 0.25,
+    "mineral_t_ha": 0.6,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4, clover as a main crop"
+   },
+   "gaps": []
+  },
+  "soybean": {
+   "label": "Soybean",
+   "salt": {
+    "a": 5.0,
+    "b": 20.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, soybean (seed); yield falls very fast above the threshold"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     5.5,
+     6.5,
+     8.4
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.12,
+    "res_b": 4.5,
+    "root_c": 0.36,
+    "root_d": 8.9,
+    "k_humif": 0.23,
+    "mineral_t_ha": 1.5,
+    "status": "estimate",
+    "source": "Not in the method: pea values used for now (also a grain legume)"
+   },
+   "gaps": []
+  },
+  "spring_barley": {
+   "label": "Spring barley",
+   "salt": {
+    "a": 8.0,
+    "b": 5.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); same as winter barley"
+   },
+   "ph": {
+    "limits": [
+     6.0,
+     6.5,
+     7.5,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Hordeum vulgare, one record for winter and spring. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.29,
+    "res_b": 6.8,
+    "root_c": 0.54,
+    "root_d": 9.3,
+    "k_humif": 0.22,
+    "mineral_t_ha": 1.23,
+    "status": "estimate",
+    "source": "The method gives these equations for barley with clover undersowing; winter barley values reused"
+   },
+   "gaps": []
+  },
+  "spring_vetch": {
+   "label": "Spring vetch",
+   "salt": {
+    "a": 3.0,
+    "b": 11.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, vetch Vicia sativa (shoot dry matter)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     6.0,
+     7.0,
+     8.2
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": []
+  },
+  "spring_wheat": {
+   "label": "Spring wheat",
+   "salt": {
+    "a": 6.0,
+    "b": 7.1,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain)"
+   },
+   "ph": {
+    "limits": [
+     5.5,
+     6.0,
+     7.0,
+     8.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Triticum aestivum, one record for winter and spring. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.23,
+    "res_b": 13.5,
+    "root_c": 0.71,
+    "root_d": 10.0,
+    "k_humif": 0.2,
+    "mineral_t_ha": 1.35,
+    "status": "estimate",
+    "source": "Not in the method: winter wheat values used for now. Spring wheat leaves less residue, so the balance is slightly too high"
+   },
+   "gaps": []
+  },
+  "sugar_beet": {
+   "label": "Sugar beet",
+   "salt": {
+    "a": 7.0,
+    "b": 5.9,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sugar beet (storage root)"
+   },
+   "ph": {
+    "limits": [
+     5.5,
+     6.0,
+     7.0,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.005,
+    "res_b": 2.8,
+    "root_c": 0.06,
+    "root_d": 5.7,
+    "k_humif": 0.1,
+    "mineral_t_ha": 1.59,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4"
+   },
+   "gaps": []
+  },
+  "sunflower": {
+   "label": "Sunflower",
+   "salt": {
+    "a": 4.8,
+    "b": 5.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sunflower (seed)"
+   },
+   "ph": {
+    "limits": [
+     5.5,
+     6.0,
+     7.5,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.41,
+    "res_b": 3.2,
+    "root_c": 0.16,
+    "root_d": 4.9,
+    "k_humif": 0.14,
+    "mineral_t_ha": 1.39,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4"
+   },
+   "gaps": []
+  },
+  "white_mustard": {
+   "label": "White mustard",
+   "salt": null,
+   "ph": {
+    "limits": [
+     5.5,
+     6.5,
+     7.5,
+     8.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": [
+    "salt:a",
+    "salt:b"
+   ]
+  },
+  "white_sweet_clover": {
+   "label": "White sweet clover",
+   "salt": {
+    "a": 3.0,
+    "b": 10.0,
+    "low_confidence": true,
+    "status": "estimate",
+    "source": "FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; moderately tolerant (estimate))"
+   },
+   "ph": {
+    "limits": [
+     6.5,
+     6.5,
+     7.0,
+     8.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Prefers neutral and alkaline soils. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": []
+  },
+  "winter_barley": {
+   "label": "Winter barley",
+   "salt": {
+    "a": 8.0,
+    "b": 5.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); FAO does not separate winter and spring forms"
+   },
+   "ph": {
+    "limits": [
+     6.0,
+     6.5,
+     7.5,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Hordeum vulgare, one record for winter and spring. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.29,
+    "res_b": 6.8,
+    "root_c": 0.54,
+    "root_d": 9.3,
+    "k_humif": 0.22,
+    "mineral_t_ha": 1.23,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4"
+   },
+   "gaps": []
+  },
+  "winter_rapeseed": {
+   "label": "Winter rapeseed",
+   "salt": {
+    "a": 11.0,
+    "b": 13.0,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, canola/rapeseed Brassica napus (seed)"
+   },
+   "ph": {
+    "limits": [
+     5.5,
+     6.5,
+     7.6,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Brassica napus ('Swede rap'). Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": [
+    "humus:k_humif",
+    "humus:mineral_t_ha",
+    "humus:res_a",
+    "humus:res_b",
+    "humus:root_c",
+    "humus:root_d"
+   ]
+  },
+  "winter_rye": {
+   "label": "Winter rye",
+   "salt": {
+    "a": 7.6,
+    "b": 4.9,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, rye Secale cereale, green mass (grain: a 11.4, b 10.8)"
+   },
+   "ph": {
+    "limits": [
+     4.5,
+     5.5,
+     6.0,
+     8.0
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": null,
+   "gaps": []
+  },
+  "winter_wheat": {
+   "label": "Winter wheat",
+   "salt": {
+    "a": 6.0,
+    "b": 7.1,
+    "low_confidence": false,
+    "status": "literature",
+    "source": "FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain); FAO does not separate winter and spring forms"
+   },
+   "ph": {
+    "limits": [
+     5.5,
+     6.0,
+     7.0,
+     8.5
+    ],
+    "status": "literature",
+    "source": "ECOCROP (FAO) via Recocrop inst/parameters/ecocrop.rds, via Field_Shift soil-parameters doc Table 3; Triticum aestivum, one record for winter and spring. Expert estimates for the whole world; limits are probably too low for alkaline southern soils, so pH only warns"
+   },
+   "humus": {
+    "res_a": 0.23,
+    "res_b": 13.5,
+    "root_c": 0.71,
+    "root_d": 10.0,
+    "k_humif": 0.2,
+    "mineral_t_ha": 1.35,
+    "status": "literature",
+    "source": "Chesnul method, 'Humus balance in farm soils', via Field_Shift soil-parameters doc Table 4"
+   },
+   "gaps": []
+  }
+ },
+ "vectors": [
+  {
+   "fn": "f_salt",
+   "args": [
+    4,
+    1.7,
+    12.0,
+    0
+   ],
+   "expected": 0.7240000000000001
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    6,
+    1.7,
+    12.0,
+    0
+   ],
+   "expected": 0.48400000000000004
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    6,
+    4.8,
+    5.0,
+    0
+   ],
+   "expected": 0.94
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    6,
+    5.0,
+    20.0,
+    0
+   ],
+   "expected": 0.8
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    2.5,
+    6.0,
+    10.0,
+    0
+   ],
+   "expected": 1.0
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    30,
+    1.7,
+    12.0,
+    0
+   ],
+   "expected": 0.0
+  },
+  {
+   "fn": "f_salt",
+   "args": [
+    6,
+    1.7,
+    12,
+    2
+   ],
+   "expected": 0.7240000000000001
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    8.2,
+    4.5,
+    5.5,
+    6.5,
+    8.4
+   ],
+   "expected": 0.10526315789473738
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    8.2,
+    4.5,
+    5.0,
+    7.0,
+    8.5
+   ],
+   "expected": 0.20000000000000048
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    8.2,
+    5.5,
+    6.0,
+    7.5,
+    8.0
+   ],
+   "expected": 0.0
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    6.5,
+    6.5,
+    6.5,
+    7.0,
+    8.5
+   ],
+   "expected": 1.0
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    5.0,
+    5.5,
+    6.0,
+    7.0,
+    8.5
+   ],
+   "expected": 0.0
+  },
+  {
+   "fn": "f_ph",
+   "args": [
+    7.0,
+    4.5,
+    5.0,
+    6.0,
+    7.5
+   ],
+   "expected": 0.3333333333333333
+  },
+  {
+   "fn": "annual_balance",
+   "args": [
+    "winter_wheat",
+    35,
+    0,
+    0
+   ],
+   "expected": -0.2220000000000002
+  },
+  {
+   "fn": "annual_balance",
+   "args": [
+    "sunflower",
+    15,
+    0,
+    0
+   ],
+   "expected": -1.1568999999999998
+  },
+  {
+   "fn": "annual_balance",
+   "args": [
+    "winter_wheat",
+    35,
+    10,
+    15
+   ],
+   "expected": 0.7929999999999997
+  },
+  {
+   "fn": "annual_balance",
+   "args": [
+    "maize",
+    60,
+    5,
+    0
+   ],
+   "expected": 0.1419999999999999
+  }
+ ]
+}

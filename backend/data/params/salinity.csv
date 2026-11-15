@@ -1,0 +1,45 @@
+species,parameter,value,unit,source,status
+spring_barley,a,8.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); same as winter barley",literature
+spring_barley,b,5.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); same as winter barley",literature
+winter_barley,a,8.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); FAO does not separate winter and spring forms",literature
+winter_barley,b,5.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, barley (grain); FAO does not separate winter and spring forms",literature
+spring_wheat,a,6.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain)",literature
+spring_wheat,b,7.1,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain)",literature
+winter_wheat,a,6.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain); FAO does not separate winter and spring forms",literature
+winter_wheat,b,7.1,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, wheat, Triticum aestivum (grain); FAO does not separate winter and spring forms",literature
+winter_rapeseed,a,11.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, canola/rapeseed Brassica napus (seed)",literature
+winter_rapeseed,b,13.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, canola/rapeseed Brassica napus (seed)",literature
+maize,a,1.7,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, maize Zea mays (ear weight)",literature
+maize,b,12.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, maize Zea mays (ear weight)",literature
+sunflower,a,4.8,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sunflower (seed)",literature
+sunflower,b,5.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sunflower (seed)",literature
+soybean,a,5.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, soybean (seed); yield falls very fast above the threshold",literature
+soybean,b,20.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, soybean (seed); yield falls very fast above the threshold",literature
+sugar_beet,a,7.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sugar beet (storage root)",literature
+sugar_beet,b,5.9,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 1, sugar beet (storage root)",literature
+millet,a,,dS/m,Not in FAO table: only channel millet and foxtail millet; separate source needed,todo
+millet,b,,% per dS/m,Not in FAO table: only channel millet and foxtail millet; separate source needed,todo
+buckwheat,a,,dS/m,Not in the soil-parameters doc; separate source needed,todo
+buckwheat,b,,% per dS/m,Not in the soil-parameters doc; separate source needed,todo
+white_mustard,a,,dS/m,Not in FAO table,todo
+white_mustard,b,,% per dS/m,Not in FAO table,todo
+oilseed_radish,a,1.2,dS/m,Value for table radish used as a substitute (FAO-61 Annex 1 via doc Table 2),estimate
+oilseed_radish,b,13.0,% per dS/m,Value for table radish used as a substitute (FAO-61 Annex 1 via doc Table 2),estimate
+spring_vetch,a,3.0,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, vetch Vicia sativa (shoot dry matter)",literature
+spring_vetch,b,11.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, vetch Vicia sativa (shoot dry matter)",literature
+hairy_vetch,a,3.0,dS/m,Value for spring vetch used as a substitute (FAO-61 Annex 1 via doc Table 2),estimate
+hairy_vetch,b,11.0,% per dS/m,Value for spring vetch used as a substitute (FAO-61 Annex 1 via doc Table 2),estimate
+pea,a,3.4,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, pea Pisum sativum (seed)",literature
+pea,b,10.6,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, pea Pisum sativum (seed)",literature
+narrow_leaf_lupin,a,,dS/m,Not in FAO table,todo
+narrow_leaf_lupin,b,,% per dS/m,Not in FAO table,todo
+winter_rye,a,7.6,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, rye Secale cereale, green mass (grain: a 11.4, b 10.8)",literature
+winter_rye,b,4.9,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, rye Secale cereale, green mass (grain: a 11.4, b 10.8)",literature
+oats,a,6.0,dS/m,"FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; FAO: tolerant)",estimate
+oats,b,10.0,% per dS/m,"FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; FAO: tolerant)",estimate
+oats,low_confidence,1,flag,"FAO gives only a category (see a, b); show 'low confidence' in the UI",estimate
+white_sweet_clover,a,3.0,dS/m,"FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; moderately tolerant (estimate))",estimate
+white_sweet_clover,b,10.0,% per dS/m,"FAO gives only a category; team bounds (sensitive <1.3, moderately sensitive 1.3-3, moderately tolerant 3-6, tolerant 6-10 dS/m): a = lower bound of the category, b = 10 %/dS/m. Team assumption, low confidence (Field_Shift soil-parameters doc Table 2; moderately tolerant (estimate))",estimate
+white_sweet_clover,low_confidence,1,flag,"FAO gives only a category (see a, b); show 'low confidence' in the UI",estimate
+red_clover,a,1.5,dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, red clover Trifolium pratense (shoot dry matter)",literature
+red_clover,b,12.0,% per dS/m,"FAO Irrigation and Drainage Paper 61, Annex 1 (Maas and Grattan), via Field_Shift soil-parameters doc Table 2, red clover Trifolium pratense (shoot dry matter)",literature

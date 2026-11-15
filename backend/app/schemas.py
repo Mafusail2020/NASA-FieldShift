@@ -155,3 +155,60 @@ class EconomicsResponse(BaseModel):
     best_alternative_with_k: str
     best_alternative_without_k: str
     note: str
+
+
+class SoilRequest(BaseModel):
+    """Soil analysis of one field. ECe in dS/m (saturated paste), pH in water, yields in c/ha (normal yield of the crop)."""
+    rotation: list[str] = Field(min_length=1, max_length=8, description="One crop per year, repeated cyclically")
+    ece: float | None = Field(None, ge=0, le=60)
+    ph: float | None = Field(None, ge=2, le=12)
+    humus_pct: float | None = Field(None, ge=0, le=15)
+    gypsum: bool = False
+    yields_c_ha: dict[str, float] = {}
+    manure_t_ha_rotation: float = Field(0, ge=0, le=500, description="Manure per rotation; the model uses it per year (divided by the rotation length)")
+    green_t_ha: float = Field(0, ge=0, le=100, description="Green mass ploughed in after each crop listed in green_after")
+    green_after: list[str] = []
+
+
+class CropSoil(BaseModel):
+    crop: str
+    f_salt: float | None
+    f_ph: float | None
+    factor: float
+    excluded: bool
+    ph_warning: bool
+    low_confidence: bool
+    notes: list[str]
+    salt_source: str | None = None
+    salt_status: Status | None = None
+    ph_source: str | None = None
+    ph_status: Status | None = None
+
+
+class HumusYear(BaseModel):
+    year: int
+    crop: str
+    p1: float
+    p2: float
+    p3: float
+    p: float
+    balance: float
+    status: Status
+    source: str
+
+
+class HumusResult(BaseModel):
+    years: list[HumusYear]
+    missing: list[str]
+    mean_balance: float | None
+    per_rotation: float | None
+    manure_norm: float | None
+    humus_pct_after_10y: float | None
+
+
+class SoilResponse(BaseModel):
+    crops: list[CropSoil]
+    humus: HumusResult
+    source: str
+    status: Status
+    notes: list[str]

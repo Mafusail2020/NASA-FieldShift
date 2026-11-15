@@ -6,6 +6,7 @@ import { FieldFinanceSummary } from '../finance/FieldFinanceSummary'
 import { FieldClimate } from './FieldClimate'
 import { FieldGlance } from './FieldGlance'
 import { FieldRotation } from './FieldRotation'
+import { FieldSoil } from './FieldSoil'
 import MiniMap from './MiniMap'
 import { LAT_RANGE, LON_RANGE, num, parsePair } from './coords'
 
@@ -146,6 +147,7 @@ export default function FieldDetail({ field, grid, onUpdate }: Props) {
       <div className="fr-body">
         <section className="fr-sec" aria-label="Climate and risks"><FieldClimate cell={cell} /></section>
         <section className="fr-sec" aria-label="Rotation"><FieldRotation field={field} cell={cell} /></section>
+        <section className="fr-sec fr-wide" aria-label="Soil analysis"><FieldSoil field={field} onUpdate={onUpdate} /></section>
       </div>
     </article>
   )

@@ -53,6 +53,7 @@ python -m pipeline.fallow_check      # sanity check: share of fallow rainfall st
 python -m pipeline.yields            # needs data/raw/yields/yields.csv (not supplied yet)
 python -m pipeline.validate          # needs yields; writes data/processed/validation.json
 python -m pipeline.export            # JSON for the API and frontend/public/data
+python -m pipeline.export_soil       # soil_params.json (salinity, pH, humus tables) for the Fields page
 ```
 
 The API never calls NASA at request time. `core/` holds each formula once and is shared by the pipeline and the API.

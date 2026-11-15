@@ -5,6 +5,9 @@ from pathlib import Path
 import yaml
 import pandas as pd
 
+from core.soil_params import load_humus, load_ph, load_salinity
+from core.params import get_value, load_params
+
 DATA = Path(__file__).resolve().parents[1] / "data"
 PROCESSED = DATA / "processed"
 SUPPORTED_CROPS = ("winter_wheat", "maize", "black_fallow")
@@ -21,6 +24,10 @@ class Store:
         self.yields = json.loads(yf.read_text()) if yf.exists() else None
         self.prices = pd.read_csv(params / "prices.csv", dtype=str, keep_default_na=False)
         self.k = pd.read_csv(params / "k_predecessor.csv", dtype=str, keep_default_na=False)
+        self.salt, self.ph, self.humus = load_salinity(params / "salinity.csv"), load_ph(params / "ph.csv"), load_humus(params / "humus.csv")
+        model = load_params(params / "model.csv", ["parameter"])
+        self.soil_model = {n: get_value(model, {"parameter": p}) for n, p in (
+            ("exclude_below", "salt_exclude_below"), ("gypsum_shift", "salt_gypsum_shift_dsm"), ("layer_mass", "plough_layer_mass_t_ha"))}
 
     def yhat(self, region: str, crop: str) -> dict[int, float]:
         return {int(y): v for y, v in (self.yields or {}).get("yhat", {}).get(f"{region}|{crop}", {}).items()}

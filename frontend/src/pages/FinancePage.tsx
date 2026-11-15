@@ -4,6 +4,7 @@ import StatusChip from '../components/StatusChip'
 import LineChart from '../components/finance/LineChart'
 import { useField, type CropId, type FieldItem } from '../lib/field'
 import { fmt } from '../lib/format'
+import { useSoilDoc } from '../lib/soil'
 import {
   YIELD_DEFAULT_YEARS, YIELD_RANGE_YEARS, compute, convertAmount, farmTotals, fieldRow, type FinSettings, fmtMoney, inCurrency, useFinanceInputs, useFinSettings, type Currency, lastN, lossShare, median, percentile, rangeOf, validNonNeg, validPos,
   type FinanceInputs, type FStatus, type Scenario,
@@ -430,7 +431,8 @@ interface FarmProps { cur: Currency; data: FinanceInputs; fields: FieldItem[]; S
 
 // One row per field. Inputs are per crop (shared). k is not applied here: it depends on the previous crop of each field.
 function Farm({ cur, data, fields, S, setS, onOpen }: FarmProps) {
-  const rows = fields.map((f) => fieldRow(data, f, S))
+  const soil = useSoilDoc()
+  const rows = fields.map((f) => fieldRow(data, f, S, soil.state === 'ready' ? soil.data : null))
   const T = farmTotals(rows)
   const skipped = T.total - T.counted
   const usedCrops = [...new Set(rows.filter((r) => r.cropId && data.crops[r.cropId]).map((r) => r.cropId))]

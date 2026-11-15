@@ -2,6 +2,7 @@
 // A farmer enters each field by coordinates and area; everything else (grid cell, climate, soil, rotation analysis,
 // finance) is computed by the site. `field` is the ACTIVE field (the expanded row on the Fields page).
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { EMPTY_ANALYSIS, type SoilAnalysis } from './soil'
 
 export type CropId = 'winter_wheat' | 'maize' | 'sunflower' | 'pea' | 'soybean' | 'sugar_beet' | 'spring_barley' | 'millet' | 'black_fallow'
 export const CROP_LABEL: Record<CropId, string> = {
@@ -21,6 +22,7 @@ export interface FieldItem {
   rotation: CropId[]         // this field's current rotation, one crop per year, in order (may be empty)
   locked: boolean            // location lock: coordinates and map cannot be changed by accident
   soil: Soil | null          // soil preset chosen by the user; null = automatic (from the grid cell, see grid_soil.json)
+  analysis: SoilAnalysis     // optional soil analysis: ECe, pH, humus, manure, green manure, normal yields (see lib/soil.ts)
 }
 
 interface Stored { fields: FieldItem[]; activeId: string }
@@ -39,14 +41,14 @@ interface Ctx {
 
 const KEY = 'fieldshift.field.v3'
 const OLD_KEYS = ['fieldshift.field.v2', 'fieldshift.field.v1']
-const blank = (n: number): FieldItem => ({ id: `f${Date.now().toString(36)}${n}`, name: `Field ${n}`, lat: null, lon: null, areaHa: null, cellId: null, crop: null, rotation: [], locked: false, soil: null })
+const blank = (n: number): FieldItem => ({ id: `f${Date.now().toString(36)}${n}`, name: `Field ${n}`, lat: null, lon: null, areaHa: null, cellId: null, crop: null, rotation: [], locked: false, soil: null, analysis: EMPTY_ANALYSIS })
 const FieldCtx = createContext<Ctx | null>(null)
 
 // Fields saved by the earlier map version carried a drawn polygon: its centre becomes the coordinates.
 function migrate(f: Record<string, unknown>, n: number): FieldItem {
   const poly = Array.isArray(f.polygon) ? (f.polygon as [number, number][]) : []
   const centre = poly.length >= 3 ? [poly.reduce((a, p) => a + p[0], 0) / poly.length, poly.reduce((a, p) => a + p[1], 0) / poly.length] : null
-  return { ...blank(n), ...(f as Partial<FieldItem>), lat: (f.lat as number | null) ?? (centre ? +centre[0].toFixed(4) : null), lon: (f.lon as number | null) ?? (centre ? +centre[1].toFixed(4) : null), soil: (f.soil as FieldItem['soil']) ?? null }
+  return { ...blank(n), ...(f as Partial<FieldItem>), lat: (f.lat as number | null) ?? (centre ? +centre[0].toFixed(4) : null), lon: (f.lon as number | null) ?? (centre ? +centre[1].toFixed(4) : null), soil: (f.soil as FieldItem['soil']) ?? null, analysis: { ...EMPTY_ANALYSIS, ...((f.analysis as Partial<SoilAnalysis> | undefined) ?? {}) } }
 }
 
 function load(): Stored {

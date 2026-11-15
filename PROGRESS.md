@@ -66,6 +66,18 @@ Status: done locally. Not deployed.
 - Final checks run: `pytest` 67 passed, 1 xfailed; `npm run build` ok; headless Chrome on /method, /, results (rotations) and money, with the API running and with it stopped: no console errors; no value with status todo is shown without a marker (only explanatory text mentions the word).
 - Not done: deployed URLs (Render/Vercel accounts are Ivan's), `docker build`, mobile layout check, a real validation run.
 
+## Phase 9 — Soil analysis (salinity, pH, humus)
+Status: built and tested locally; browser-checked at 1280 and 360 px (headless Chrome, no console errors, no horizontal scroll).
+- Source: the team doc "Field Shift: soil parameters (salinity, pH, humus)". Tables went to `params/salinity.csv`, `ph.csv`, `humus.csv` (long format, source and status per row) plus four rows in `model.csv`.
+- `core/salinity.py` (Maas-Hoffman), `ph.py` (ECOCROP trapezoid), `humus.py` (Chesnul), `soil_params.py` (loaders; empty = None), `soil.py` (per-crop factors, humus of a rotation). Tests: `tests/test_soil.py`, `test_soil_api.py` use the doc's worked examples.
+- `pipeline/export_soil.py` -> `soil_params.json` (tables, constants, 17 test vectors computed by `core/`). `POST /api/soil/evaluate` uses the same core.
+- Frontend: `lib/soil.ts` (TypeScript port, same vectors checked with `checkVectors`), `components/fields/FieldSoil.tsx` in each field row, `FieldItem.analysis`. The default yield of the Finance summaries is scaled by the salt factor of the row's crop only (pH only warns: scaling by pH gave 0 for sunflower at pH 8.2, found in the browser check); a yield typed by the user is not scaled.
+- Decisions: salt below 0.5 marks the crop red, pH only warns (team rule). Missing table data shows "no data", never 1.0.
+- Assumptions of mine: manure is entered per rotation and divided by the rotation length (the doc says "t/ha per rotation" but its formulas are per year; the manure norm is per year as in the source formula); humus after 10 years uses a 0-30 cm layer mass of 3,900 t/ha (estimate, not in the doc); yields default to the FAOSTAT median (t/ha x 10) when the farmer enters none; buckwheat added as todo rows; `spring_wheat` added to the crop list.
+- Gaps (todo): salinity of millet, buckwheat, white mustard, narrow-leaf lupin; humus of winter rapeseed, buckwheat, black-fallow mineralisation; pH of buckwheat. Proxies (estimate): oilseed radish, hairy vetch salinity; soybean and spring-wheat humus. Low confidence: oats, white sweet clover salinity.
+- Alternatives A-E: `FieldSoil` has a soil check table (crops ruled out by salt, humus per year) read from the candidates of `rotations_grid.json`. A rotation with black fallow shows the humus mean without the fallow year (no mineralisation norm yet), so its mean is too high. `Compare.tsx` is untouched.
+- Not done: salt and pH are not in the weather comparison table itself; SoilGrids pH and organic carbon do not prefill the inputs.
+
 ## Open items for Ivan
 1. Derzhstat enterprise yields, prices, costs (Phase 6) -> then run `yields`, `validate`, `export`.
 2. Sunflower and pea: sowing rule, heat windows, frost thresholds; maize heat window.

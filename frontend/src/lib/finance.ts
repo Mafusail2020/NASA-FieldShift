@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { FieldItem } from './field'
+import { soilFactorOf, type SoilDoc } from './soil'
 // Pure helpers for the Finance page. No data is invented here: every input comes from finance_inputs.json or the user.
 export type FStatus = 'data' | 'literature' | 'estimate' | 'todo'
 export interface YearValue { year: number; value: number }
@@ -135,14 +136,17 @@ export function inCurrency(raw: FinanceInputs, cur: Currency): FinanceInputs {
 
 const parseStr = (s: string | undefined) => (s == null || s.trim() === '' ? null : Number(s))
 
-export function cropCalc(c: CropInputs, area: number, yS: string | undefined, pS: string | undefined, cS: string | undefined, spread: number) {
-  const dflt = median(lastN(c.yields, YIELD_DEFAULT_YEARS).map((p) => p.value))
-  const y = yS && yS.trim() !== '' ? Number(yS) : dflt
+// soil: yield multiplier from the field's soil analysis (salt only; pH only warns). It scales the default yield and the historical range only;
+// a yield typed by the user is taken as is (the user already knows the field).
+export function cropCalc(c: CropInputs, area: number, yS: string | undefined, pS: string | undefined, cS: string | undefined, spread: number, soil = 1) {
+  const typed = !!yS && yS.trim() !== ''
+  const dflt = median(lastN(c.yields, YIELD_DEFAULT_YEARS).map((p) => p.value)) * soil
+  const y = typed ? Number(yS) : dflt
   const p = pS && pS.trim() !== '' ? Number(pS) : c.prices[c.prices.length - 1]?.value ?? NaN
   const costRaw = parseStr(cS)
   const invalid = !validPos(y) || !validPos(p) || (costRaw != null && !validNonNeg(costRaw))
   const cost = costRaw != null && validNonNeg(costRaw) ? costRaw : null
-  const yr = lastN(c.yields, YIELD_RANGE_YEARS).map((q) => q.value)
+  const yr = lastN(c.yields, YIELD_RANGE_YEARS).map((q) => q.value * (typed ? 1 : soil))
   const sc: Scenario = { areaHa: area, yieldTHa: y, price: p, cost, k: 1 }
   const res = compute(sc)
   const rg = rangeOf(sc, { low: percentile(yr, 0.1), high: percentile(yr, 0.9) }, spread / 100)
@@ -153,13 +157,15 @@ export function cropCalc(c: CropInputs, area: number, yS: string | undefined, pS
 }
 
 // One field with the finance settings applied. Inputs are per crop; k is not applied (it depends on the previous crop).
-export function fieldRow(data: FinanceInputs, f: FieldItem, s: FinSettings) {
+// soilDoc: when given, the field's soil analysis (salt factor of this row's crop) scales the default yield; see cropCalc.
+export function fieldRow(data: FinanceInputs, f: FieldItem, s: FinSettings, soilDoc: SoilDoc | null = null) {
   const cropId = s.cropMap[f.id] || f.crop || ''
   const c = data.crops[cropId]
   const area = (s.areaMap[f.id] ?? '').trim() !== '' ? Number(s.areaMap[f.id]) : f.areaHa
   const base = { f, cropId, cropLabel: c?.label ?? (cropId === 'black_fallow' ? 'Black fallow' : null), area: validPos(area) ? area : null }
-  const calc = c && base.area != null ? cropCalc(c, base.area, s.yieldStr[cropId], s.priceStr[cropId], s.costStr[cropId], s.spread) : null
-  return { ...base, calc }
+  const soil = soilFactorOf(cropId, f.analysis, soilDoc)
+  const calc = c && base.area != null ? cropCalc(c, base.area, s.yieldStr[cropId], s.priceStr[cropId], s.costStr[cropId], s.spread, soil) : null
+  return { ...base, calc, soil }
 }
 export type FieldRow = ReturnType<typeof fieldRow>
 

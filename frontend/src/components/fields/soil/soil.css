@@ -1,0 +1,45 @@
+.fs { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); box-shadow: var(--shadow-sm, none); }
+.fs > summary { cursor: pointer; padding: var(--space-3) var(--space-4); font-weight: 700; font-size: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); list-style: none; }
+.fs > summary::-webkit-details-marker { display: none; }
+.fs > summary::before { content: ''; width: 8px; height: 8px; border-right: 2px solid var(--color-primary-strong); border-bottom: 2px solid var(--color-primary-strong); transform: rotate(-45deg); transition: transform 0.15s; }
+.fs[open] > summary::before { transform: rotate(45deg); }
+.fs > summary small { font-weight: 400; color: var(--color-muted); font-size: 13px; }
+.fs-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding: 0 var(--space-4) var(--space-4); }
+.fs-help { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--color-muted); }
+.fs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); align-items: start; }
+.fs-hint { margin: 0; font-size: 12px; line-height: 1.35; color: var(--color-muted); }
+.fs-sub { margin: 0 0 var(--space-2); font-size: 14px; }
+.fs-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.fs-tog { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 12px; min-height: 36px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-pill); background: var(--color-surface); color: var(--color-text); cursor: pointer; }
+.fs-tog[aria-pressed='true'] { background: var(--color-primary); border-color: var(--color-primary); }
+.fs-checks { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
+.fs-checks label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.fd .fs-checks input { width: auto; min-height: 0; }
+.fs-tablewrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.fs table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.fs th, .fs td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+.fs th { font-size: 12px; color: var(--color-muted); font-weight: 500; white-space: nowrap; }
+.fs tr:last-child td { border-bottom: 0; }
+.fs td.n, .fs th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.fs-red td:first-child { box-shadow: inset 3px 0 0 var(--color-danger); }
+.fs-tag { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill); margin: 0 4px 2px 0; }
+.fs-tag-bad { background: var(--color-danger-tint); color: var(--color-danger); }
+.fs-tag-warn { background: var(--color-primary-tint); color: var(--color-primary-strong); }
+.fs-tag-low { background: var(--color-neutral-tint); color: var(--color-muted); }
+.fs-note { font-size: 12px; color: var(--color-muted); }
+.fs-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+.fs-card { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3); background: var(--color-primary-wash); display: grid; gap: 2px; align-content: start; }
+.fs-card span { font-size: 12px; color: var(--color-muted); }
+.fs-card b { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fs-card small { font-size: 12px; color: var(--color-muted); }
+.fs-neg b { color: var(--color-danger); }
+.fs-pos b { color: var(--color-success); }
+.fs-msg { font-size: 14px; color: var(--color-muted); }
+.fs-err { color: var(--color-danger); }
+.fs-ul { margin: 0; padding-left: 18px; display: grid; gap: 2px; }
+@media (max-width: 480px) { .fs > summary, .fs-body { padding-inline: var(--space-3); } .fs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fs-yields { min-width: 0; }
+.fs-body > *, .fs-cards > * { min-width: 0; }
+.fr-wide { grid-column: 1 / -1; }
+.fs td .fs-tag { white-space: normal; }
+.fs-tablewrap table { min-width: 460px; }
